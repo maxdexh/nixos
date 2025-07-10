@@ -180,11 +180,11 @@ in
     # originally installed.
     home.stateVersion = "25.05";
 
-    home.file.".profile" = { text = builtins.readFile ./dotfiles/.profile; };
-    home.file.".bashrc" = { text = builtins.readFile ./dotfiles/.bashrc; };
-    home.file.".bash_aliases" = { text = builtins.readFile ./dotfiles/.bash_aliases; };
-    home.file.".bash_prompt_style" = { text = builtins.readFile ./dotfiles/.bash_prompt_style; };
-    home.file.".inputrc" = { text = builtins.readFile ./dotfiles/.inputrc; };
+    home.file.".profile".source = ./dotfiles/.profile;
+    home.file.".bashrc".source = ./dotfiles/.bashrc;
+    home.file.".bash_aliases".source = ./dotfiles/.bash_aliases;
+    home.file.".bash_prompt_style".source = ./dotfiles/.bash_prompt_style;
+    home.file.".inputrc".source = ./dotfiles/.inputrc;
 
     programs.fish = {
       enable = true;
