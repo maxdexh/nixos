@@ -115,13 +115,14 @@ in
     uv
     unzip
     python3
+    ripgrep
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
   # programs.gnupg.agent = {
- #   enable = true;
+  #   enable = true;
   #   enableSSHSupport = true;
   # };
 
@@ -168,8 +169,8 @@ in
      enable = true;
      defaultEditor = true;
   };
-  # programs.rust-analyzer.enable = true;
-  
+  # FIXME: need to sync XDG_CONFIG_HOME in .profile with this config
+
   home-manager.users.max = { pkgs, ... }: {
     home.packages = with pkgs; [
       rust-analyzer
@@ -204,6 +205,8 @@ in
         core.editor = "nvim";
       };
     };
+    home.file.".config/nvim".source = ./nvim;
+
     # programs.git.enable = true;
     # programs.kitty.enable = true;
     # TODO: .ssh, .config/nixos-git, .profile, .bashrc, etc.

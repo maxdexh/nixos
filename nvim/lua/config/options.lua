@@ -24,9 +24,11 @@ vim.g.snacks_animate = false
 vim.g.c_syntax_for_h = true
 -- vim.g.lazyvim_rust_diagnostics = "bacon-ls"
 
-local venv = vim.fn.stdpath("config") .. "/.venv"
-if vim.uv.fs_stat(venv) then ---@diagnostic disable-line:undefined-field
-   vim.g.python3_host_prog = venv .. "/bin/python3"
-else
-   vim.notify("MISSING PYTHON VENV", vim.log.levels.ERROR)
-end
+-- TODO: Find a good way to do this in nix
+--
+-- local venv = vim.fn.stdpath("config") .. "/.venv"
+-- if vim.uv.fs_stat(venv) then ---@diagnostic disable-line:undefined-field
+--    vim.g.python3_host_prog = venv .. "/bin/python3"
+-- else
+--    vim.notify("MISSING PYTHON VENV", vim.log.levels.ERROR)
+-- end
