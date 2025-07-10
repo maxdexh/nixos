@@ -106,7 +106,6 @@ in
     kitty
     eza
     fish
-    zsh
     gcc
     git
     zoxide
@@ -116,6 +115,7 @@ in
     unzip
     python3
     ripgrep
+    openvpn
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -154,6 +154,7 @@ in
           main = {
             z = "y";
             y = "z";
+            capslock = "esc";
           };
           altgr = {
             a = "G-q";
@@ -170,14 +171,18 @@ in
     MatchName=keyd virtual keyboard
     AttrKeyboardIntegration=internal
   '';
+
   programs.neovim = {
      enable = true;
      defaultEditor = true;
   };
+
+  programs.steam.enable = true;
+
   programs.nix-ld.enable = true;
-  # FIXME: need to sync XDG_CONFIG_HOME in .profile with this config
 
   home-manager.useGlobalPkgs = true; # also inherits unfree allowed
+  # FIXME: need to sync XDG_CONFIG_HOME in .profile with this config
   home-manager.users.max = { pkgs, ... }: {
     home.packages = with pkgs; [
       rust-analyzer
@@ -185,6 +190,28 @@ in
       nodejs
       discord
       pferd
+      zsh-syntax-highlighting
+      zsh-autocomplete
+      zsh-autosuggestions
+      fd
+      cargo
+      rustc
+      gh
+      glab
+      fzf
+      # latexindent
+      bat
+      brave
+      obs-studio
+      thunderbird
+      # prismlauncher
+      # lunar-client
+      gimp
+      baobab
+      vscode
+      gparted
+      zathura
+      gnome-system-monitor
     ];
     # The state version is required and should stay at the version you
     # originally installed.
@@ -198,6 +225,8 @@ in
     home.file.".bash_aliases".source = ./dotfiles/.bash_aliases;
     home.file.".bash_prompt_style".source = ./dotfiles/.bash_prompt_style;
     home.file.".inputrc".source = ./dotfiles/.inputrc;
+
+    home.file.".scripts".source = ./Scripts;
 
     programs.fish = {
       enable = true;
@@ -217,15 +246,22 @@ in
         core.editor = "nvim";
       };
     };
+    programs.uv = {
+      enable = true;
+      settings = {
+        python-downloads = "manual";
+        python-preference = "only-managed";
+      };
+    };
 
-    home.file.".config/nvim".source = ./nvim; # TODO: no idea how this is gonna work
-    home.file.".config/uv".source = ./uv; # TODO: easy to cfg here
-    home.file.".config/zsh".source = ./zsh; # TODO: easy to cfg here
-    home.file.".config/kitty".source = ./kitty; # TODO: maybe configurable here?
-    home.file.".config/PFERD".source = ./PFERD; # TODO: maybe configurable here?
+    home.file.".config/kitty".source = ./kitty; # TODO: Consider doing this here
 
-    # programs.git.enable = true;
-    # programs.kitty.enable = true;
-    # TODO: .ssh, .config/nixos-git
+    home.file.".config/PFERD".source = ./PFERD;
+    home.file.".config/nvim".source = ./nvim;
+
+    # TODO: .ssh? (at least config)
+    # TODO: .config/nixos-git?
+    # TODO: Scripts
+    # TODO: KDE (help)
   };
 }

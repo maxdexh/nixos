@@ -33,7 +33,7 @@ PATH="$HOME/.local/bin:$PATH"
 PATH="$HOME/.local/kitty.app/bin:$PATH"
 PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
 PATH="$HOME/.local/share/JetBrains/Toolbox/scripts:$PATH"
-PATH="$HOME/Scripts/bin:$PATH"
+PATH="$HOME/.scripts/bin:$PATH"
 
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/* || true

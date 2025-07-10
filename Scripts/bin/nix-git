@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+cd /etc/nixos
+git --git-dir ~/.config/nixos-git/.git "$@"
