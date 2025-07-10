@@ -155,6 +155,11 @@ in
             z = "y";
             y = "z";
           };
+          altgr = {
+            a = "G-q";
+            o = "G-p";
+            u = "G-y";
+          };
         };
       };
     };
@@ -172,17 +177,23 @@ in
   programs.nix-ld.enable = true;
   # FIXME: need to sync XDG_CONFIG_HOME in .profile with this config
 
+  home-manager.useGlobalPkgs = true; # also inherits unfree allowed
   home-manager.users.max = { pkgs, ... }: {
     home.packages = with pkgs; [
       rust-analyzer
       pnpm
       nodejs
+      discord
+      pferd
     ];
     # The state version is required and should stay at the version you
     # originally installed.
     home.stateVersion = "25.05";
 
+    # TODO: environment.variables or smth
     home.file.".profile".source = ./dotfiles/.profile;
+
+    # TODO: programs.bash
     home.file.".bashrc".source = ./dotfiles/.bashrc;
     home.file.".bash_aliases".source = ./dotfiles/.bash_aliases;
     home.file.".bash_prompt_style".source = ./dotfiles/.bash_prompt_style;
@@ -206,10 +217,15 @@ in
         core.editor = "nvim";
       };
     };
-    home.file.".config/nvim".source = ./nvim;
+
+    home.file.".config/nvim".source = ./nvim; # TODO: no idea how this is gonna work
+    home.file.".config/uv".source = ./uv; # TODO: easy to cfg here
+    home.file.".config/zsh".source = ./zsh; # TODO: easy to cfg here
+    home.file.".config/kitty".source = ./kitty; # TODO: maybe configurable here?
+    home.file.".config/PFERD".source = ./PFERD; # TODO: maybe configurable here?
 
     # programs.git.enable = true;
     # programs.kitty.enable = true;
-    # TODO: .ssh, .config/nixos-git, .profile, .bashrc, etc.
+    # TODO: .ssh, .config/nixos-git
   };
 }
