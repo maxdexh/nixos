@@ -112,6 +112,9 @@ in
     zoxide
     wl-clipboard
     trash-cli
+    uv
+    unzip
+    python3
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -168,8 +171,10 @@ in
   # programs.rust-analyzer.enable = true;
   
   home-manager.users.max = { pkgs, ... }: {
-    home.packages = [
-      pkgs.rust-analyzer
+    home.packages = with pkgs; [
+      rust-analyzer
+      pnpm
+      nodejs
     ];
     # The state version is required and should stay at the version you
     # originally installed.
@@ -201,6 +206,6 @@ in
     };
     # programs.git.enable = true;
     # programs.kitty.enable = true;
-    # TODO: .ssh, .profile, .bashrc, etc.
+    # TODO: .ssh, .config/nixos-git, .profile, .bashrc, etc.
   };
 }
