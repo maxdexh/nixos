@@ -175,6 +175,12 @@ in
     # originally installed.
     home.stateVersion = "25.05";
 
+    home.file.".profile" = { text = builtins.readFile ./dotfiles/.profile; };
+    home.file.".bashrc" = { text = builtins.readFile ./dotfiles/.bashrc; };
+    home.file.".bash_aliases" = { text = builtins.readFile ./dotfiles/.bash_aliases; };
+    home.file.".bash_prompt_style" = { text = builtins.readFile ./dotfiles/.bash_prompt_style; };
+    home.file.".inputrc" = { text = builtins.readFile ./dotfiles/.inputrc; };
+
     programs.fish = {
       enable = true;
       interactiveShellInit = builtins.readFile ./fish/interactive.fish;
@@ -183,11 +189,18 @@ in
       enable = true;
       userName = "Max Dexheimer";
       userEmail = "maxdexh03@gmail.com";
+      aliases = {
+        ca = "!git add --all && git commit";
+        s = "status";
+      };
       extraConfig = {
         safe.directory = "/etc/nixos/";
+        init.defaultBranch = "main";
+        core.editor = "nvim";
       };
     };
     # programs.git.enable = true;
     # programs.kitty.enable = true;
+    # TODO: .ssh, .profile, .bashrc, etc.
   };
 }
