@@ -169,6 +169,7 @@ in
      enable = true;
      defaultEditor = true;
   };
+  programs.nix-ld.enable = true;
   # FIXME: need to sync XDG_CONFIG_HOME in .profile with this config
 
   home-manager.users.max = { pkgs, ... }: {
