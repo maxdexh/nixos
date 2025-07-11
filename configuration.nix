@@ -99,6 +99,12 @@ in
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  
+  hardware.bluetooth = {
+      enable = true;
+      powerOnBoot = false;
+  };
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -185,7 +191,7 @@ in
   # FIXME: need to sync XDG_CONFIG_HOME in .profile with this config
   home-manager.users.max = { pkgs, ... }: {
     home.packages = with pkgs; [
-      rust-analyzer
+      # rust-analyzer
       pnpm
       nodejs
       discord
@@ -194,8 +200,8 @@ in
       zsh-autocomplete
       zsh-autosuggestions
       fd
-      cargo
-      rustc
+      # cargo
+      # rustc
       gh
       glab
       fzf
@@ -212,6 +218,7 @@ in
       gparted
       zathura
       gnome-system-monitor
+      rustup
     ];
     # The state version is required and should stay at the version you
     # originally installed.
@@ -258,6 +265,12 @@ in
 
     home.file.".config/PFERD".source = ./PFERD;
     home.file.".config/nvim".source = ./nvim;
+
+    home.file.".local/share/rustup/settings.toml".source = ./rustup/settings.toml;
+
+    # home.file.".config/kde.org".source = ./kde.org;
+    # home.file.".config/kdedefaults".source = ./kdedefaults;
+    # home.file.".config/plasma-org.kde.plasma.desktop-appletsrc".source = ./plasma-org.kde.plasma.desktop-appletsrc;
 
     # TODO: .ssh? (at least config)
     # TODO: .config/nixos-git?
