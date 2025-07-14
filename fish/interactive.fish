@@ -18,20 +18,16 @@ end
 
 bind ctrl-c cancel-commandline
 
-# allows seting the clipboard using `... | setclip`
-alias setclip='xclip -sel c'
-
 # uses eza instead of ls. TODO: configure
 alias ls='eza'
 
-# trash is still suboptimal due to working slightly differently :/
+# trash is still suboptimal due to working slightly differently, so an alias is inappropriate :/
 alias rm='echo "rm is disabled, use `trash` or `command rm` instead."'
 
 # TODO: This still deletes overwritten files, a trashing variant would be better
 alias mv='mv -i'
 
 alias gittree='git log --graph --pretty=oneline --abbrev-commit --all'
-# TODO: safer versions of mv, cp
 
 # initialize zoxide to shadow cd and define cdi (interactive)
 zoxide init fish --cmd cd | source
