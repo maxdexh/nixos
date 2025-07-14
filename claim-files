@@ -1,13 +1,35 @@
 #!/usr/bin/env bash
 
+OPTIONS="$@"
+SCRIPTPATH="$0"
+
 set -e pipefail
 
+function to-user {
+  sudo chown "$USER" /etc/nixos/**
+  echo "Chowned /etc/nixos/ as $USER"
+}
+function to-root {
+  sudo chown root /etc/nixos/
+  sudo chown root /etc/nixos/**
+  echo 'Chowned /etc/nixos/ as root'
+}
+function usage {
+  echo "$SCRIPTPATH [q]uery  -- queries owner of /etc/nixos"
+  echo "$SCRIPTPATH [u]ser   -- chowns /etc/nixos as \$USER"
+  echo "$SCRIPTPATH [r]oot   -- chowns /etc/nixos as root"
+  echo "$SCRIPTPATH [t]oggle -- toogles chown between root and \$USER"
+}
+
 OWNER="$(stat -c '%U' /etc/nixos/configuration.nix)"
-if [[ "$OWNER" == 'root' ]] then
-    sudo chown max /etc/nixos/**
-    echo 'Chowned /etc/nixos/ as max'
+if [[ "$OPTIONS" == q* ]]; then # query
+  echo "$OWNER"
+elif [[ "$OPTIONS" == u* ]]; then # user
+  to-user
+elif [[ "$OPTIONS" == r* ]]; then # root
+  to-root
+elif [[ "$OPTIONS" == t* ]]; then # toggle
+  [[ "$OWNER" == 'root' ]] && to-user || to-root
 else
-    sudo chown root /etc/nixos/
-    sudo chown root /etc/nixos/**
-    echo 'Chowned /etc/nixos/ as root'
+  usage
 fi

@@ -25,7 +25,7 @@ alias setclip='xclip -sel c'
 alias ls='eza'
 
 # trash is still suboptimal due to working slightly differently :/
-alias rm='echo "rm is disabled, use trash or /bin/rm instead."'
+alias rm='echo "rm is disabled, use `trash` or `command rm` instead."'
 
 # TODO: This still deletes overwritten files, a trashing variant would be better
 alias mv='mv -i'
