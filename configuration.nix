@@ -243,7 +243,7 @@ in
       "$CARGO_HOME/bin"
       "$HOME/.local/kitty.app/bin"
       "$HOME/.scripts/bin"
-      # "${PNPM_HOME}"
+      "${PNPM_HOME}"
     ];
   };
 
@@ -276,12 +276,6 @@ in
       thunderbird
       gnome-system-monitor
       discord
-
-      # zsh (can't get the plugin packages to work)
-      zsh
-      zsh-syntax-highlighting
-      zsh-autocomplete
-      zsh-autosuggestions
 
       # disk utils
       baobab
