@@ -209,6 +209,44 @@ in
 
   home-manager.useGlobalPkgs = true; # also inherits unfree allowed
 
+  environment.sessionVariables = rec {
+    XDG_CACHE_HOME  = "$HOME/.cache";
+    XDG_CONFIG_HOME = "$HOME/.config";
+    XDG_DATA_HOME   = "$HOME/.local/share";
+    XDG_STATE_HOME  = "$HOME/.local/state";
+    XDG_RUNTIME_DIR = "/run/user/$(id -u)";
+
+    XDG_BIN_HOME    = "$HOME/.local/bin";
+
+    # TODO: figure out which of these are needed under nix
+    CARGO_HOME              = "${XDG_DATA_HOME}/cargo";
+    BOGOFILTER_DIR          = "${XDG_DATA_HOME}/bogofilter";
+    DOTNET_CLI_HOME         = "${XDG_DATA_HOME}/dotnet";
+    GRADLE_USER_HOME        = "${XDG_DATA_HOME}/gradle";
+    GTK2_RC_FILES           = "${XDG_CONFIG_HOME}/gtk-2.0/gtkrc";
+    MATHEMATICA_USERBASE    = "${XDG_CONFIG_HOME}/mathematica";
+    PYTHON_HISTORY          = "${XDG_STATE_HOME}/python_history";
+    RUSTUP_HOME             = "${XDG_DATA_HOME}/rustup";
+    ZDOTDIR                 = "${XDG_CONFIG_HOME}/zsh";
+    NODE_REPL_HISTORY       = "${XDG_STATE_HOME}/node_repl_history";
+    NPM_CONFIG_INIT_MODULE  = "${XDG_CONFIG_HOME}/npm/config/npm-init.js";
+    NPM_CONFIG_CACHE        = "${XDG_CACHE_HOME}/npm";
+    NPM_CONFIG_TMP          = "${XDG_RUNTIME_DIR}/npm";
+    PNPM_HOME               = "${XDG_DATA_HOME}/pnpm";
+
+    VISUAL="nvim";
+    EDITOR="nvim";
+    MANPAGER="nvim +Man!";
+
+    PATH = [
+      "${XDG_BIN_HOME}"
+      "$CARGO_HOME/bin"
+      "$HOME/.local/kitty.app/bin"
+      "$HOME/.scripts/bin"
+      # "${PNPM_HOME}"
+    ];
+  };
+
   # TODO: make home.file readonly?
   home-manager.users.max = { pkgs, ... }: {
 
@@ -256,11 +294,10 @@ in
       # games
       prismlauncher
       lunar-client
-
     ];
 
     # FIXME: These should depend directly on the value of XDG_CONFIG_HOME
-    
+
     # Configure kitty. TODO: This could probably be done here instead
     home.file.".config/kitty".source = ./kitty;
 
@@ -272,19 +309,25 @@ in
     # Add custom scripts
     home.file.".scripts".source = ./Scripts;
 
-    # TODO: https://nixos.wiki/wiki/Environment_variables, to sync with .config here
-    home.file.".profile".source = ./dotfiles/.profile;
-
-    # TODO: configure using programs.bash instead
-    home.file.".bashrc".source = ./dotfiles/.bashrc;
-    home.file.".bash_aliases".source = ./dotfiles/.bash_aliases;
-    home.file.".bash_prompt_style".source = ./dotfiles/.bash_prompt_style;
-    home.file.".inputrc".source = ./dotfiles/.inputrc;
+    programs.bash = {
+      enable = true;
+      bashrcExtra = builtins.readFile ./bash/bashrc-extra;
+      historyFile = "$XDG_STATE_HOME/bash/history";
+      shellOptions = [
+        "histappend"
+        "checkwinsize"
+        "extglob"
+        "globstar"
+        "checkjobs"
+      ];
+      historyControl = ["ignoreboth"];
+    };
 
     programs.fish = {
       enable = true;
       interactiveShellInit = builtins.readFile ./fish/interactive.fish;
     };
+
     programs.git = {
       enable = true;
       userName = "Max Dexheimer";
@@ -307,7 +350,6 @@ in
       };
     };
 
-    # Install stable x86 toolchain by default. Can we do this declaratively here instead?
     home.file.".local/share/rustup/settings.toml".source = ./rustup/settings.toml;
 
     # TODO: KDE (help)
