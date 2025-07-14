@@ -6,6 +6,7 @@ SCRIPTPATH="$0"
 set -e pipefail
 
 function to-user {
+  sudo chown "$USER" /etc/nixos/
   sudo chown "$USER" /etc/nixos/**
   echo "Chowned /etc/nixos/ as $USER"
 }
