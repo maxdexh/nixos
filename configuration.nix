@@ -48,7 +48,7 @@ in
 
   # Enable the X11 windowing system.
   # You can disable this if you're only using the Wayland session.
-  services.xserver.enable = true;
+  # services.xserver.enable = true;
 
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
@@ -99,6 +99,7 @@ in
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  # END OF INSTALLER
   
   hardware.bluetooth = {
       enable = true;
@@ -268,13 +269,12 @@ in
 
     home.file.".local/share/rustup/settings.toml".source = ./rustup/settings.toml;
 
+    # TODO: KDE (help)
     # home.file.".config/kde.org".source = ./kde.org;
     # home.file.".config/kdedefaults".source = ./kdedefaults;
     # home.file.".config/plasma-org.kde.plasma.desktop-appletsrc".source = ./plasma-org.kde.plasma.desktop-appletsrc;
 
     # TODO: .ssh? (at least config)
     # TODO: .config/nixos-git?
-    # TODO: Scripts
-    # TODO: KDE (help)
   };
 }

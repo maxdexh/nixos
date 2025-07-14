@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e pipefail
+
+OWNER="$(stat -c '%U' /etc/nixos/configuration.nix)"
+if [[ "$OWNER" == 'root' ]] then
+    sudo chown max /etc/nixos/**
+    echo 'Chowned /etc/nixos/ as max'
+else
+    sudo chown root /etc/nixos/
+    sudo chown root /etc/nixos/**
+    echo 'Chowned /etc/nixos/ as root'
+fi
