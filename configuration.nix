@@ -5,17 +5,16 @@
 { config, pkgs, ... }:
 
 let
-  home-manager = builtins.fetchTarball https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz;
-in
-{
-  imports =
-    [ 
-      # https://github.com/NixOS/nixos-hardware/tree/master
-      <nixos-hardware/framework/13-inch/7040-amd> # TODO: use a gitignored hardware-specific file for this
-      # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      (import "${home-manager}/nixos")
-    ];
+  home-manager = builtins.fetchTarball
+    "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";
+in {
+  imports = [
+    # https://github.com/NixOS/nixos-hardware/tree/master
+    <nixos-hardware/framework/13-inch/7040-amd> # TODO: use a gitignored hardware-specific file for this
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    (import "${home-manager}/nixos")
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -51,7 +50,7 @@ in
 
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;  # "bLoAtWaRe"
+  services.desktopManager.plasma6.enable = true; # "bLoAtWaRe"
 
   services.xserver.enable = false; # actual bloatware
 
@@ -89,10 +88,11 @@ in
     description = "Max";
     extraGroups = [ "networkmanager" "wheel" ];
     # https://discourse.nixos.org/t/users-users-name-packages-vs-home-manager-packages/22240/3
-    packages = with pkgs; [
-      kdePackages.kate
-    #  thunderbird
-    ];
+    packages = with pkgs;
+      [
+        kdePackages.kate
+        #  thunderbird
+      ];
   };
 
   # Install firefox.
@@ -108,29 +108,31 @@ in
 
   # enable bluetooth
   hardware.bluetooth = {
-      enable = true;
-      powerOnBoot = false;
+    enable = true;
+    powerOnBoot = false;
   };
 
   environment.systemPackages = with pkgs; [
-    kitty         # preferred terminal
+    kitty # preferred terminal
 
-    neovim        # preferred editor
-    ripgrep       # better rgrep, used by nvim iirc
-    wl-clipboard  # wayland clipboard cli, system-level due to use by neovim
+    neovim # preferred editor
+    ripgrep # better rgrep, used by nvim iirc
+    wl-clipboard # wayland clipboard cli, system-level due to use by neovim
     # xclip       # x11 clipboard cli, not needed because programs.xserver.enabled = false
 
-    fish          # preferred shell
-    eza           # better ls, system-level due to fish config replacing ls
-    trash-cli     # safer rm, system-level so we can use as sudo and due to fish config disabling rm
-    zoxide        # better cd, system-level due to fish config replacing cd  # TODO: enable from nix, see nix-option programs.zoxide
+    fish # preferred shell
+    eza # better ls, system-level due to fish config replacing ls
+    trash-cli # safer rm, system-level so we can use as sudo and due to fish config disabling rm
+    zoxide # better cd, system-level due to fish config replacing cd  # TODO: enable from nix, see nix-option programs.zoxide
 
-    gcc           # compiler, sometimes useful
-    python3 uv    # python, occasionally useful
+    gcc # compiler, sometimes useful
+    python3
+    uv # python, occasionally useful
 
-    git           # git
+    git # git
 
-    zip unzip     # all my homies hate tar.gz
+    zip
+    unzip # all my homies hate tar.gz
 
     openvpn
   ];
@@ -210,10 +212,10 @@ in
   # Use neovim on a system-level.
   # TODO: Rudimentary config for sudo nvim, e.g. set shiftwidth=2, set expandtab
   programs.neovim = {
-     enable = true;
-     defaultEditor = true;
+    enable = true;
+    defaultEditor = true;
   };
-  
+
   # https://github.com/hyprwm/Hyprland/discussions/7923
   # https://www.reddit.com/r/hyprland/comments/1aj24qe/can_i_reproduce_scaling_for_xwayland_apps_in/
   programs.hyprland = {
@@ -232,32 +234,32 @@ in
   home-manager.useGlobalPkgs = true;
 
   environment.sessionVariables = rec {
-    XDG_CACHE_HOME  = "$HOME/.cache";
+    XDG_CACHE_HOME = "$HOME/.cache";
     XDG_CONFIG_HOME = "$HOME/.config";
-    XDG_DATA_HOME   = "$HOME/.local/share";
-    XDG_STATE_HOME  = "$HOME/.local/state";
+    XDG_DATA_HOME = "$HOME/.local/share";
+    XDG_STATE_HOME = "$HOME/.local/state";
     XDG_RUNTIME_DIR = "/run/user/$(id -u)";
 
-    XDG_BIN_HOME    = "$HOME/.local/bin";
+    XDG_BIN_HOME = "$HOME/.local/bin";
 
-    CARGO_HOME              = "${XDG_DATA_HOME}/cargo";
-    BOGOFILTER_DIR          = "${XDG_DATA_HOME}/bogofilter";
-    DOTNET_CLI_HOME         = "${XDG_DATA_HOME}/dotnet";
-    GRADLE_USER_HOME        = "${XDG_DATA_HOME}/gradle";
-    GTK2_RC_FILES           = "${XDG_CONFIG_HOME}/gtk-2.0/gtkrc";
-    MATHEMATICA_USERBASE    = "${XDG_CONFIG_HOME}/mathematica";
-    PYTHON_HISTORY          = "${XDG_STATE_HOME}/python_history";
-    RUSTUP_HOME             = "${XDG_DATA_HOME}/rustup";
-    ZDOTDIR                 = "${XDG_CONFIG_HOME}/zsh";
-    NODE_REPL_HISTORY       = "${XDG_STATE_HOME}/node_repl_history";
-    NPM_CONFIG_INIT_MODULE  = "${XDG_CONFIG_HOME}/npm/config/npm-init.js";
-    NPM_CONFIG_CACHE        = "${XDG_CACHE_HOME}/npm";
-    NPM_CONFIG_TMP          = "${XDG_RUNTIME_DIR}/npm";
-    PNPM_HOME               = "${XDG_DATA_HOME}/pnpm";
+    CARGO_HOME = "${XDG_DATA_HOME}/cargo";
+    BOGOFILTER_DIR = "${XDG_DATA_HOME}/bogofilter";
+    DOTNET_CLI_HOME = "${XDG_DATA_HOME}/dotnet";
+    GRADLE_USER_HOME = "${XDG_DATA_HOME}/gradle";
+    GTK2_RC_FILES = "${XDG_CONFIG_HOME}/gtk-2.0/gtkrc";
+    MATHEMATICA_USERBASE = "${XDG_CONFIG_HOME}/mathematica";
+    PYTHON_HISTORY = "${XDG_STATE_HOME}/python_history";
+    RUSTUP_HOME = "${XDG_DATA_HOME}/rustup";
+    ZDOTDIR = "${XDG_CONFIG_HOME}/zsh";
+    NODE_REPL_HISTORY = "${XDG_STATE_HOME}/node_repl_history";
+    NPM_CONFIG_INIT_MODULE = "${XDG_CONFIG_HOME}/npm/config/npm-init.js";
+    NPM_CONFIG_CACHE = "${XDG_CACHE_HOME}/npm";
+    NPM_CONFIG_TMP = "${XDG_RUNTIME_DIR}/npm";
+    PNPM_HOME = "${XDG_DATA_HOME}/pnpm";
 
-    VISUAL="nvim";
-    EDITOR="nvim";
-    MANPAGER="nvim +Man!";
+    VISUAL = "nvim";
+    EDITOR = "nvim";
+    MANPAGER = "nvim +Man!";
 
     PATH = [
       "${XDG_BIN_HOME}"
@@ -325,16 +327,17 @@ in
       hyprshot
 
       # computer languages
-      rustup  # mutually exclusive with the other rust packages: rust-analyzer, cargo, rustc
-      nodejs pnpm  # trash
+      rustup # mutually exclusive with the other rust packages: rust-analyzer, cargo, rustc
+      nodejs
+      pnpm # trash
       # latexindent # TODO: texlive
 
       # cli apps
-      bat   # better cat
-      fd    # better find
-      gh    # github cli
-      glab  # gitlab cli
-      fzf   # fuzzy-find (idk if necessary for nvim)
+      bat # better cat
+      fd # better find
+      gh # github cli
+      glab # gitlab cli
+      fzf # fuzzy-find (idk if necessary for nvim)
       pferd # audi famam
 
       # gui apps
@@ -349,7 +352,7 @@ in
       # disk utils
       baobab
       gparted
-      
+
       # pdf
       zathura
       tdf
@@ -358,7 +361,7 @@ in
       prismlauncher
       lunar-client
     ];
-  
+
     # TODO: https://wiki.nixos.org/wiki/Hyprland config here
     wayland.windowManager.hyprland = {
       enable = true;
@@ -376,7 +379,8 @@ in
     home.file.".config/PFERD".source = ./PFERD;
 
     # use x86 stable as default
-    home.file.".local/share/rustup/settings.toml".source = ./rustup/settings.toml;
+    home.file.".local/share/rustup/settings.toml".source =
+      ./rustup/settings.toml;
 
     # Add custom scripts
     home.file.".scripts".source = ./Scripts;
@@ -385,14 +389,9 @@ in
       enable = true;
       bashrcExtra = builtins.readFile ./bash/bashrc-extra;
       historyFile = "$XDG_STATE_HOME/bash/history";
-      shellOptions = [
-        "histappend"
-        "checkwinsize"
-        "extglob"
-        "globstar"
-        "checkjobs"
-      ];
-      historyControl = ["ignoreboth"];
+      shellOptions =
+        [ "histappend" "checkwinsize" "extglob" "globstar" "checkjobs" ];
+      historyControl = [ "ignoreboth" ];
     };
 
     programs.fish = {
@@ -421,7 +420,6 @@ in
         python-preference = "only-managed";
       };
     };
-
 
     # TODO: KDE (help)
     # home.file.".config/kde.org".source = ./kde.org;
