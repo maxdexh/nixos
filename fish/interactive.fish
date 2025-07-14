@@ -2,7 +2,6 @@ set fish_greeting
 
 if string match -q '*kitty' $TERM
     # overrides clear to also clear the terminal buffer in kitty
-    # fish printf just prints the escapes as-is
     function clear -d "Clear alias for kitty, including scrollback buffer"
         printf "\e[H\e[3J"
     end
@@ -40,7 +39,7 @@ alias rgrep=rg
 alias python3='uv run python3'
 function uvenv
     pushd .
-    source ./.venv/bin/activate.fish
+    source ./.venv/bin/activate.fish # for some reason this cds into bin
     popd
 end
 
