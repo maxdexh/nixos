@@ -9,7 +9,10 @@ let
 in
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [ 
+      # https://github.com/NixOS/nixos-hardware/tree/master
+      <nixos-hardware/framework/13-inch/7040-amd> # TODO: use a gitignored hardware-specific file for this
+      # Include the results of the hardware scan.
       ./hardware-configuration.nix
       (import "${home-manager}/nixos")
     ];
@@ -46,13 +49,11 @@ in
     LC_TIME = "de_DE.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  # You can disable this if you're only using the Wayland session.
-  services.xserver.enable = false; # (edited)
-
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
+  services.desktopManager.plasma6.enable = true;  # "bLoAtWaRe"
+
+  services.xserver.enable = false; # actual bloatware
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -100,21 +101,17 @@ in
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # END OF INSTALLER
-
   systemd.sleep.extraConfig = ''
     HibernateDelaySec=30m
     SuspendState=mem
   '';
 
-  
+  # enable bluetooth
   hardware.bluetooth = {
       enable = true;
       powerOnBoot = false;
   };
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
     kitty         # preferred terminal
 
@@ -136,6 +133,20 @@ in
     zip unzip     # all my homies hate tar.gz
 
     openvpn
+  ];
+
+  fonts.packages = with pkgs; [
+    cascadia-code
+
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-emoji
+    liberation_ttf
+    fira-code
+    fira-code-symbols
+    mplus-outline-fonts.githubRelease
+    dina-font
+    proggyfonts
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -165,8 +176,7 @@ in
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.05"; # Did you read the comment?
 
-  # Configure key remaps. Assumes AltGr. key combining with ä on q, ö on p, ü on y.
-  # TODO: What about on a british layout?
+  # Configure key remaps.
   services.keyd = {
     enable = true;
     keyboards = {
@@ -178,6 +188,8 @@ in
             y = "z";
             capslock = "esc";
           };
+          # Assumes AltGr key combining with ä on q, ö on p, ü on y.
+          # TODO: british version
           altgr = {
             a = "G-q";
             o = "G-p";
@@ -195,10 +207,19 @@ in
     AttrKeyboardIntegration=internal
   '';
 
-  # Use neovim on a system-level. TODO: Rudimentary config for sudo nvim, e.g. set shiftwidth=2, set expandtab
+  # Use neovim on a system-level.
+  # TODO: Rudimentary config for sudo nvim, e.g. set shiftwidth=2, set expandtab
   programs.neovim = {
      enable = true;
      defaultEditor = true;
+  };
+  
+  # https://github.com/hyprwm/Hyprland/discussions/7923
+  # https://www.reddit.com/r/hyprland/comments/1aj24qe/can_i_reproduce_scaling_for_xwayland_apps_in/
+  programs.hyprland = {
+    enable = true;
+    withUWSM = true;
+    xwayland.enable = true;
   };
 
   # Steam.
@@ -207,7 +228,8 @@ in
   # Required to dynamically link executables, such as nvim mason binaries
   programs.nix-ld.enable = true;
 
-  home-manager.useGlobalPkgs = true; # also inherits unfree allowed
+  # also inherits unfree allowed
+  home-manager.useGlobalPkgs = true;
 
   environment.sessionVariables = rec {
     XDG_CACHE_HOME  = "$HOME/.cache";
@@ -218,7 +240,6 @@ in
 
     XDG_BIN_HOME    = "$HOME/.local/bin";
 
-    # TODO: figure out which of these are needed under nix
     CARGO_HOME              = "${XDG_DATA_HOME}/cargo";
     BOGOFILTER_DIR          = "${XDG_DATA_HOME}/bogofilter";
     DOTNET_CLI_HOME         = "${XDG_DATA_HOME}/dotnet";
@@ -245,6 +266,9 @@ in
       "$HOME/.scripts/bin"
       "${PNPM_HOME}"
     ];
+
+    ELECTRON_OZONE_PLATFORM_HINT = "auto";
+    NIXOS_OZONE_WL = "1";
   };
 
   # TODO: make home.file readonly?
@@ -254,7 +278,52 @@ in
     # originally installed.
     home.stateVersion = "25.05";
 
+    # TODO: make this not look like shit
+    services.dunst = {
+      enable = true;
+      # https://discourse.nixos.org/t/tip-how-to-enable-dunst-for-only-select-des-with-nix/65630
+      package = pkgs.writeShellScriptBin "dunst" ''
+        if [ "$XDG_CURRENT_DESKTOP" = "KDE" ] || [ "$DESKTOP_SESSION" = "plasma" ]; then
+          echo "Dunst: Not starting because session is KDE Plasma."
+          exit 0
+        fi
+        exec ${pkgs.dunst}/bin/dunst "$@"
+      '';
+    };
+    programs.waybar = {
+      enable = true;
+      settings = {
+        mainBar = {
+          position = "bottom";
+          modules-left = [ "hyprland/workspaces" ];
+          modules-right = [ ]; # TODO: Useful stuff
+
+          # TODO: Make this not suck
+          "hyprland/workspaces" = {
+            format = "{icon}";
+            on-scroll-up = "hyprctl dispatch workspace e+1";
+            on-scroll-down = "hyprctl dispatch workspace e-1";
+          };
+        };
+      };
+      # FIXME: this leaves a margin to the bottom of the screen
+      style = ''
+        * {
+          border: none;
+          border-radius: 0;
+          font-family: Source Code Pro;
+        }
+        window#waybar {
+          background: #000000;
+          color: #AAB2BF;
+        }
+      '';
+    };
+
     home.packages = with pkgs; [
+      waybar
+      hyprshot
+
       # computer languages
       rustup  # mutually exclusive with the other rust packages: rust-analyzer, cargo, rustc
       nodejs pnpm  # trash
@@ -289,6 +358,12 @@ in
       prismlauncher
       lunar-client
     ];
+  
+    # TODO: https://wiki.nixos.org/wiki/Hyprland config here
+    wayland.windowManager.hyprland = {
+      enable = true;
+      extraConfig = builtins.readFile ./hyprland.conf;
+    };
 
     # FIXME: These should depend directly on the value of XDG_CONFIG_HOME
 
@@ -299,6 +374,9 @@ in
     home.file.".config/nvim".source = ./nvim;
     # Configure pferd. TODO: Probably want to specify a repo or use a submodule instead
     home.file.".config/PFERD".source = ./PFERD;
+
+    # use x86 stable as default
+    home.file.".local/share/rustup/settings.toml".source = ./rustup/settings.toml;
 
     # Add custom scripts
     home.file.".scripts".source = ./Scripts;
@@ -344,7 +422,6 @@ in
       };
     };
 
-    home.file.".local/share/rustup/settings.toml".source = ./rustup/settings.toml;
 
     # TODO: KDE (help)
     # home.file.".config/kde.org".source = ./kde.org;
