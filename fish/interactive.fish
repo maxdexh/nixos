@@ -1,12 +1,9 @@
 set fish_greeting
 
-if string match -q '*kitty' $TERM
-    # overrides clear to also clear the terminal buffer in kitty
-    function clear -d "Clear alias for kitty, including scrollback buffer"
-        printf "\e[H\e[3J"
-    end
-    bind ctrl-l clear repaint
+function clearf -d "Full clear, including scrollback buffer"
+    printf "\e[H\e[3J"
 end
+
 function list-fonts -d "List installed fonts"
     fc-list | sed 's/.*:\\s*\\([^:]*\\):.*/\\1/' | tr ',' '\\n' | sed 's/^[ \\t]*//;s/[ \\t]*$//' | sort | uniq
 end

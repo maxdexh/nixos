@@ -52,7 +52,7 @@ in {
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true; # "bLoAtWaRe"
 
-  services.xserver.enable = false; # actual bloatware
+  services.xserver.enable = false; # disable bloatware
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -87,13 +87,10 @@ in {
     isNormalUser = true;
     description = "Max";
     extraGroups = [ "networkmanager" "wheel" ];
-    # https://discourse.nixos.org/t/users-users-name-packages-vs-home-manager-packages/22240/3
-    packages = with pkgs;
-      [
-        kdePackages.kate
-        #  thunderbird
-      ];
   };
+
+  services.blueman.enable = true;
+  services.logind.lidSwitch = "suspend-then-hibernate";
 
   # Install firefox.
   programs.firefox.enable = true;
@@ -135,20 +132,15 @@ in {
     unzip # all my homies hate tar.gz
 
     openvpn
+
+    networkmanagerapplet
   ];
 
   fonts.packages = with pkgs; [
-    cascadia-code
-
-    noto-fonts
-    noto-fonts-cjk-sans
-    noto-fonts-emoji
-    liberation_ttf
-    fira-code
-    fira-code-symbols
-    mplus-outline-fonts.githubRelease
-    dina-font
-    proggyfonts
+    # cascadia-code
+    nerd-fonts.caskaydia-mono
+    font-awesome
+    nerd-fonts.jetbrains-mono
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -280,53 +272,13 @@ in {
     # originally installed.
     home.stateVersion = "25.05";
 
-    # TODO: make this not look like shit
-    services.dunst = {
-      enable = true;
-      # https://discourse.nixos.org/t/tip-how-to-enable-dunst-for-only-select-des-with-nix/65630
-      package = pkgs.writeShellScriptBin "dunst" ''
-        if [ "$XDG_CURRENT_DESKTOP" = "KDE" ] || [ "$DESKTOP_SESSION" = "plasma" ]; then
-          echo "Dunst: Not starting because session is KDE Plasma."
-          exit 0
-        fi
-        exec ${pkgs.dunst}/bin/dunst "$@"
-      '';
-    };
-    programs.waybar = {
-      enable = true;
-      settings = {
-        mainBar = {
-          position = "top";
-          modules-left = [ "hyprland/workspaces" ];
-          modules-right = [ ]; # TODO: Useful stuff
-
-          # TODO: Make this not suck
-          "hyprland/workspaces" = {
-            format = "{icon}";
-            on-scroll-up = "hyprctl dispatch workspace e+1";
-            on-scroll-down = "hyprctl dispatch workspace e-1";
-          };
-        };
-      };
-      # FIXME: this leaves a margin to the bottom of the screen
-      style = ''
-        * {
-          border: none;
-          border-radius: 0;
-          font-family: Source Code Pro;
-        }
-        window#waybar {
-          background: #000000;
-          color: #AAB2BF;
-        }
-      '';
-    };
-
     home.packages = with pkgs; [
+      # hyprland
       waybar
       hyprshot
+      brightnessctl
 
-      # computer languages
+      # languages
       rustup # mutually exclusive with the other rust packages: rust-analyzer, cargo, rustc
       nodejs
       pnpm # trash
@@ -361,6 +313,106 @@ in {
       prismlauncher
       lunar-client
     ];
+
+    # TODO: make this not look like shit
+    services.dunst = {
+      enable = true;
+      # https://discourse.nixos.org/t/tip-how-to-enable-dunst-for-only-select-des-with-nix/65630
+      package = pkgs.writeShellScriptBin "dunst" ''
+        if [ "$XDG_CURRENT_DESKTOP" = "KDE" ] || [ "$DESKTOP_SESSION" = "plasma" ]; then
+          echo "Dunst: Not starting because session is KDE Plasma."
+          exit 0
+        fi
+        exec ${pkgs.dunst}/bin/dunst "$@"
+      '';
+      configFile = ./dunstrc;
+    };
+
+    programs.waybar = {
+      enable = true;
+      settings = {
+        mainBar = {
+          position = "bottom";
+          modules-left = [ "hyprland/workspaces" ];
+          modules-right = [
+            "tray"
+            "power-profiles-daemon"
+            "pulseaudio#mic"
+            "pulseaudio#out"
+            "battery"
+            "clock"
+            "custom/notification"
+          ];
+
+          # TODO: Make this not suck
+          "hyprland/workspaces" = {
+            format = "{icon}";
+            on-scroll-up = "hyprctl dispatch workspace e+1";
+            on-scroll-down = "hyprctl dispatch workspace e-1";
+          };
+          clock = {
+            format = "{:%d/%m  %H:%M}";
+            tooltip-format = ''
+              <big>{:%Y %B}</big>
+              <tt><small>{calendar}</small></tt>
+            '';
+          };
+          battery = {
+            states = {
+              good = 95;
+              warning = 30;
+              critical = 15;
+            };
+            format = "{capacity}% {icon}";
+            format-full = "{capacity}% {icon}";
+            format-charging = "{capacity}% ";
+            format-plugged = "{capacity}% ";
+            # format-alt = "{time} {icon}";
+            format-icons = [ "" "" "" "" "" ];
+          };
+          power-profiles-daemon = {
+            format = "{icon}";
+            tooltip-format = ''
+              Power profile: {profile}
+              Driver: {driver}
+            '';
+            tooltip = true;
+            format-icons = {
+              default = "";
+              performance = "";
+              balanced = "";
+              power-saver = "";
+            };
+          };
+          "pulseaudio#mic" = {
+            format = "{format_source}";
+            format-source = " {volume}%";
+            format-source-muted = " {volume}%";
+            on-click = "wpctl set-mute @DEFAULT_SOURCE@ toggle";
+            on-click-right = "pactl set-source-volume @DEFAULT_SOURCE@ 100%";
+            on-scroll-up = "pactl set-source-volume @DEFAULT_SOURCE@ +1%";
+            on-scroll-down = "pactl set-source-volume @DEFAULT_SOURCE@ -1%";
+          };
+          "pulseaudio#out" = {
+            format = "{icon} {volume}%";
+            format-muted = " {volume}%"; # TODO: Mute symbol
+            format-bluetooth = "{icon} {volume}%";
+            format-bluetooth-muted = " {volume}%"; # TODO: Mute symbol
+            format-icons = {
+              # headphone = "";
+              # hands-free = "";
+              # headset = "";
+              # phone = "";
+              # portable = "";
+              # car = "";
+              default = [ "" "" "" ];
+            };
+            on-click = "wpctl set-mute @DEFAULT_SINK@ toggle";
+          };
+        };
+      };
+      style = builtins.readFile ./waybar/style.css;
+    };
 
     # TODO: https://wiki.nixos.org/wiki/Hyprland config here
     wayland.windowManager.hyprland = {

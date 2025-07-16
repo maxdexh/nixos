@@ -1,0 +1,136 @@
+[global]
+	# display notifications on the monitor focused by the keyboard
+	follow = keyboard
+
+	# geometry
+	width = 300
+
+	# position
+	origin = bottom-right
+	offset = 16x16
+
+	# auto-detect scaling factor
+	scale = 0
+
+	# maximum number of notifications
+	notification_limit = 4
+
+	# disable progress bar
+	progress_bar = false
+
+	# indicate number of hidden notifications
+	indicate_hidden = yes
+
+	# notification frame
+	frame_width = 1
+	frame_color = "#0077cc"
+
+	# separator line between notifications
+	separator_height = 2
+	separator_color = frame
+
+	# padding between text and separator
+	padding = 8
+
+	horizontal_padding = 8
+	text_icon_padding = 0
+
+	# sort messages by urgency
+	sort = yes
+
+	# idle time after which notifications won't be removed
+	idle_threshold = 120
+
+	font = monospace 9
+
+	# auto-detect line height
+	line_height = 0
+
+	# notification format
+	markup = full
+	format = "<b>%s</b>\n%b"
+
+	# center text
+	alignment = center
+	vertical_alignment = center
+
+	# don't show the age of notifications
+	show_age_threshold = -1
+
+	# make an ellipsis in the middle of the text if it's too long
+	ellipsize = middle
+
+	# don't ignore newline characters in notifications
+	ignore_newline = no
+
+	# stack duplicate notifications
+	stack_duplicates = true
+
+	# show the number of stacked duplicate notifications
+	hide_duplicate_count = false
+
+	# display indicators for urls and actions
+	show_indicators = yes
+
+	icon_position = left
+
+	# icon geometry
+	min_icon_size = 32
+	max_icon_size = 32
+
+	# paths to default icons
+	icon_path = /usr/share/icons/Papirus-Dark/32x32/status/:/usr/share/icons/Papirus-Dark/32x32/devices/
+
+	# don't timeout a notification that was popped up from history
+	sticky_history = yes
+
+	# maximum amount of notifications kept in history
+	history_length = 20
+
+	# dmenu path
+	dmenu = /usr/local/bin/dmenu -p dunst
+
+	# browser for opening urls in context menu.
+	browser = /usr/bin/xdg-open
+
+	# always run rule-defined scripts, even if the notification is suppressed
+	always_run_script = true
+
+	# title of the windows spawned by dunst
+	title = Dunst
+
+	# class of the windows spawned by dunst
+	class = Dunst
+
+	# disable rounded corners
+	corner_radius = 0
+
+	# applications should be allow to remove notifications by themselves
+	ignore_dbusclose = false
+
+	# don't use x11 on wayland
+	force_xwayland = false
+
+	# don't force the use of Xinerama
+	force_xinerama = false
+
+	# list of actions for each mouse event
+	mouse_left_click = close_current
+	mouse_middle_click = close_all
+	mouse_right_click = do_action, close_current
+
+[urgency_low]
+	background = "#282828"
+	foreground = "#ebdbb2"
+	timeout = 10
+
+[urgency_normal]
+	background = "#282828"
+	foreground = "#ebdbb2"
+	timeout = 10
+
+[urgency_critical]
+	frame_color = "#cc241d"
+	background = "#282828"
+	foreground = "#cc241d"
+	timeout = 0
