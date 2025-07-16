@@ -277,6 +277,7 @@ in {
       waybar
       hyprshot
       brightnessctl
+      rofi-wayland
 
       # languages
       rustup # mutually exclusive with the other rust packages: rust-analyzer, cargo, rustc
