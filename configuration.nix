@@ -338,29 +338,29 @@ in {
           name = "Hibernate";
           exec = "systemctl hibernate";
           # icon = "hibernate";
-          comment = "Suspend to Disk";
-          genericName = "Suspend to Disk";
+          comment = "Hibernate";
+          genericName = "Hibernate";
         };
         suspend = {
           name = "Suspend";
           exec = "systemctl suspend-then-hibernate";
           # icon = "suspend";
-          comment = "Suspend to memory, then hibernate";
-          genericName = "Suspend to memory, then hibernate";
+          comment = "Put System to Sleep";
+          genericName = "Put System to Sleep";
         };
         shutdown = {
           name = "Shut Down";
           exec = "shutdown -h now";
           # icon = "poweroff";
-          comment = "Power off the system";
-          genericName = "Power off the system";
+          comment = "Power off the System";
+          genericName = "Power off the System";
         };
         reboot = {
           name = "Reboot";
           exec = "reboot";
           # icon = "restart";
-          comment = "Restart the system";
-          genericName = "Restart the system";
+          comment = "Restart the System";
+          genericName = "Restart the System";
         };
       };
     };
