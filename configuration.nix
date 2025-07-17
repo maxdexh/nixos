@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 let
   home-manager = builtins.fetchTarball
@@ -268,52 +268,72 @@ in {
   # TODO: make home.file readonly?
   home-manager.users.max = { pkgs, ... }: {
 
-    # The state version is required and should stay at the version you
-    # originally installed.
-    home.stateVersion = "25.05";
+    home = {
+      # The state version is required and should stay at the version you
+      # originally installed.
+      stateVersion = "25.05";
+      packages = with pkgs; [
+        # hyprland
+        waybar
+        hyprshot
+        brightnessctl
+        rofi-wayland
 
-    home.packages = with pkgs; [
-      # hyprland
-      waybar
-      hyprshot
-      brightnessctl
-      rofi-wayland
+        # languages
+        rustup # mutually exclusive with the other rust packages: rust-analyzer, cargo, rustc
+        nodejs
+        pnpm # trash
+        # latexindent # TODO: texlive
 
-      # languages
-      rustup # mutually exclusive with the other rust packages: rust-analyzer, cargo, rustc
-      nodejs
-      pnpm # trash
-      # latexindent # TODO: texlive
+        # cli apps
+        bat # better cat
+        fd # better find
+        gh # github cli
+        glab # gitlab cli
+        fzf # fuzzy-find (idk if necessary for nvim)
+        pferd # audi famam
 
-      # cli apps
-      bat # better cat
-      fd # better find
-      gh # github cli
-      glab # gitlab cli
-      fzf # fuzzy-find (idk if necessary for nvim)
-      pferd # audi famam
+        # gui apps
+        obs-studio
+        gimp
+        vscode
+        brave
+        thunderbird
+        gnome-system-monitor
+        discord
 
-      # gui apps
-      obs-studio
-      gimp
-      vscode
-      brave
-      thunderbird
-      gnome-system-monitor
-      discord
+        # disk utils
+        baobab
+        gparted
 
-      # disk utils
-      baobab
-      gparted
+        # pdf
+        zathura
+        tdf
 
-      # pdf
-      zathura
-      tdf
+        # games
+        prismlauncher
+        lunar-client
+      ];
 
-      # games
-      prismlauncher
-      lunar-client
-    ];
+      # Add custom scripts
+      file.".scripts".source = ./Scripts;
+    };
+    xdg = {
+      dataFile = {
+        # use x86 stable as default
+        "rustup/settings.toml".source = ./rustup/settings.toml;
+      };
+      configFile = {
+        # Configure kitty. TODO: This could probably be done here instead
+        "kitty".source = ./kitty;
+
+        # Configure nvim. TODO: Probably want to specify a repo or use a submodule instead
+        "nvim".source = ./nvim;
+
+        # Configure pferd. TODO: Probably want to specify a repo or use a submodule instead
+        "PFERD".source = ./PFERD;
+      };
+    };
 
     # TODO: make this not look like shit
     services.dunst = {
@@ -410,6 +430,7 @@ in {
             };
             on-click = "wpctl set-mute @DEFAULT_SINK@ toggle";
           };
+          tray = { spacing = 10; };
         };
       };
       style = builtins.readFile ./waybar/style.css;
@@ -421,22 +442,7 @@ in {
       extraConfig = builtins.readFile ./hyprland.conf;
     };
 
-    # FIXME: These should depend directly on the value of XDG_CONFIG_HOME
-
-    # Configure kitty. TODO: This could probably be done here instead
-    home.file.".config/kitty".source = ./kitty;
-
-    # Configure nvim. TODO: Probably want to specify a repo or use a submodule instead
-    home.file.".config/nvim".source = ./nvim;
-    # Configure pferd. TODO: Probably want to specify a repo or use a submodule instead
-    home.file.".config/PFERD".source = ./PFERD;
-
-    # use x86 stable as default
-    home.file.".local/share/rustup/settings.toml".source =
-      ./rustup/settings.toml;
-
-    # Add custom scripts
-    home.file.".scripts".source = ./Scripts;
+    # FIXME: Use xdg.configFile
 
     programs.bash = {
       enable = true;
