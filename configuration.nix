@@ -333,6 +333,36 @@ in {
         # Configure pferd. TODO: Probably want to specify a repo or use a submodule instead
         "PFERD".source = ./PFERD;
       };
+      desktopEntries = {
+        hibernate = {
+          name = "Hibernate";
+          exec = "systemctl hibernate";
+          # icon = "hibernate";
+          comment = "Suspend to Disk";
+          genericName = "Suspend to Disk";
+        };
+        suspend = {
+          name = "Suspend";
+          exec = "systemctl suspend-then-hibernate";
+          # icon = "suspend";
+          comment = "Suspend to memory, then hibernate";
+          genericName = "Suspend to memory, then hibernate";
+        };
+        shutdown = {
+          name = "Shut Down";
+          exec = "shutdown -h now";
+          # icon = "poweroff";
+          comment = "Power off the system";
+          genericName = "Power off the system";
+        };
+        reboot = {
+          name = "Reboot";
+          exec = "reboot";
+          # icon = "restart";
+          comment = "Restart the system";
+          genericName = "Restart the system";
+        };
+      };
     };
 
     # TODO: make this not look like shit
