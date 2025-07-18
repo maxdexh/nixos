@@ -113,12 +113,10 @@ in {
     kitty # preferred terminal
 
     neovim # preferred editor
-    ripgrep # better rgrep, used by nvim iirc
     wl-clipboard # wayland clipboard cli, system-level due to use by neovim
     # xclip       # x11 clipboard cli, not needed because programs.xserver.enabled = false
 
     fish # preferred shell
-    eza # better ls
     trash-cli # safer rm
 
     gcc # compiler, sometimes useful
@@ -303,14 +301,11 @@ in {
         pnpm # trash
 
         # cli apps
-        bat # better cat
         fd # better find
         gh # github cli
         glab # gitlab cli
-        fzf # fuzzy-find (idk if necessary for nvim)
         pferd # audi famam
         jq # json
-        zoxide # better cd
         any-nix-shell
 
         # gui apps
@@ -540,6 +535,13 @@ in {
       enable = true;
       enableFishIntegration = true;
       enableBashIntegration = true;
+    };
+    programs.ripgrep.enable = true;
+    programs.bat.enable = true;
+    programs.fzf = {
+      enable = true;
+      enableBashIntegration = true;
+      enableFishIntegration = true;
     };
 
     programs.git = {
