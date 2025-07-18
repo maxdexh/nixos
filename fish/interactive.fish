@@ -25,10 +25,6 @@ alias mv='mv -i'
 
 alias gittree='git log --graph --pretty=oneline --abbrev-commit --all'
 
-alias j=cd
-alias g=git
-alias rgrep=rg
-
 alias python3='uv run python3'
 function uvenv
     pushd .
