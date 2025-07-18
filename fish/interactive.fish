@@ -15,7 +15,6 @@ end
 bind ctrl-c cancel-commandline
 
 # uses eza instead of ls. TODO: configure
-alias ls='eza'
 
 # trash is still suboptimal due to working slightly differently, so an alias is inappropriate :/
 alias rm='echo "rm is disabled, use `trash` or `command rm` instead."'

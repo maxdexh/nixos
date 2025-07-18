@@ -536,6 +536,11 @@ in {
       enableBashIntegration = true;
       enableFishIntegration = true;
     };
+    programs.eza = { # TODO: More config
+      enable = true;
+      enableFishIntegration = true;
+      enableBashIntegration = true;
+    };
 
     programs.git = {
       enable = true;
