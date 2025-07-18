@@ -7,6 +7,13 @@
 let
   home-manager = builtins.fetchTarball
     "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";
+  enable-shellint-no-bash = {
+    enable = true;
+    enableFishIntegration = true;
+  };
+  enable-shellint = {
+    enableBashIntegration = true;
+  } // enable-shellint-no-bash;
 in {
   imports = [
     # https://github.com/NixOS/nixos-hardware/tree/master
@@ -306,7 +313,6 @@ in {
         glab # gitlab cli
         pferd # audi famam
         jq # json
-        any-nix-shell
 
         # gui apps
         obs-studio
@@ -525,24 +531,19 @@ in {
       interactiveShellInit = builtins.readFile ./fish/interactive.fish;
     };
 
-    programs.zoxide = {
-      enable = true;
-      options = [ "--cmd cd" ];
-      enableBashIntegration = true;
-      enableFishIntegration = true;
+    programs.zoxide = enable-shellint // { options = [ "--cmd cd" ]; };
+    programs.nix-your-shell = enable-shellint-no-bash;
+    programs.eza = enable-shellint // {
+      # TODO: Icons, git, etc.
     };
-    programs.eza = { # TODO: More config
-      enable = true;
-      enableFishIntegration = true;
-      enableBashIntegration = true;
-    };
+    programs.fzf = enable-shellint;
+    programs.carapace = enable-shellint;
+    programs.nix-index = enable-shellint;
+    # programs.mcfly = enable-shellint;
+    # programs.scmpuff = enable-shellint;
+
     programs.ripgrep.enable = true;
     programs.bat.enable = true;
-    programs.fzf = {
-      enable = true;
-      enableBashIntegration = true;
-      enableFishIntegration = true;
-    };
 
     programs.git = {
       enable = true;

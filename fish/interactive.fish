@@ -91,5 +91,3 @@ function fish_right_prompt
     set_color normal
     string join " " -- $venv $duration $d
 end
-
-any-nix-shell fish --info-right | source
