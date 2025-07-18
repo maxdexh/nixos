@@ -311,6 +311,7 @@ in {
         fzf # fuzzy-find (idk if necessary for nvim)
         pferd # audi famam
         jq # json
+        any-nix-shell
 
         # gui apps
         obs-studio
