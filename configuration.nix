@@ -292,9 +292,9 @@ in {
       packages = with pkgs; [
         # hyprland
         waybar
-        hyprshot
+        hyprshot # screenshot TODO: Alternative with stable regions + confirm
         brightnessctl
-        rofi-wayland
+        rofi-wayland # App launcher
         xorg.xrdb # For xwayland scaling
         pavucontrol # Sound mixer
 
@@ -302,7 +302,6 @@ in {
         rustup # mutually exclusive with the other rust packages: rust-analyzer, cargo, rustc
         nodejs
         pnpm # trash
-        # latexindent # TODO: texlive
 
         # cli apps
         bat # better cat
@@ -311,6 +310,7 @@ in {
         glab # gitlab cli
         fzf # fuzzy-find (idk if necessary for nvim)
         pferd # audi famam
+        jq # json
 
         # gui apps
         obs-studio
