@@ -132,8 +132,6 @@ in {
     unzip # all my homies hate tar.gz
 
     openvpn
-
-    networkmanagerapplet
   ];
 
   fonts.packages = with pkgs; [
@@ -238,7 +236,7 @@ in {
     BOGOFILTER_DIR = "${XDG_DATA_HOME}/bogofilter";
     DOTNET_CLI_HOME = "${XDG_DATA_HOME}/dotnet";
     GRADLE_USER_HOME = "${XDG_DATA_HOME}/gradle";
-    GTK2_RC_FILES = "${XDG_CONFIG_HOME}/gtk-2.0/gtkrc";
+    # GTK2_RC_FILES = "${XDG_CONFIG_HOME}/gtk-2.0/gtkrc";  # home-manager doesnt care :c
     MATHEMATICA_USERBASE = "${XDG_CONFIG_HOME}/mathematica";
     PYTHON_HISTORY = "${XDG_STATE_HOME}/python_history";
     RUSTUP_HOME = "${XDG_DATA_HOME}/rustup";
@@ -261,13 +259,25 @@ in {
       "${PNPM_HOME}"
     ];
 
+    # gtk.theme doesn't actually seem to do anything, but this works, so yay?
+    GTK_THEME = "Adwaita:dark";
+
+    # Make electron apps use wayland directly rather than running through xwayland
     ELECTRON_OZONE_PLATFORM_HINT = "auto";
+
+    # No idea what this was, i think it had to do with electron using wayland too?
     NIXOS_OZONE_WL = "1";
   };
 
+  qt = {
+    enable = true;
+    style = "breeze";
+    platformTheme = "kde6";
+  };
+  home-manager.verbose = true;
+
   # TODO: make home.file readonly?
   home-manager.users.max = { pkgs, ... }: {
-
     home = {
       # The state version is required and should stay at the version you
       # originally installed.
@@ -361,6 +371,13 @@ in {
           # icon = "restart";
           comment = "Restart the System";
           genericName = "Restart the System";
+        };
+        networkconfig = {
+          name = "Network Settings";
+          exec = "plasmawindowed org.kde.plasma.networkmanagement";
+          icon = "settings";
+          comment = "plasma-nm network config";
+          genericName = "plasma-nm network config";
         };
       };
     };
@@ -470,6 +487,14 @@ in {
     wayland.windowManager.hyprland = {
       enable = true;
       extraConfig = builtins.readFile ./hyprland.conf;
+    };
+
+    # This doesn't seem to actually do anything :shrug:
+    # The env var fixes it though
+    gtk = {
+      enable = true;
+      theme = { name = "Adwaita-Dark"; };
+      gtk3 = { extraConfig.gtk-application-prefer-dark-theme = true; };
     };
 
     # FIXME: Use xdg.configFile
