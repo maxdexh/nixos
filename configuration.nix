@@ -133,6 +133,12 @@ in {
 
     openvpn
   ];
+  environment.plasma6.excludePackages = with pkgs.kdePackages; [
+    elisa
+    kate
+    kwalletmanager
+    okular
+  ];
 
   fonts.packages = with pkgs; [
     # cascadia-code
@@ -259,8 +265,9 @@ in {
       "${PNPM_HOME}"
     ];
 
-    # gtk.theme doesn't actually seem to do anything, but this works, so yay?
-    GTK_THEME = "Adwaita:dark";
+    # gtk.theme is dysfunctional, but this works nicely
+    # It still has window decorations though.
+    GTK_THEME = "Breeze:dark"; # or: "Adwaita:dark"
 
     # Make electron apps use wayland directly rather than running through xwayland
     ELECTRON_OZONE_PLATFORM_HINT = "auto";
@@ -489,15 +496,13 @@ in {
       extraConfig = builtins.readFile ./hyprland.conf;
     };
 
-    # This doesn't seem to actually do anything :shrug:
-    # The env var fixes it though
-    gtk = {
-      enable = true;
-      theme = { name = "Adwaita-Dark"; };
-      gtk3 = { extraConfig.gtk-application-prefer-dark-theme = true; };
-    };
-
-    # FIXME: Use xdg.configFile
+    # Adwaita-Dark doesnt seem to do anything and breeze-dark (using breeze-gtk pkg) is hopelessly broken
+    # Luckily the GTK_THEME variable works flawlessly for both themes
+    # gtk = {
+    #   enable = true;
+    #   theme = { name = "Adwaita-Dark"; };
+    #   gtk3 = { extraConfig.gtk-application-prefer-dark-theme = true; };
+    # };
 
     programs.bash = {
       enable = true;
