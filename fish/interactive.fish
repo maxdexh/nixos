@@ -25,9 +25,6 @@ alias mv='mv -i'
 
 alias gittree='git log --graph --pretty=oneline --abbrev-commit --all'
 
-# initialize zoxide to shadow cd and define cdi (interactive)
-zoxide init fish --cmd cd | source
-
 alias j=cd
 alias g=git
 alias rgrep=rg

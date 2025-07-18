@@ -118,9 +118,8 @@ in {
     # xclip       # x11 clipboard cli, not needed because programs.xserver.enabled = false
 
     fish # preferred shell
-    eza # better ls, system-level due to fish config replacing ls
-    trash-cli # safer rm, system-level so we can use as sudo and due to fish config disabling rm
-    zoxide # better cd, system-level due to fish config replacing cd  # TODO: enable from nix, see nix-option programs.zoxide
+    eza # better ls
+    trash-cli # safer rm
 
     gcc # compiler, sometimes useful
     python3
@@ -311,6 +310,7 @@ in {
         fzf # fuzzy-find (idk if necessary for nvim)
         pferd # audi famam
         jq # json
+        zoxide # better cd
         any-nix-shell
 
         # gui apps
@@ -528,6 +528,13 @@ in {
     programs.fish = {
       enable = true;
       interactiveShellInit = builtins.readFile ./fish/interactive.fish;
+    };
+
+    programs.zoxide = {
+      enable = true;
+      options = [ "--cmd cd" ];
+      enableBashIntegration = true;
+      enableFishIntegration = true;
     };
 
     programs.git = {

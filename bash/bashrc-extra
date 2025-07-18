@@ -110,4 +110,3 @@ fi
 if [ "$(cat /proc/$PPID/comm)" = 'kitty' ]; then
   alias clear='printf "\E[H\E[3J"'
 fi
-eval "$(zoxide init bash --cmd cd)"
