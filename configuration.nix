@@ -295,6 +295,8 @@ in {
         hyprshot
         brightnessctl
         rofi-wayland
+        xorg.xrdb # For xwayland scaling
+        pavucontrol # Sound mixer
 
         # languages
         rustup # mutually exclusive with the other rust packages: rust-analyzer, cargo, rustc
@@ -355,36 +357,37 @@ in {
           name = "Hibernate";
           exec = "systemctl hibernate";
           # icon = "hibernate";
-          comment = "Hibernate";
           genericName = "Hibernate";
         };
         suspend = {
           name = "Suspend";
           exec = "systemctl suspend-then-hibernate";
           # icon = "suspend";
-          comment = "Put System to Sleep";
           genericName = "Put System to Sleep";
         };
         shutdown = {
           name = "Shut Down";
           exec = "shutdown -h now";
           # icon = "poweroff";
-          comment = "Power off the System";
           genericName = "Power off the System";
         };
         reboot = {
           name = "Reboot";
           exec = "reboot";
           # icon = "restart";
-          comment = "Restart the System";
           genericName = "Restart the System";
         };
         networkconfig = {
           name = "Network Settings";
           exec = "plasmawindowed org.kde.plasma.networkmanagement";
           icon = "settings";
-          comment = "plasma-nm network config";
           genericName = "plasma-nm network config";
+        };
+        logout = {
+          name = "Log out";
+          # TODO: More graceful, universal command
+          exec = "hyprctl dispatch exit";
+          comment = "Exit Desktop";
         };
       };
     };
@@ -415,7 +418,8 @@ in {
             "pulseaudio#mic"
             "pulseaudio#out"
             "battery"
-            "clock"
+            "clock#date"
+            "clock#time"
             "custom/notification"
           ];
 
@@ -425,8 +429,15 @@ in {
             on-scroll-up = "hyprctl dispatch workspace e+1";
             on-scroll-down = "hyprctl dispatch workspace e-1";
           };
-          clock = {
-            format = "{:%d/%m  %H:%M}";
+          "clock#date" = {
+            format = "{:%d/%m}";
+            tooltip-format = ''
+              <big>{:%Y %B}</big>
+              <tt><small>{calendar}</small></tt>
+            '';
+          };
+          "clock#time" = {
+            format = "{:%H:%M}";
             tooltip-format = ''
               <big>{:%Y %B}</big>
               <tt><small>{calendar}</small></tt>
