@@ -19,12 +19,13 @@ bind ctrl-c cancel-commandline
 # trash is still suboptimal due to working slightly differently, so an alias is inappropriate :/
 alias rm='echo "rm is disabled, use `trash` or `command rm` instead."'
 
-# TODO: This still deletes overwritten files, a trashing variant would be better
+# TODO: This still deletes overwritten files, a trashing variant would be better, same thing for cp
 alias mv='mv -i'
 
-alias gittree='git log --graph --pretty=oneline --abbrev-commit --all'
-
 alias python3='uv run python3'
+alias py='uv run python3'
+alias pypy='uv run --python=pypy python3'
+alias pip='uv pip'
 function uvenv
     pushd .
     source ./.venv/bin/activate.fish # for some reason this cds into bin
