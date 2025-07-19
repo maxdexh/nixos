@@ -4,16 +4,22 @@ OPTIONS="$@"
 SCRIPTPATH="$0"
 
 set -e pipefail
+shopt -s extglob
+shopt -s globstar
+shopt -s dotglob
+
+function chownit {
+  sudo chown "$1" /etc/nixos/
+  sudo chown "$1" /etc/nixos/**/
+  sudo chown "$1" /etc/nixos/**
+  echo "Chowned /etc/nixos/ as $1"
+}
 
 function to-user {
-  sudo chown "$USER" /etc/nixos/
-  sudo chown "$USER" /etc/nixos/**
-  echo "Chowned /etc/nixos/ as $USER"
+  chownit "$USER"
 }
 function to-root {
-  sudo chown root /etc/nixos/
-  sudo chown root /etc/nixos/**
-  echo 'Chowned /etc/nixos/ as root'
+  chownit root
 }
 function usage {
   echo "$SCRIPTPATH [q]uery  -- queries owner of /etc/nixos"

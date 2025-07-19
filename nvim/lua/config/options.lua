@@ -22,6 +22,7 @@ vim.opt.termguicolors = true
 vim.g.lazyvim_picker = "telescope"
 vim.g.snacks_animate = false
 vim.g.c_syntax_for_h = true
+vim.opt.clipboard = ""
 -- vim.g.lazyvim_rust_diagnostics = "bacon-ls"
 
 -- TODO: Find a good way to do this in nix
