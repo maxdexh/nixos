@@ -561,10 +561,7 @@ in {
     };
     programs.uv = {
       enable = true;
-      settings = {
-        python-downloads = "manual";
-        python-preference = "only-managed";
-      };
+      settings = { python-preference = "only-managed"; };
     };
 
     # TODO: KDE (help)
