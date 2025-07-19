@@ -538,7 +538,7 @@ in {
     };
     programs.fzf = enable-shellint;
     programs.carapace = enable-shellint;
-    programs.nix-index = enable-shellint;
+    # programs.nix-index = enable-shellint;
     # programs.mcfly = enable-shellint;
     # programs.scmpuff = enable-shellint;
 
