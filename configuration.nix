@@ -16,10 +16,12 @@ let
   } // enable-shellint-no-bash;
 in {
   imports = [
+    # TODO: use a gitignored hardware-specific file for this
     # https://github.com/NixOS/nixos-hardware/tree/master
-    <nixos-hardware/framework/13-inch/7040-amd> # TODO: use a gitignored hardware-specific file for this
+    <nixos-hardware/framework/13-inch/7040-amd>
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+
     (import "${home-manager}/nixos")
   ];
 
@@ -40,20 +42,7 @@ in {
   # Set your time zone.
   time.timeZone = "Europe/Berlin";
 
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "de_DE.UTF-8";
-    LC_IDENTIFICATION = "de_DE.UTF-8";
-    LC_MEASUREMENT = "de_DE.UTF-8";
-    LC_MONETARY = "de_DE.UTF-8";
-    LC_NAME = "de_DE.UTF-8";
-    LC_NUMERIC = "de_DE.UTF-8";
-    LC_PAPER = "de_DE.UTF-8";
-    LC_TELEPHONE = "de_DE.UTF-8";
-    LC_TIME = "de_DE.UTF-8";
-  };
+  i18n = import ./localization.nix;
 
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
@@ -233,52 +222,7 @@ in {
   # also inherits unfree allowed
   home-manager.useGlobalPkgs = true;
 
-  environment.sessionVariables = rec {
-    XDG_CACHE_HOME = "$HOME/.cache";
-    XDG_CONFIG_HOME = "$HOME/.config";
-    XDG_DATA_HOME = "$HOME/.local/share";
-    XDG_STATE_HOME = "$HOME/.local/state";
-    XDG_RUNTIME_DIR = "/run/user/$(id -u)";
-
-    XDG_BIN_HOME = "$HOME/.local/bin";
-
-    CARGO_HOME = "${XDG_DATA_HOME}/cargo";
-    BOGOFILTER_DIR = "${XDG_DATA_HOME}/bogofilter";
-    DOTNET_CLI_HOME = "${XDG_DATA_HOME}/dotnet";
-    GRADLE_USER_HOME = "${XDG_DATA_HOME}/gradle";
-    # GTK2_RC_FILES = "${XDG_CONFIG_HOME}/gtk-2.0/gtkrc";  # home-manager doesnt care :c
-    MATHEMATICA_USERBASE = "${XDG_CONFIG_HOME}/mathematica";
-    PYTHON_HISTORY = "${XDG_STATE_HOME}/python_history";
-    RUSTUP_HOME = "${XDG_DATA_HOME}/rustup";
-    ZDOTDIR = "${XDG_CONFIG_HOME}/zsh";
-    NODE_REPL_HISTORY = "${XDG_STATE_HOME}/node_repl_history";
-    NPM_CONFIG_INIT_MODULE = "${XDG_CONFIG_HOME}/npm/config/npm-init.js";
-    NPM_CONFIG_CACHE = "${XDG_CACHE_HOME}/npm";
-    NPM_CONFIG_TMP = "${XDG_RUNTIME_DIR}/npm";
-    PNPM_HOME = "${XDG_DATA_HOME}/pnpm";
-
-    VISUAL = "nvim";
-    EDITOR = "nvim";
-    MANPAGER = "nvim +Man!";
-
-    PATH = [
-      "${XDG_BIN_HOME}"
-      "$CARGO_HOME/bin"
-      "$HOME/.local/kitty.app/bin"
-      "$HOME/.scripts/bin"
-      "${PNPM_HOME}"
-    ];
-
-    # gtk.theme is dysfunctional, but this works nicely
-    # It still has window decorations though.
-    GTK_THEME = "Breeze:dark"; # or: "Adwaita:dark"
-
-    # Make electron apps use wayland directly rather than running through xwayland
-    ELECTRON_OZONE_PLATFORM_HINT = "auto";
-
-    # No idea what this was, i think it had to do with electron using wayland too?
-    NIXOS_OZONE_WL = "1";
-  };
+  environment.sessionVariables = import ./session-vars.nix;
 
   qt = {
     enable = true;
@@ -299,7 +243,7 @@ in {
         hyprshot # screenshot TODO: Alternative with stable regions + confirm
         brightnessctl
         rofi-wayland # App launcher
-        xorg.xrdb # For xwayland scaling
+        xorg.xrdb # For kde-style xwayland scaling
 
         # languages
         rustup # mutually exclusive with the other rust packages: rust-analyzer, cargo, rustc
@@ -342,74 +286,7 @@ in {
       # Add custom scripts
       file.".scripts".source = ./Scripts;
     };
-    xdg = {
-      dataFile = {
-        # use x86 stable as default
-        "rustup/settings.toml".source = ./rustup/settings.toml;
-      };
-      configFile = {
-        # Configure kitty. TODO: This could probably be done here instead
-        "kitty".source = ./kitty;
-
-        # Configure nvim. TODO: Probably want to specify a repo or use a submodule instead
-        "nvim".source = ./nvim;
-
-        # Configure pferd. TODO: Probably want to specify a repo or use a submodule instead
-        "PFERD".source = ./PFERD;
-      };
-      desktopEntries = {
-        hibernate = {
-          name = "Hibernate";
-          exec = "systemctl hibernate";
-          # icon = "hibernate";
-          genericName = "Hibernate";
-        };
-        suspend = {
-          name = "Suspend";
-          exec = "systemctl suspend-then-hibernate";
-          # icon = "suspend";
-          genericName = "Put System to Sleep";
-        };
-        shutdown = {
-          name = "Shut Down";
-          exec = "shutdown -h now";
-          # icon = "poweroff";
-          genericName = "Power off the System";
-        };
-        reboot = {
-          name = "Reboot";
-          exec = "reboot";
-          # icon = "restart";
-          genericName = "Restart the System";
-        };
-        logout = {
-          name = "Log out";
-          # TODO: More graceful, universal command
-          exec = "hyprctl dispatch exit";
-          comment = "Exit Desktop";
-        };
-
-        networkconfig = {
-          name = "Network";
-          exec = "plasmawindowed org.kde.plasma.networkmanagement";
-          icon = "settings";
-          genericName = "Plasma Network Config";
-        };
-        bluetooth = {
-          name = "Bluetooth";
-          exec = "plasmawindowed org.kde.plasma.bluetooth";
-          icon = "bluetooth";
-          genericName = "Plasma Bluetooth Config";
-        };
-        volume = {
-          name = "Audio";
-          # exec = "plasmawindowed org.kde.plasma.volume";
-          exec = "kcmshell6 kcm_pulseaudio"; # NOTE:
-          icon = "preferences-desktop-sound";
-          genericName = "Plasma Sound Config";
-        };
-      };
-    };
+    xdg = import ./xdg.nix;
 
     # TODO: make this not look like shit
     services.dunst = {
@@ -425,99 +302,7 @@ in {
       configFile = ./dunstrc;
     };
 
-    programs.waybar = {
-      enable = true;
-      settings = {
-        mainBar = {
-          position = "bottom";
-          modules-left = [ "hyprland/workspaces" ];
-          modules-right = [
-            "tray"
-            "power-profiles-daemon"
-            "pulseaudio#mic"
-            "pulseaudio#out"
-            "battery"
-            "clock#date"
-            "clock#time"
-            "custom/notification"
-          ];
-
-          # TODO: Make this not suck
-          "hyprland/workspaces" = {
-            format = "{icon}";
-            on-scroll-up = "hyprctl dispatch workspace e+1";
-            on-scroll-down = "hyprctl dispatch workspace e-1";
-          };
-          "clock#date" = {
-            format = "{:%d/%m}";
-            tooltip-format = ''
-              <big>{:%Y %B}</big>
-              <tt><small>{calendar}</small></tt>
-            '';
-          };
-          "clock#time" = {
-            format = "{:%H:%M}";
-            tooltip-format = ''
-              <big>{:%Y %B}</big>
-              <tt><small>{calendar}</small></tt>
-            '';
-          };
-          battery = {
-            states = {
-              good = 95;
-              warning = 30;
-              critical = 15;
-            };
-            format = "{icon} {capacity}%";
-            format-full = "{icon} {capacity}%";
-            format-charging = " {capacity}%";
-            format-plugged = " {capacity}%";
-            format-icons = [ "" "" "" "" "" ];
-          };
-          power-profiles-daemon = {
-            format = "{icon}";
-            tooltip-format = ''
-              Power profile: {profile}
-              Driver: {driver}
-            '';
-            tooltip = true;
-            format-icons = {
-              default = "";
-              performance = "";
-              balanced = "";
-              power-saver = "";
-            };
-          };
-          "pulseaudio#mic" = {
-            format = "{format_source}";
-            format-source = " {volume}%";
-            format-source-muted = " {volume}%";
-            on-click = "wpctl set-mute @DEFAULT_SOURCE@ toggle";
-            on-click-right = "pactl set-source-volume @DEFAULT_SOURCE@ 100%";
-            on-scroll-up = "pactl set-source-volume @DEFAULT_SOURCE@ +1%";
-            on-scroll-down = "pactl set-source-volume @DEFAULT_SOURCE@ -1%";
-          };
-          "pulseaudio#out" = {
-            format = "{icon} {volume}%";
-            format-muted = " {volume}%"; # TODO: Mute symbol
-            format-bluetooth = "{icon} {volume}%";
-            format-bluetooth-muted = " {volume}%"; # TODO: Mute symbol
-            format-icons = {
-              # headphone = "";
-              # hands-free = "";
-              # headset = "";
-              # phone = "";
-              # portable = "";
-              # car = "";
-              default = [ "" "" "" ];
-            };
-            on-click = "wpctl set-mute @DEFAULT_SINK@ toggle";
-          };
-          tray = { spacing = 10; };
-        };
-      };
-      style = builtins.readFile ./waybar/style.css;
-    };
+    programs.waybar = import ./waybar.nix;
 
     # TODO: https://wiki.nixos.org/wiki/Hyprland config here
     wayland.windowManager.hyprland = {
