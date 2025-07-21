@@ -299,7 +299,7 @@ in {
         fi
         exec ${pkgs.dunst}/bin/dunst "$@"
       '';
-      configFile = ./dunstrc;
+      configFile = ./Config/dunstrc;
     };
 
     programs.waybar = import ./waybar.nix;
@@ -307,7 +307,7 @@ in {
     # TODO: https://wiki.nixos.org/wiki/Hyprland config here
     wayland.windowManager.hyprland = {
       enable = true;
-      extraConfig = builtins.readFile ./hyprland.conf;
+      extraConfig = builtins.readFile ./Config/hyprland.conf;
     };
 
     # Adwaita-Dark doesnt seem to do anything and breeze-dark (using breeze-gtk pkg) is hopelessly broken
@@ -320,7 +320,7 @@ in {
 
     programs.bash = {
       enable = true;
-      bashrcExtra = builtins.readFile ./bash/bashrc-extra;
+      bashrcExtra = builtins.readFile ./Config/bashrc-extra;
       historyFile = "$XDG_STATE_HOME/bash/history";
       shellOptions =
         [ "histappend" "checkwinsize" "extglob" "globstar" "checkjobs" ];
@@ -329,7 +329,7 @@ in {
 
     programs.fish = {
       enable = true;
-      interactiveShellInit = builtins.readFile ./fish/interactive.fish;
+      interactiveShellInit = builtins.readFile ./Config/interactive.fish;
     };
 
     programs.zoxide = enable-shellint // { options = [ "--cmd cd" ]; };

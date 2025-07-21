@@ -1,17 +1,17 @@
 {
   dataFile = {
     # use x86 stable as default
-    "rustup/settings.toml".source = ./rustup/settings.toml;
+    "rustup/settings.toml".source = ./Config/rustup/settings.toml;
   };
   configFile = {
     # Configure kitty. TODO: This could probably be done here instead
-    "kitty".source = ./kitty;
+    "kitty".source = ./Config/kitty;
 
     # Configure nvim. TODO: Probably want to specify a repo or use a submodule instead
-    "nvim".source = ./nvim;
+    "nvim".source = ./Config/nvim;
 
     # Configure pferd. TODO: Probably want to specify a repo or use a submodule instead
-    "PFERD".source = ./PFERD;
+    "PFERD".source = ./Config/PFERD;
   };
   desktopEntries = {
     hibernate = {

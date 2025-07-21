@@ -89,5 +89,5 @@
       tray = { spacing = 10; };
     };
   };
-  style = builtins.readFile ./waybar/style.css;
+  style = builtins.readFile ./Config/waybar-style.css;
 }
