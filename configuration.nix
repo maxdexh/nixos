@@ -300,7 +300,6 @@ in {
         brightnessctl
         rofi-wayland # App launcher
         xorg.xrdb # For xwayland scaling
-        pavucontrol # Sound mixer
 
         # languages
         rustup # mutually exclusive with the other rust packages: rust-analyzer, cargo, rustc
@@ -334,6 +333,10 @@ in {
         # games
         prismlauncher
         lunar-client
+
+        # These packages are required for kcmshell to work
+        kdePackages.kirigami-addons
+        kdePackages.kitemmodels
       ];
 
       # Add custom scripts
@@ -379,17 +382,31 @@ in {
           # icon = "restart";
           genericName = "Restart the System";
         };
-        networkconfig = {
-          name = "Network Settings";
-          exec = "plasmawindowed org.kde.plasma.networkmanagement";
-          icon = "settings";
-          genericName = "plasma-nm network config";
-        };
         logout = {
           name = "Log out";
           # TODO: More graceful, universal command
           exec = "hyprctl dispatch exit";
           comment = "Exit Desktop";
+        };
+
+        networkconfig = {
+          name = "Network";
+          exec = "plasmawindowed org.kde.plasma.networkmanagement";
+          icon = "settings";
+          genericName = "Plasma Network Config";
+        };
+        bluetooth = {
+          name = "Bluetooth";
+          exec = "plasmawindowed org.kde.plasma.bluetooth";
+          icon = "bluetooth";
+          genericName = "Plasma Bluetooth Config";
+        };
+        volume = {
+          name = "Audio";
+          # exec = "plasmawindowed org.kde.plasma.volume";
+          exec = "kcmshell6 kcm_pulseaudio"; # NOTE:
+          icon = "preferences-desktop-sound";
+          genericName = "Plasma Sound Config";
         };
       };
     };
@@ -451,11 +468,10 @@ in {
               warning = 30;
               critical = 15;
             };
-            format = "{capacity}% {icon}";
-            format-full = "{capacity}% {icon}";
-            format-charging = "{capacity}% ";
-            format-plugged = "{capacity}% ";
-            # format-alt = "{time} {icon}";
+            format = "{icon} {capacity}%";
+            format-full = "{icon} {capacity}%";
+            format-charging = " {capacity}%";
+            format-plugged = " {capacity}%";
             format-icons = [ "" "" "" "" "" ];
           };
           power-profiles-daemon = {
