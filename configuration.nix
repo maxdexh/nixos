@@ -75,15 +75,6 @@ in {
       configFile = ./Config/dunstrc;
     };
 
-    programs.bash = {
-      enable = true;
-      bashrcExtra = builtins.readFile ./Config/bashrc-extra;
-      historyFile = "$XDG_STATE_HOME/bash/history";
-      shellOptions =
-        [ "histappend" "checkwinsize" "extglob" "globstar" "checkjobs" ];
-      historyControl = [ "ignoreboth" ];
-    };
-
     programs.zoxide = enable-shellint // { options = [ "--cmd cd" ]; };
     programs.nix-your-shell = enable-shellint-no-bash;
     programs.eza = enable-shellint // {

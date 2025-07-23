@@ -15,6 +15,12 @@
     extraConfig = builtins.readFile ./hyprland.conf;
   };
 
+  programs.waybar = {
+    enable = true;
+    settings = import ./waybar.nix;
+    style = builtins.readFile ./waybar.css;
+  };
+
   xdg.desktopEntries = {
     hibernate = {
       name = "Hibernate";
