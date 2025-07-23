@@ -1,11 +1,10 @@
 { ... }:
 
 {
-  # TODO: Consider configuring through nix
-  xdg.configFile."kitty".source = ./kitty;
-  # programs.kitty = {
-  #   enable = true;
-  #   enableGitIntegration = true;
-  #   extraConfig = ./kitty/kitty.conf;
-  # };
+  # TODO: Consider configuring more through nix
+  programs.kitty = {
+    enable = true;
+    enableGitIntegration = true;
+    extraConfig = builtins.readFile ./kitty/kitty.conf;
+  };
 }

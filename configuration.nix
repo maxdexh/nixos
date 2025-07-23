@@ -12,14 +12,6 @@ let
     builtins.filter (lib.strings.hasSuffix suffix) (map toString
       (builtins.filter (p: p != ./default.nix)
         (lib.filesystem.listFilesRecursive ./.)));
-
-  enable-shellint-no-bash = {
-    enable = true;
-    enableFishIntegration = true;
-  };
-  enable-shellint = {
-    enableBashIntegration = true;
-  } // enable-shellint-no-bash;
 in {
   imports = [
     # TODO: use a gitignored hardware-specific file for these
@@ -47,69 +39,17 @@ in {
     extraGroups = [ "networkmanager" "wheel" ];
   };
 
-  # TODO: make home.file readonly? 
   home-manager.users.max = { lib, pkgs, ... }: {
     imports = find-imports "/home.nix";
 
-    home = {
-      # The state version is required and should stay at the version you
-      # originally installed.
-      stateVersion = "25.05";
-    };
-    xdg.dataFile = {
-      # use x86 stable as default
-      "rustup/settings.toml".source = ./Config/rustup/settings.toml;
-    };
-
-    # TODO: make this not look like shit
-    services.dunst = {
-      enable = true;
-      # https://discourse.nixos.org/t/tip-how-to-enable-dunst-for-only-select-des-with-nix/65630
-      package = pkgs.writeShellScriptBin "dunst" ''
-        if [ "$XDG_CURRENT_DESKTOP" = "KDE" ] || [ "$DESKTOP_SESSION" = "plasma" ]; then
-          echo "Dunst: Not starting because session is KDE Plasma."
-          exit 0
-        fi
-        exec ${pkgs.dunst}/bin/dunst "$@"
-      '';
-      configFile = ./Config/dunstrc;
-    };
-
-    programs.zoxide = enable-shellint // { options = [ "--cmd cd" ]; };
-    programs.nix-your-shell = enable-shellint-no-bash;
-    programs.eza = enable-shellint // {
-      # TODO: Icons, git, etc.
-    };
-    programs.fzf = enable-shellint;
-    programs.carapace = enable-shellint;
-    # programs.nix-index = enable-shellint;
-    # programs.mcfly = enable-shellint;
-    # programs.scmpuff = enable-shellint;
-
-    programs.git = {
-      enable = true;
-      userName = "Max Dexheimer";
-      userEmail = "maxdexh03@gmail.com";
-      aliases = {
-        ca = "!git add --all && git commit";
-        s = "status";
-      };
-      extraConfig = {
-        safe.directory = "/etc/nixos/";
-        init.defaultBranch = "main";
-        core.editor = "nvim";
-      };
-    };
-    programs.uv = {
-      enable = true;
-      settings = { python-preference = "only-managed"; };
-    };
-
-    # TODO: .ssh? (at least config)
+    # The state version is required and should stay at the version you
+    # originally installed.
+    home.stateVersion = "25.05";
   };
 
-  # also inherits unfree allowed
-  home-manager.useGlobalPkgs = true;
-
-  home-manager.verbose = true;
+  home-manager = {
+    # also inherits unfree allowed
+    useGlobalPkgs = true;
+    verbose = true;
+  };
 }
