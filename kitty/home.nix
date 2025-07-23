@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   # TODO: Consider configuring more through nix
@@ -7,4 +7,6 @@
     enableGitIntegration = true;
     extraConfig = builtins.readFile ./kitty/kitty.conf;
   };
+
+  home.packages = with pkgs; [ tdf ];
 }

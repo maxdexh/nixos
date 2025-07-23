@@ -1,6 +1,8 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
+  home.packages = with pkgs; [ python3 ];
+
   programs.uv = {
     enable = true;
     settings = { python-preference = "only-managed"; };

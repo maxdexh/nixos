@@ -7,6 +7,10 @@
     brightnessctl
     rofi-wayland
     xorg.xrdb # For kde-style xwayland scaling
+
+    # These packages are required for kcmshell to work
+    kdePackages.kirigami-addons
+    kdePackages.kitemmodels
   ];
 
   wayland.windowManager.hyprland = {

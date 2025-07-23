@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 let
   shellint-no-bash = {
     enable = true;
@@ -7,6 +7,22 @@ let
 
   shellint = { enableBashIntegration = true; } // shellint-no-bash;
 in {
+  home.packages = with pkgs; [
+    gh
+    glab
+
+    jq
+
+    fd
+
+    trash-cli
+
+    zip
+    unzip
+  ];
+
+  programs.ripgrep.enable = true;
+  programs.bat.enable = true;
 
   programs.zoxide = shellint // {
     # Shadow cd
