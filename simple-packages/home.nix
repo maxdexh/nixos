@@ -46,4 +46,7 @@
     kdePackages.kirigami-addons
     kdePackages.kitemmodels
   ];
+
+  programs.ripgrep.enable = true;
+  programs.bat.enable = true;
 }

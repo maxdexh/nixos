@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, lib, ... }:
+{ lib, ... }:
 
 let
   home-manager = builtins.fetchTarball
@@ -55,9 +55,6 @@ in {
       # The state version is required and should stay at the version you
       # originally installed.
       stateVersion = "25.05";
-
-      # Add custom scripts
-      file.".scripts".source = ./Scripts;
     };
     xdg.configFile = {
       # Configure kitty. TODO: This could probably be done here instead
@@ -88,14 +85,6 @@ in {
       configFile = ./Config/dunstrc;
     };
 
-    # Adwaita-Dark doesnt seem to do anything and breeze-dark (using breeze-gtk pkg) is hopelessly broken
-    # Luckily the GTK_THEME variable works flawlessly for both themes
-    # gtk = {
-    #   enable = true;
-    #   theme = { name = "Adwaita-Dark"; };
-    #   gtk3 = { extraConfig.gtk-application-prefer-dark-theme = true; };
-    # };
-
     programs.bash = {
       enable = true;
       bashrcExtra = builtins.readFile ./Config/bashrc-extra;
@@ -120,9 +109,6 @@ in {
     # programs.nix-index = enable-shellint;
     # programs.mcfly = enable-shellint;
     # programs.scmpuff = enable-shellint;
-
-    programs.ripgrep.enable = true;
-    programs.bat.enable = true;
 
     programs.git = {
       enable = true;
