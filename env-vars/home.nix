@@ -1,12 +1,6 @@
 { config, ... }:
 
 {
-  # Add custom scripts
-  # TODO: Use a git repo
-  home.file.".scripts".source = ./scripts;
-  home.sessionPath = [ "$HOME/.scripts/bin" ];
-
-  # Keep home directory clean
   home.sessionVariables = {
     BOGOFILTER_DIR = "${config.xdg.dataHome}/bogofilter";
     DOTNET_CLI_HOME = "${config.xdg.dataHome}/dotnet";
