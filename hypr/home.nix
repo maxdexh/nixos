@@ -1,19 +1,13 @@
+{ ... }:
+
 {
-  dataFile = {
-    # use x86 stable as default
-    "rustup/settings.toml".source = ./Config/rustup/settings.toml;
+  wayland.windowManager.hyprland = {
+    enable = true;
+    # TODO: https://wiki.nixos.org/wiki/Hyprland config is nix
+    extraConfig = builtins.readFile ./hyprland.conf;
   };
-  configFile = {
-    # Configure kitty. TODO: This could probably be done here instead
-    "kitty".source = ./Config/kitty;
 
-    # Configure nvim. TODO: Probably want to specify a repo or use a submodule instead
-    "nvim".source = ./Config/nvim;
-
-    # Configure pferd. TODO: Probably want to specify a repo or use a submodule instead
-    "PFERD".source = ./Config/PFERD;
-  };
-  desktopEntries = {
+  xdg.desktopEntries = {
     hibernate = {
       name = "Hibernate";
       exec = "systemctl hibernate";
