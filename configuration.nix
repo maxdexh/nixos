@@ -99,6 +99,14 @@ in {
     SuspendState=mem
   '';
 
+  powerManagement = {
+    enable = true;
+    powertop.enable = true;
+    cpuFreqGovernor = "powersave";
+  };
+  # Enabled by default on AMD
+  # services.power-profiles-daemon.enable = true;
+
   # enable bluetooth
   hardware.bluetooth = {
     enable = true;
