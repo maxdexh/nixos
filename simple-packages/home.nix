@@ -2,13 +2,6 @@
 
 {
   home.packages = with pkgs; [
-    # hyprland
-    waybar
-    hyprshot # screenshot TODO: Alternative with stable regions + confirm
-    brightnessctl
-    rofi-wayland # App launcher
-    xorg.xrdb # For kde-style xwayland scaling
-
     # languages
     rustup # mutually exclusive with the other rust packages: rust-analyzer, cargo, rustc
     nodejs

@@ -1,6 +1,14 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
+  home.packages = with pkgs; [
+    waybar
+    hyprshot
+    brightnessctl
+    rofi-wayland
+    xorg.xrdb # For kde-style xwayland scaling
+  ];
+
   wayland.windowManager.hyprland = {
     enable = true;
     # TODO: https://wiki.nixos.org/wiki/Hyprland config is nix

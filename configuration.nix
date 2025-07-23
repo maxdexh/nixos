@@ -56,16 +56,6 @@ in {
       # originally installed.
       stateVersion = "25.05";
     };
-    xdg.configFile = {
-      # Configure kitty. TODO: This could probably be done here instead
-      "kitty".source = ./Config/kitty;
-
-      # Configure nvim. TODO: Probably want to specify a repo or use a submodule instead
-      "nvim".source = ./Config/nvim;
-
-      # Configure pferd. TODO: Probably want to specify a repo or use a submodule instead
-      "PFERD".source = ./Config/PFERD;
-    };
     xdg.dataFile = {
       # use x86 stable as default
       "rustup/settings.toml".source = ./Config/rustup/settings.toml;
@@ -92,11 +82,6 @@ in {
       shellOptions =
         [ "histappend" "checkwinsize" "extglob" "globstar" "checkjobs" ];
       historyControl = [ "ignoreboth" ];
-    };
-
-    programs.fish = {
-      enable = true;
-      interactiveShellInit = builtins.readFile ./Config/interactive.fish;
     };
 
     programs.zoxide = enable-shellint // { options = [ "--cmd cd" ]; };
