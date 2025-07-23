@@ -63,33 +63,11 @@
     #media-session.enable = true;
   };
 
-  services.blueman.enable = true;
-  services.logind.lidSwitch = "suspend-then-hibernate";
-
   # Install firefox.
   programs.firefox.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
-  systemd.sleep.extraConfig = ''
-    HibernateDelaySec=30m
-    SuspendState=mem
-  '';
-
-  powerManagement = {
-    enable = true;
-    powertop.enable = true;
-    cpuFreqGovernor = "powersave";
-  };
-  # Enabled by default on AMD
-  # services.power-profiles-daemon.enable = true;
-
-  # enable bluetooth
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = false;
-  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -112,4 +90,48 @@
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
+
+  # services.blueman.enable = true;
+  services.logind = {
+    lidSwitch = "suspend-then-hibernate";
+    extraConfig = ''
+      HandlePowerKey=suspend-then-hibernate
+      IdleAction=suspend-then-hibernate
+      IdleActionSec=2m
+    '';
+  };
+  systemd.sleep.extraConfig = ''
+    HibernateDelaySec=30m
+    SuspendState=mem
+  '';
+
+  boot.kernelParams = [
+    "amd_pstate=active" # Enables AMD's preferred CPU scaling driver
+    "nvme.noacpi=1" # Helps NVMe power management on some drives
+    "usbcore.autosuspend=1" # Enables USB autosuspend globally
+    # "acpi_enforce_resources=lax"
+    # "pcie_aspm=force" # Enables PCIe Active State Power Management (careful with some devices)
+  ];
+  services.power-profiles-daemon.enable = true;
+  services.fwupd.enable = true;
+  hardware.cpu.amd.updateMicrocode = true;
+  hardware.enableAllFirmware = true;
+  services.thermald.enable = true;
+  services.upower.enable = true;
+  services.auto-cpufreq.enable = false; # Not needed with ppd
+
+  # TODO: `cat /sys/class/drm/card1/device/power_dpm_state` is currently alaways "performance". Try testing:
+  # systemd.services.amdgpu-power-save = {
+  #   description = "Set AMD GPU to low power mode";
+  #   wantedBy = [ "multi-user.target" ];
+  #   serviceConfig.ExecStart = ''
+  #     echo low > /sys/class/drm/card1/device/power_dpm_force_performance_level
+  #   '';
+  # };
+
+  # enable bluetooth
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = false;
+  };
 }

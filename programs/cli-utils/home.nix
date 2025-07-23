@@ -19,6 +19,8 @@ in {
 
     zip
     unzip
+
+    powertop
   ];
 
   programs.ripgrep.enable = true;
