@@ -26,6 +26,9 @@ alias python3='uv run python3'
 alias py='uv run python3'
 alias pypy='uv run --python=pypy python3'
 alias pip='uv pip'
+
+alias g=git
+
 function uvenv
     pushd .
     source ./.venv/bin/activate.fish # for some reason this cds into bin
