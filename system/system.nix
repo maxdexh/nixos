@@ -105,12 +105,24 @@
     SuspendState=mem
   '';
 
+  # TODO: SSD stuck in D0 :c
+  # https://www.reddit.com/r/framework/comments/1lxvdvp/fw13_amd_ubuntu_persistent_nvme_d0_power_sn7100/
+
   boot.kernelParams = [
-    "amd_pstate=active" # Enables AMD's preferred CPU scaling driver
-    "nvme.noacpi=1" # Helps NVMe power management on some drives
-    "usbcore.autosuspend=1" # Enables USB autosuspend globally
-    # "acpi_enforce_resources=lax"
-    # "pcie_aspm=force" # Enables PCIe Active State Power Management (careful with some devices)
+    # Enables AMD's preferred CPU scaling driver
+    # NOTE: This is set by hardware quirks already
+    "amd_pstate=active"
+
+    # Enables USB autosuspend globally
+    "usbcore.autosuspend=1"
+
+    # Enables PCIe Active State Power Management (careful with some devices)
+    # TODO: Try
+    "pcie_aspm=force"
+
+    # Helps NVMe power management on some drives
+    # WARN: Breaks sleep on framework 7040 series
+    # "nvme.noacpi=1" 
   ];
   services.power-profiles-daemon.enable = true;
   services.fwupd.enable = true;

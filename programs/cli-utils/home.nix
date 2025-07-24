@@ -21,6 +21,7 @@ in {
     unzip
 
     powertop
+    nvme-cli
   ];
 
   programs.ripgrep.enable = true;
