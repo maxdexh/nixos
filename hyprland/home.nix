@@ -39,6 +39,15 @@
     configFile = ./dunstrc;
   };
 
+  # TODO: Configure
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "application/pdf" = "firefox.desktop";
+      # TODO: Add desktop entry that opens a new kitty tab with nvim for text
+    };
+  };
+
   xdg.desktopEntries = {
     hibernate = {
       name = "Hibernate";
