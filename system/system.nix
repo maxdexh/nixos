@@ -1,17 +1,11 @@
 { ... }:
 
-# Mostly stuff from the installer
 {
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
   networking.networkmanager.enable = true;
@@ -35,14 +29,8 @@
     };
   };
 
-  # disable bloatware
+  # Disable x11
   services.xserver.enable = false;
-
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -55,12 +43,6 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
   };
 
   # Install firefox.
@@ -68,28 +50,6 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
 
   # enable bluetooth
   hardware.bluetooth = {
@@ -125,10 +85,11 @@
     # Enables PCIe Active State Power Management (careful with some devices)
     "pcie_aspm=force"
 
-    # Tells nvme drive not to work around acpi quirks (https://www.reddit.com/r/archlinux/comments/12abf5e/what_does_nvmenoacpi1_do/)
+    # Tells nvme drive not to work around acpi quirks
     # WARN: Breaks sleep on framework 7040 series
     # "nvme.noacpi=1"
   ];
+
   services.power-profiles-daemon.enable = true;
   services.fwupd.enable = true;
   hardware.cpu.amd.updateMicrocode = true;
