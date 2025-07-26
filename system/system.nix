@@ -30,7 +30,7 @@
   };
 
   # Disable x11
-  services.xserver.enable = false;
+  services.xserver.enable = true;
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
