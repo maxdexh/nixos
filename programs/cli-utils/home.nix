@@ -22,6 +22,7 @@ in {
 
     powertop
     nvme-cli
+    smartmontools
   ];
 
   programs.ripgrep.enable = true;

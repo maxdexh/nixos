@@ -92,6 +92,9 @@
   # services.xserver.libinput.enable = true;
 
   # services.blueman.enable = true;
+
+  # TODO: udev rule to prevent the keyboard & touchpad from waking the device from sleep
+  # TODO: Try making the lid switch wake the device
   services.logind = {
     lidSwitch = "suspend-then-hibernate";
     extraConfig = ''
@@ -100,29 +103,26 @@
       IdleActionSec=2m
     '';
   };
+  # Hibernate after 15min of sleep
   systemd.sleep.extraConfig = ''
-    HibernateDelaySec=30m
+    HibernateDelaySec=15m
     SuspendState=mem
   '';
 
-  # TODO: SSD stuck in D0 :c
-  # https://www.reddit.com/r/framework/comments/1lxvdvp/fw13_amd_ubuntu_persistent_nvme_d0_power_sn7100/
-
   boot.kernelParams = [
     # Enables AMD's preferred CPU scaling driver
-    # NOTE: This is set by hardware quirks already
+    # NOTE: This is set in hardware repo already
     "amd_pstate=active"
 
     # Enables USB autosuspend globally
     "usbcore.autosuspend=1"
 
     # Enables PCIe Active State Power Management (careful with some devices)
-    # TODO: Try
     "pcie_aspm=force"
 
-    # Helps NVMe power management on some drives
+    # Tells nvme drive not to work around acpi quirks (https://www.reddit.com/r/archlinux/comments/12abf5e/what_does_nvmenoacpi1_do/)
     # WARN: Breaks sleep on framework 7040 series
-    # "nvme.noacpi=1" 
+    # "nvme.noacpi=1"
   ];
   services.power-profiles-daemon.enable = true;
   services.fwupd.enable = true;
