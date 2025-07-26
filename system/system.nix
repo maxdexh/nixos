@@ -91,6 +91,11 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
+  # enable bluetooth
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = false;
+  };
   # services.blueman.enable = true;
 
   # TODO: udev rule to prevent the keyboard & touchpad from waking the device from sleep
@@ -140,10 +145,4 @@
   #     echo low > /sys/class/drm/card1/device/power_dpm_force_performance_level
   #   '';
   # };
-
-  # enable bluetooth
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = false;
-  };
 }
