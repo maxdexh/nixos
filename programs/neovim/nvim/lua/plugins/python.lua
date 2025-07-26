@@ -17,7 +17,7 @@ return {
          },
          -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
          servers = {
-            -- TODO: What exactly is basedpyright left with here?
+
             basedpyright = {
                settings = {
                   basedpyright = {

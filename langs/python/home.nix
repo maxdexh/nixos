@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  home.packages = with pkgs; [ python3 ];
+  home.packages = with pkgs; [ python3 mypy ];
 
   programs.uv = {
     enable = true;
