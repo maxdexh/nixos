@@ -100,7 +100,7 @@
     extraConfig = ''
       HandlePowerKey=suspend-then-hibernate
       IdleAction=suspend-then-hibernate
-      IdleActionSec=2m
+      IdleActionSec=5m
     '';
   };
   # Hibernate after 15min of sleep
