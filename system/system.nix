@@ -95,8 +95,8 @@
   hardware.cpu.amd.updateMicrocode = true;
   hardware.enableAllFirmware = true;
   services.thermald.enable = true;
-  services.upower.enable = true;
   services.auto-cpufreq.enable = false; # Not needed with ppd
+  services.upower.enable = true; # TODO: Remove
 
   # TODO: `cat /sys/class/drm/card1/device/power_dpm_state` is currently alaways "performance". Try testing:
   # systemd.services.amdgpu-power-save = {

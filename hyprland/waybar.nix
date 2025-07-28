@@ -6,13 +6,13 @@
     modules-left = [ "hyprland/workspaces" ];
     modules-right = [
       "tray"
-      "power-profiles-daemon"
+
       "pulseaudio#mic"
       "pulseaudio#out"
-      "battery"
-      "clock#date"
-      "clock#time"
-      "custom/notification"
+
+      "group/energy"
+
+      "clock"
     ];
 
     # TODO: Make this not suck
@@ -35,20 +35,18 @@
         <tt><small>{calendar}</small></tt>
       '';
     };
+    "group/energy" = {
+      orientation = "inherit";
+      modules = [ "power-profiles-daemon" "battery" ];
+    };
     battery = {
-      states = {
-        good = 95;
-        warning = 30;
-        critical = 15;
-      };
-      format = "{icon} {capacity}%";
-      format-full = "{icon} {capacity}%";
-      format-charging = " {capacity}%";
-      format-plugged = " {capacity}%";
-      format-icons = [ "" "" "" "" "" ];
+      interval = 30;
+      format = "{capacity}% -{power:3.1f}W";
+      format-charging = "{capacity}% +{power:3.1f}W";
+      format-plugged = "{format_charging}";
     };
     power-profiles-daemon = {
-      format = "{icon}";
+      format = "{icon} ";
       tooltip-format = ''
         Power profile: {profile}
         Driver: {driver}

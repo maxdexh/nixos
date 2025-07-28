@@ -1,5 +1,7 @@
 /* DEFAULT: https://github.com/Alexays/Waybar/blob/master/resources/style.css */
 
+/* TODO: Cleanup styles, borders */
+
 * {
     /* `otf-font-awesome` is required to be installed for icons */
     font-family: CaskaydiaMonoNerdFontPropo; /* , FontAwesome, Roboto, Helvetica, Arial, sans-serif; */
@@ -7,11 +9,8 @@
 }
 
 window#waybar {
-    /* background-color: rgba(43, 48, 59, 0.5); */
-    /* border-bottom: 3px solid rgba(100, 114, 125, 0.5); */
-
     background: #000000;
-    border-top: 2px solid rgb(66, 77, 88);
+    /* border-bottom: 2px solid rgb(66, 77, 88); */
 
     color: #ffffff;
     transition-property: background-color;
@@ -42,12 +41,7 @@ button:hover {
 
 #workspaces button {
     padding: 0 5px;
-    background-color: transparent;
     color: #ffffff;
-}
-
-#workspaces button:hover {
-    background: rgba(0, 0, 0, 0.2);
 }
 
 #workspaces button.focused {
@@ -59,7 +53,7 @@ button:hover {
 }
 
 #clock,
-#battery,
+#energy,
 #cpu,
 #memory,
 #disk,
@@ -73,10 +67,14 @@ button:hover {
 #mode,
 #idle_inhibitor,
 #scratchpad,
-#power-profiles-daemon,
 #mpd {
     padding: 0 10px;
     color: #ffffff;
+}
+
+/* Members of group don't need padding */
+#energy > * {
+  padding: 0;
 }
 
 #window,
@@ -94,18 +92,6 @@ button:hover {
     margin-right: 0;
 }
 
-#power-profiles-daemon {
-    padding-right: 15px;
-}
-
-#tray > .passive {
-    -gtk-icon-effect: dim;
-}
-
-#tray > .needs-attention {
-    -gtk-icon-effect: highlight;
-}
-
 #language {
     padding: 0 5px;
     margin: 0 5px;
@@ -113,7 +99,6 @@ button:hover {
 }
 
 #keyboard-state {
-    /* background: #97e1ad; */
     padding: 0 0px;
     margin: 0 5px;
     min-width: 16px;
@@ -121,18 +106,6 @@ button:hover {
 
 #keyboard-state > label {
     padding: 0 5px;
-}
-
-#keyboard-state > label.locked {
-    background: rgba(0, 0, 0, 0.2);
-}
-
-#scratchpad {
-    background: rgba(0, 0, 0, 0.2);
-}
-
-#scratchpad.empty {
-	background-color: transparent;
 }
 
 #privacy {

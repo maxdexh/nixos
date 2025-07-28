@@ -24,6 +24,7 @@
 
   # Add custom scripts
   # TODO: Use a git repo
+  # TODO: Install the scripts directly in home.packages, don't put .scripts into home
   home.file.".scripts".source = ./scripts;
   home.sessionPath = [ "$HOME/.scripts/bin" ];
 
