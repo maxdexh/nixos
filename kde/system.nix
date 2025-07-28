@@ -10,5 +10,6 @@
     kate
     kwalletmanager
     okular
+    kwallet
   ];
 }

@@ -99,20 +99,27 @@
       name = "Network";
       exec = "plasmawindowed org.kde.plasma.networkmanagement";
       icon = "settings";
-      genericName = "Plasma Network Config";
+      genericName = "Network Config";
     };
     bluetooth = {
       name = "Bluetooth";
       exec = "plasmawindowed org.kde.plasma.bluetooth";
       icon = "bluetooth";
-      genericName = "Plasma Bluetooth Config";
+      genericName = "Bluetooth Config";
     };
     volume = {
       name = "Audio";
       # exec = "plasmawindowed org.kde.plasma.volume";
       exec = "kcmshell6 kcm_pulseaudio"; # NOTE:
       icon = "preferences-desktop-sound";
-      genericName = "Plasma Sound Config";
+      genericName = "Sound Config";
+    };
+    energy = {
+      name = "Energy";
+      # exec = "plasmawindowed org.kde.plasma.volume";
+      exec = "kcmshell6 kcm_energyinfo"; # NOTE:
+      icon = "settings";
+      genericName = "Energy Monitor";
     };
   };
 }

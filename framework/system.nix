@@ -38,7 +38,7 @@
     # Adaptive brightness level (local dimming), power saving
     "amdgpu.abmlevel=1" # TODO: Test if level 2 is acceptable
 
-    "ie_aspm.policy=powersupersave"
+    "pcie_aspm.policy=powersupersave"
   ];
 
   services.power-profiles-daemon.enable = true;
