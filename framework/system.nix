@@ -35,9 +35,10 @@
     # Enables PCIe Active State Power Management (careful with some devices)
     "pcie_aspm=force"
 
-    # Tells nvme drive not to work around acpi quirks
-    # WARN: Breaks sleep on framework 7040 series
-    # "nvme.noacpi=1"
+    # Adaptive brightness level (local dimming), power saving
+    "amdgpu.abmlevel=1" # TODO: Test if level 2 is acceptable
+
+    "ie_aspm.policy=powersupersave"
   ];
 
   services.power-profiles-daemon.enable = true;
