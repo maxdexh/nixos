@@ -5,20 +5,17 @@
 { lib, ... }:
 
 let
-  home-manager = builtins.fetchTarball
-    "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";
-
   find-imports = suffix:
     builtins.filter (lib.strings.hasSuffix suffix) (map toString
       (builtins.filter (p: p != ./default.nix)
         (lib.filesystem.listFilesRecursive ./.)));
 in {
   imports = [
-    # TODO: use a gitignored hardware-specific file for these
-    <nixos-hardware/framework/13-inch/7040-amd> # https://github.com/NixOS/nixos-hardware/tree/master
     ./hardware-configuration.nix # Include the results of the hardware scan.
 
-    (import "${home-manager}/nixos")
+    <nixos-hardware/framework/13-inch/7040-amd> # https://github.com/NixOS/nixos-hardware/tree/master
+
+    <home-manager/nixos> # https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz
   ] ++ find-imports "/system.nix";
 
   # This value determines the NixOS release from which the default
