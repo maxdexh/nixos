@@ -11,5 +11,6 @@
     kwalletmanager
     okular
     kwallet
+    kwallet-pam
   ];
 }
