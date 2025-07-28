@@ -1,0 +1,63 @@
+{ ... }:
+
+{
+  # TODO: udev rule to prevent the keyboard & touchpad from waking the device from sleep
+  # TODO: Try making the lid switch wake the device
+  services.logind = {
+
+    lidSwitch = "suspend-then-hibernate";
+    lidSwitchExternalPower = "suspend";
+    lidSwitchDocked = "ignore";
+
+    powerKey = "suspend-then-hibernate";
+    # This is seperate from the 10s force power cut handled by BIOS
+    powerKeyLongPress = "poweroff";
+
+    extraConfig = ''
+      IdleAction=suspend-then-hibernate
+      IdleActionSec=5m
+    '';
+  };
+  # Hibernate after 15min of sleep
+  systemd.sleep.extraConfig = ''
+    HibernateDelaySec=15m
+    SuspendState=mem
+  '';
+
+  boot.kernelParams = [
+    # Enables AMD's preferred CPU scaling driver
+    # NOTE: This is set in hardware repo already
+    "amd_pstate=active"
+
+    # Enables USB autosuspend globally
+    "usbcore.autosuspend=1"
+
+    # Enables PCIe Active State Power Management (careful with some devices)
+    "pcie_aspm=force"
+
+    # Tells nvme drive not to work around acpi quirks
+    # WARN: Breaks sleep on framework 7040 series
+    # "nvme.noacpi=1"
+  ];
+
+  services.power-profiles-daemon.enable = true;
+  services.fwupd.enable = true;
+  hardware.cpu.amd.updateMicrocode = true;
+  hardware.enableAllFirmware = true;
+  services.thermald.enable = true;
+  services.auto-cpufreq.enable = false; # Not needed with ppd
+  services.upower.enable = true; # TODO: Remove
+  powerManagement = {
+    enable = true;
+    powertop.enable = true;
+  };
+
+  # TODO: `cat /sys/class/drm/card1/device/power_dpm_state` is currently alaways "performance". Try testing:
+  # systemd.services.amdgpu-power-save = {
+  #   description = "Set AMD GPU to low power mode";
+  #   wantedBy = [ "multi-user.target" ];
+  #   serviceConfig.ExecStart = ''
+  #     echo low > /sys/class/drm/card1/device/power_dpm_force_performance_level
+  #   '';
+  # };
+}
