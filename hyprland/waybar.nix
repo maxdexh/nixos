@@ -2,7 +2,7 @@
   mainBar = {
     reload_style_on_change = true;
 
-    position = "bottom";
+    position = "top";
     modules-left = [ "hyprland/workspaces" ];
     modules-right = [
       "tray"
