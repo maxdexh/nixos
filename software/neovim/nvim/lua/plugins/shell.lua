@@ -6,6 +6,7 @@ return {
             bashls = {
                filetypes = { "sh", "zsh", "bash" },
             },
+            fish_lsp = {},
          },
       },
    },
@@ -15,6 +16,12 @@ return {
          formatters_by_ft = {
             zsh = { "shfmt" },
          },
+      },
+   },
+   {
+      "mason.nvim",
+      opts = {
+         ensure_installed = { "fish-lsp" },
       },
    },
 }

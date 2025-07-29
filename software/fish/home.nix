@@ -3,7 +3,7 @@
 {
   programs.fish = {
     enable = true;
-    interactiveShellInit = builtins.readFile ./interactive.fish;
+    interactiveShellInit = builtins.readFile ./config.fish;
     shellAliases = {
       rm = "echo 'Use `trash` or `command rm`'";
       c = "clear -x";
