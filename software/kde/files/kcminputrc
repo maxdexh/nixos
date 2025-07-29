@@ -1,9 +1,0 @@
-[Keyboard]
-RepeatDelay=175
-RepeatRate=60
-
-[Libinput][2362][628][PIXA3854:00 093A:0274 Touchpad]
-NaturalScroll=true
-
-[Mouse]
-cursorTheme=breeze_cursors
