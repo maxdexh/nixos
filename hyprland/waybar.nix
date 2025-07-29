@@ -1,4 +1,5 @@
 {
+  # FIXME: Icons have inconsistent sizes, shifting around the UI
   mainBar = {
     reload_style_on_change = true;
 
@@ -21,8 +22,8 @@
       on-scroll-up = "hyprctl dispatch workspace e+1";
       on-scroll-down = "hyprctl dispatch workspace e-1";
     };
-    "clock#date" = {
-      format = "{:%d/%m}";
+    "clock" = {
+      format = "{:%H:%M %d/%m}";
       tooltip-format = ''
         <big>{:%Y %B}</big>
         <tt><small>{calendar}</small></tt>
@@ -39,6 +40,7 @@
       orientation = "inherit";
       modules = [ "power-profiles-daemon" "battery" ];
     };
+    # TODO: Padding to prevent shifting text
     battery = {
       interval = 30;
       format = "{capacity}% -{power:3.1f}W";
