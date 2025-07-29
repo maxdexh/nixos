@@ -1,20 +1,30 @@
+{ lib, ... }:
+
 {
+  programs.waybar = {
+    enable = true;
+    style = builtins.readFile ./waybar.css;
+  };
+
   # FIXME: Icons have inconsistent sizes, shifting around the UI
-  mainBar = {
+  programs.waybar.settings.mainBar = {
     reload_style_on_change = true;
 
     position = "bottom";
     modules-left = [ "hyprland/workspaces" ];
-    modules-right = [
-      "tray"
+    modules-right = let
+      modules = [
+        "tray"
 
-      "pulseaudio#mic"
-      "pulseaudio#out"
+        "pulseaudio#mic"
+        "pulseaudio#out"
 
-      "group/energy"
+        "group/energy"
 
-      "clock"
-    ];
+        "clock"
+      ];
+      # TODO: Check if host is a laptop
+    in if true then modules else lib.lists.remove "group/energy" modules;
 
     # TODO: Make this not suck
     "hyprland/workspaces" = {

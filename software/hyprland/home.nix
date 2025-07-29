@@ -1,6 +1,7 @@
 { pkgs, ... }:
 
 {
+  imports = [ ./waybar.nix ];
   home.packages = with pkgs; [
     waybar
     hyprshot
@@ -20,12 +21,6 @@
     enable = true;
     # TODO: https://wiki.nixos.org/wiki/Hyprland config is nix
     extraConfig = builtins.readFile ./hyprland.conf;
-  };
-
-  programs.waybar = {
-    enable = true;
-    settings = import ./waybar.nix;
-    style = builtins.readFile ./waybar.css;
   };
 
   # TODO: make this not look like shit
