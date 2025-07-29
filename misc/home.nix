@@ -9,7 +9,7 @@
 
     # games
     prismlauncher
-    lunar-client
+    # lunar-client
 
     # gui apps
     obs-studio
