@@ -1,12 +1,12 @@
 set fish_greeting
 
-function c -d "Full clear, including scrollback buffer"
-    printf "\e[H\e[3J"
+function c
+    clear -x
+end
+function ca
+    clear && printf '\e[3J'
 end
 
-function list-fonts -d "List installed fonts"
-    fc-list | sed 's/.*:\\s*\\([^:]*\\):.*/\\1/' | tr ',' '\\n' | sed 's/^[ \\t]*//;s/[ \\t]*$//' | sort | uniq
-end
 function mkcd -d "Create directory and cd" -a path
     mkdir $path
     cd $path

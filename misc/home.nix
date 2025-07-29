@@ -25,6 +25,9 @@
       eval "$@" &>/dev/null &
       disown
     '')
+    (pkgs.writeShellScriptBin "list-fonts" ''
+      fc-list | sed 's/.*:\s*\([^:]*\):.*/\1/' | tr ',' '\n' | sed 's/^[ \t]*//;s/[ \t]*$//' | sort | uniq
+    '')
   ];
 
   # Keep home directory clean (in case we use these through nix-shell or nix-env)
