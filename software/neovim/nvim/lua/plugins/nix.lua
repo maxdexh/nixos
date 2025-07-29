@@ -19,7 +19,4 @@ return {
          },
       },
    },
-   {
-      "calops/hmts.nvim",
-   },
 }
