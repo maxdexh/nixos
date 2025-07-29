@@ -6,8 +6,9 @@
     userName = "Max Dexheimer";
     userEmail = "maxdexh03@gmail.com";
     aliases = {
-      ca = "!git add --all && git commit";
+      ca = "!git add -A && git commit"; # commit absorbs remaining arguments
       s = "status";
+      p = "push";
     };
     extraConfig = {
       safe.directory = "/etc/nixos/";
