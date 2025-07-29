@@ -1,6 +1,12 @@
-{ ... }:
+{ inputs, ... }:
 
 {
+  imports = [
+    inputs.nixos-hardware.nixosModules.framework-13-7040-amd
+    ./hardware-configuration.nix
+  ];
+  networking.hostName = "framework";
+
   # TODO: udev rule to prevent the keyboard & touchpad from waking the device from sleep
   # TODO: Try making the lid switch wake the device
   services.logind = {

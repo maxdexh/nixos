@@ -10,60 +10,52 @@
     };
   };
 
-  outputs = { nixpkgs, nixos-hardware, home-manager, ... }:
-    let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs { system = system; };
+  outputs = inputs@{ nixpkgs, nixos-hardware, home-manager, ... }: {
+    nixosConfigurations = let
+      sys-meta = ({ config, pkgs, lib, ... }:
+        let all-files = map toString (lib.filesystem.listFilesRecursive ./.);
+        in {
+          imports =
+            builtins.filter (lib.strings.hasSuffix "/system.nix") all-files;
 
-      lib = pkgs.lib;
+          system.stateVersion = "25.05";
 
-      all-files = map toString (lib.filesystem.listFilesRecursive ./.);
-    in {
-      nixosConfigurations = {
-        framework = nixpkgs.lib.nixosSystem {
-          inherit system;
+          programs.nix-ld.enable = true;
+
+          nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+          users.users.max = {
+            isNormalUser = true;
+            description = "Max";
+            extraGroups = [ "networkmanager" "wheel" ];
+          };
+
+          home-manager.useGlobalPkgs = true;
+          home-manager.verbose = true;
+
+          # Home Manager user config
+          home-manager.users.max = { lib, pkgs, ... }: {
+            imports =
+              builtins.filter (lib.strings.hasSuffix "/home.nix") all-files;
+
+            xdg.enable = true;
+
+            home.stateVersion = "25.05";
+          };
+        });
+      host-names = builtins.attrNames (builtins.readDir ./hosts);
+      make-host-entry = name: {
+        inherit name;
+        value = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs; };
           modules = [
-            ./hardware-configuration.nix
-
-            # nixos-hardware via flake input
-            nixos-hardware.nixosModules.framework-13-7040-amd
-
-            # home-manager module
             home-manager.nixosModules.home-manager
-
-            ({ config, pkgs, lib, ... }: {
-              system.stateVersion = "25.05";
-
-              programs.nix-ld.enable = true;
-
-              networking.hostName = "framework";
-
-              imports =
-                builtins.filter (lib.strings.hasSuffix "/system.nix") all-files;
-
-              nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-              users.users.max = {
-                isNormalUser = true;
-                description = "Max";
-                extraGroups = [ "networkmanager" "wheel" ];
-              };
-
-              home-manager.useGlobalPkgs = true;
-              home-manager.verbose = true;
-
-              # Home Manager user config
-              home-manager.users.max = { lib, pkgs, ... }: {
-                imports =
-                  builtins.filter (lib.strings.hasSuffix "/home.nix") all-files;
-
-                xdg.enable = true;
-
-                home.stateVersion = "25.05";
-              };
-            })
+            sys-meta
+            ./hosts/${name}/host.nix
           ];
         };
       };
-    };
+      configs = builtins.listToAttrs (map make-host-entry host-names);
+    in configs;
+  };
 }
