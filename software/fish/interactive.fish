@@ -1,98 +1,32 @@
 set fish_greeting
 
-function c
-    clear -x
-end
-function ca
-    clear && printf '\e[3J'
-end
-
-function mkcd -d "Create directory and cd" -a path
-    mkdir $path
-    cd $path
-end
-
 bind ctrl-c cancel-commandline
 
-# uses eza instead of ls. TODO: configure
-
-# trash is still suboptimal due to working slightly differently, so an alias is inappropriate :/
-alias rm='echo "rm is disabled, use `trash` or `command rm` instead."'
-
-# TODO: This still deletes overwritten files, a trashing variant would be better, same thing for cp
-alias mv='mv -i'
-
-alias python3='uv run python3'
-alias py='uv run python3'
-alias pypy='uv run --python=pypy python3'
-alias pip='uv pip'
-alias nix-channel='echo "Use sudo"'
-
-alias g=git
-
-function uvenv
-    pushd .
-    source ./.venv/bin/activate.fish # for some reason this cds into bin
-    popd
+if set -q NVIM
+    fish_default_key_bindings
+else
+    fish_vi_key_bindings
 end
 
-function fish_prompt --description 'Write out the prompt'
-    set -l last_pipestatus $pipestatus
+function fish_prompt
+    set -l last_pipestatus $pipestatus # pipestatus must be saved right at the start
     set -lx __fish_last_status $status # Export for __fish_print_pipestatus.
-    set -l normal (set_color normal)
-    set -q fish_color_status
-    or set -g fish_color_status red
 
-    # Color the prompt differently when we're root
-    set -l color_cwd $fish_color_cwd
-    set -l suffix '>'
-    if functions -q fish_is_root_user; and fish_is_root_user
-        if set -q fish_color_cwd_root
-            set color_cwd $fish_color_cwd_root
-        end
-        set suffix '#'
-    end
-
-    # Write pipestatus
-    # If the status was carried over (if no command is issued or if `set` leaves the status untouched), don't bold it.
-    set -l bold_flag --bold
-    set -q __fish_prompt_status_generation; or set -g __fish_prompt_status_generation $status_generation
-    if test $__fish_prompt_status_generation = $status_generation
-        set bold_flag
-    end
-    set __fish_prompt_status_generation $status_generation
+    set -q fish_color_status; or set -g fish_color_status red
     set -l status_color (set_color $fish_color_status)
-    set -l statusb_color (set_color $bold_flag $fish_color_status)
-    set -l prompt_status (__fish_print_pipestatus "[" "]" "|" "$status_color" "$statusb_color" $last_pipestatus)
 
-    echo -n (prompt_login)
-    echo -n ':'
-    set_color $color_cwd
-    echo -n (prompt_pwd)
-    set_color normal
-    echo -n (fish_vcs_prompt)
-    set_color normal
-    echo -n ' '
-    echo -n $prompt_status
-    echo
-    echo -n $suffix
-    echo -n ' '
+    printf '%s:%s%s %s\n%s ' \
+        (set_color normal; prompt_login) \
+        (if fish_is_root_user; set_color $fish_color_cwd_root; else; set_color $fish_color_cwd; end; prompt_pwd) \
+        (set_color normal; fish_vcs_prompt) \
+        (set_color normal; __fish_print_pipestatus "[" "]" "|" $status_color $status_color $last_pipestatus) \
+        (set_color normal; if fish_is_root_user; echo '#'; else; echo '>'; end)
 end
+
 function fish_right_prompt
-    set -l d (set_color brgrey)(date "+%R")(set_color normal)
-
-    set -l duration "$cmd_duration$CMD_DURATION"
-    if test $duration -gt 100
-        set duration (math $duration / 1000)s
-    else
-        set duration
-    end
-
-    set -q VIRTUAL_ENV_DISABLE_PROMPT
-    or set -g VIRTUAL_ENV_DISABLE_PROMPT true
-    set -q VIRTUAL_ENV
-    and set -l venv (string replace -r '.*/' '' -- "$VIRTUAL_ENV")
-
     set_color normal
-    string join " " -- $venv $duration $d
+    string join " " -- \
+        (test $CMD_DURATION -gt 100; and echo (math $CMD_DURATION / 1000)s) \
+        (set -q VIRTUAL_ENV; and string replace -r '.*/' '' -- "$VIRTUAL_ENV") \
+        (set_color brgrey)(date "+%R")(set_color normal)
 end
