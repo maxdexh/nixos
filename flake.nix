@@ -44,14 +44,15 @@
           };
         });
       host-names = builtins.attrNames (builtins.readDir ./hosts);
-      make-host-entry = name: {
-        inherit name;
+      make-host-entry = host-name: {
+        name = host-name;
         value = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
           modules = [
             home-manager.nixosModules.home-manager
             sys-meta
-            ./hosts/${name}/host.nix
+            { networking.hostName = host-name; }
+            ./hosts/${host-name}/host.nix
           ];
         };
       };
