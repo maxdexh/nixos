@@ -21,13 +21,12 @@
           host-config = ./hosts/${host-name}/host.nix;
 
           type-err = expexted: value:
-            throw "${host-name}: Expected type ${expexted}, got ${
-              builtins.typeOf value
-            }: ${value}";
+            throw "${host-name}: Expected ${expexted}, got: ${value}";
 
           check-host-meta = { isLaptop, localConfigRoot }:
-            if !builtins.isString localConfigRoot then
-              type-err "string" localConfigRoot
+            if !builtins.isString localConfigRoot
+            || nixpkgs.lib.strings.hasSuffix "/" localConfigRoot then
+              type-err "String without trailing slash" localConfigRoot
             else if !builtins.isBool isLaptop then
               type-err "bool" isLaptop
             else {
@@ -37,6 +36,7 @@
               };
 
               inherit localConfigRoot;
+              localNoStorePath = rel: "${localConfigRoot}/no-store/${rel}";
             };
 
           specialArgs = {
