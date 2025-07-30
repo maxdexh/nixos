@@ -63,6 +63,9 @@ local deleted_hls = {
    "@punctuation.bracket", -- Breaks rainbow-brackets because treesitter takes precedence
    "rustFoldBraces", -- See above
    "@lsp.type.operator.lua", -- For some reason this is applied to brackets and braces, breaking rainbow-brackets
+
+   -- TODO: Override string highlighting for nix string injections
+   -- "@string.nix",
 }
 
 -- From tomasiser/vim-code-dark
