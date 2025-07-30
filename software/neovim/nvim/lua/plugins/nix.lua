@@ -2,8 +2,6 @@ vim.lsp.config("nil_ls", {
    cmd = { vim.fn.stdpath("data") .. "/mason/bin/nil" },
 })
 
-vim.lsp.enable("nil_ls")
-
 return {
    {
       "mason.nvim",
