@@ -2,7 +2,8 @@
 
 {
   xdg.configFile."nvim".source =
-    config.lib.file.mkOutOfStoreSymlink (config-meta.localNoStorePath "nvim");
+    config.lib.file.mkOutOfStoreSymlink config-meta.localConfigRoot
+    + "/software/neovim/nvim";
 
   home.sessionVariables = {
     VISUAL = "nvim";

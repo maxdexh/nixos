@@ -36,7 +36,6 @@
               };
 
               inherit localConfigRoot;
-              localNoStorePath = rel: "${localConfigRoot}/no-store/${rel}";
             };
 
           specialArgs = {
