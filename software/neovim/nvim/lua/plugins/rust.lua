@@ -7,4 +7,12 @@ return {
          vim.g.rustaceanvim = {}
       end,
    },
+   {
+      "nvim-treesitter/nvim-treesitter",
+      opts = {
+         ensure_installed = {
+            "rust",
+         },
+      },
+   },
 }

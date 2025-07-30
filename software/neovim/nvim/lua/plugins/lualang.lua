@@ -1,5 +1,4 @@
 vim.fn.setenv("LAZY_LIBRARY_PATH_PREFIX", vim.fn.stdpath("data") .. "/lazy/")
--- FIXME: emmylua_ls randomly creates a folder named "" containing the standard library ??
 vim.lsp.config("emmylua_ls", {
    cmd = { vim.fn.stdpath("data") .. "/mason/bin/emmylua_ls" },
 })
@@ -19,6 +18,15 @@ return {
             lua_ls = {
                enabled = false,
             },
+         },
+      },
+   },
+   {
+
+      "nvim-treesitter/nvim-treesitter",
+      opts = {
+         ensure_installed = {
+            "lua",
          },
       },
    },

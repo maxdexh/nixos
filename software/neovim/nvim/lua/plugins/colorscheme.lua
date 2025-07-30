@@ -114,17 +114,9 @@ return {
       -- TODO: Split into corresponding files
       "nvim-treesitter/nvim-treesitter",
       opts = {
-         ensure_installed = {
-            "c",
-            "lua",
-            "cpp",
-            "rust",
-            "java",
-         },
          highlight = {
             enable = true,
-            -- Treesitter doesnt support this
-            -- WARN: This causes lag during typing while on power-profiles-daemon's power saver mode on battery!
+            -- TODO: Move files
             additional_vim_regex_highlighting = { "rust" },
          },
          indent = { enable = true, disable = { "python", "css", "rust" } },
