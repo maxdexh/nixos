@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, config-meta, ... }:
 
 {
   programs.waybar = {
@@ -24,7 +24,10 @@
         "clock"
       ];
       # TODO: Check if host is a laptop
-    in if true then modules else lib.lists.remove "group/energy" modules;
+    in if config-meta.host.isLaptop then
+      modules
+    else
+      lib.lists.remove "group/energy" modules;
 
     # TODO: Make this not suck
     "hyprland/workspaces" = {
