@@ -24,4 +24,13 @@ return {
          ensure_installed = { "fish-lsp" },
       },
    },
+   {
+      "nvim-treesitter/nvim-treesitter",
+      opts = {
+         ensure_installed = {
+            "bash",
+            "fish",
+         },
+      },
+   },
 }

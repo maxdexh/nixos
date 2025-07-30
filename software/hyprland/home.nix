@@ -19,7 +19,7 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
-    # TODO: https://wiki.nixos.org/wiki/Hyprland config is nix
+    # TODO: https://wiki.nixos.org/wiki/Hyprland config in nix
     extraConfig = builtins.readFile ./hyprland.conf;
   };
 

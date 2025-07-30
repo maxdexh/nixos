@@ -114,9 +114,11 @@ return {
       -- TODO: Split into corresponding files
       "nvim-treesitter/nvim-treesitter",
       opts = {
+         auto_install = true,
          highlight = {
             enable = true,
-            -- TODO: Move files
+            -- FIXME: This is laggy and is likely what breaks rainbow delims sometimes
+            -- TODO: Highlight inside macros without this
             additional_vim_regex_highlighting = { "rust" },
          },
          indent = { enable = true, disable = { "python", "css", "rust" } },
