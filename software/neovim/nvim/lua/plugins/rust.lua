@@ -2,7 +2,8 @@
 return {
    {
       "mrcjkb/rustaceanvim",
-      lazy = false,
+      lazy = true, -- Lazy by design my ass, takes 20ms
+      event = "VeryLazy",
       init = function()
          vim.g.rustaceanvim = {}
       end,
