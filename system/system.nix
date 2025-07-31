@@ -49,6 +49,8 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  security.polkit.enable = true;
+
   # enable bluetooth
   hardware.bluetooth = {
     enable = true;

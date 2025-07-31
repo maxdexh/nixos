@@ -1,4 +1,4 @@
-{ ... }:
+{ config, lib, ... }:
 
 {
   programs.fish = {
@@ -13,26 +13,20 @@
       mkcd = "mkdir $argv && cd";
       uvenv = "source ./.venv/bin/activate.fish";
     };
-    shellAbbrs = rec {
-      g = "git";
-      ga = "git add";
-      gc = "git commit";
-      gp = "git push";
-      gs = "git status";
-      gd = "git diff";
-      gca = "git add -A && git commit";
-      gce = "${gca} --amend --no-edit";
-
-      nca = "${gca} && sudo nixos-rebuild switch";
-      nce = "${gce} && sudo nixos-rebuild switch";
-
+    shellAbbrs = {
       py = "uv run python3";
       pypy = "uv run --python=pypy python3";
 
       mv = "mv -i";
 
       rm = "trash";
-    };
+    } // lib.concatMapAttrs (alias: command: {
+      "g${alias}" = if lib.strings.hasPrefix "!" command then
+        lib.strings.removePrefix "!" command
+      else
+        "git ${command}";
+    }) config.programs.git.aliases;
+
     functions = {
       fish_prompt = ''
         set -l last_status $status; set -l last_pipestatus $pipestatus
