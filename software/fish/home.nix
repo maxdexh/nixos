@@ -45,11 +45,15 @@
       mkcd = "mkdir $argv && cd";
       uvenv = "source ./.venv/bin/activate.fish";
     };
-    shellAbbrs = {
+    shellAbbrs = let ca = "git add -A && git commit";
+    in {
       g = "git";
       py = "uv run python3";
       pypy = "uv run --python=pypy python3";
-      gca = "git add -A && git commit";
+      gca = ca;
+      gcaa = "${ca} --amend --no-edit";
+      nrb = "${ca} && sudo nixos-rebuild switch";
+      nrba = "${ca} --amend --no-edit && sudo nixos-rebuild switch";
     };
   };
 }
