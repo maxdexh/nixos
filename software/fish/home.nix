@@ -5,55 +5,44 @@
     enable = true;
     interactiveShellInit = ''
       set fish_greeting
-
       bind ctrl-c cancel-commandline
-
-      if set -q NVIM
-          fish_default_key_bindings
-      else
-          fish_vi_key_bindings
-      end
-
-      function fish_prompt
-          set -l last_pipestatus $pipestatus # pipestatus must be saved right at the start
-          set -lx __fish_last_status $status # Export for __fish_print_pipestatus.
-
-          set -q fish_color_status; or set -g fish_color_status red
-          set -l status_color (set_color $fish_color_status)
-
-          printf '%s:%s%s %s\n%s ' \
-              (set_color normal; prompt_login) \
-              (if fish_is_root_user; set_color $fish_color_cwd_root; else; set_color $fish_color_cwd; end; prompt_pwd) \
-              (set_color normal; fish_vcs_prompt) \
-              (set_color normal; __fish_print_pipestatus "[" "]" "|" $status_color $status_color $last_pipestatus) \
-              (set_color normal; if fish_is_root_user; echo '#'; else; echo '>'; end)
-      end
-
-      function fish_right_prompt
-          set_color normal
-          string join " " -- \
-              (test $CMD_DURATION -gt 100; and echo (math $CMD_DURATION / 1000)s) \
-              (set -q VIRTUAL_ENV; and string replace -r '.*/' "" -- "$VIRTUAL_ENV") \
-              (set_color brgrey)(date "+%R")(set_color normal)
-      end
+      set -q NVIM && fish_default_key_bindings || fish_vi_key_bindings
     '';
     shellAliases = {
-      rm = "echo 'Use `trash` or `command rm`'";
-      c = "clear -x";
-      ca = "clear && printf '\\e[3J'";
-      mv = "mv -i";
+      c = "clear && printf '\\e[3J'";
       mkcd = "mkdir $argv && cd";
       uvenv = "source ./.venv/bin/activate.fish";
     };
-    shellAbbrs = let ca = "git add -A && git commit";
-    in {
+    shellAbbrs = rec {
       g = "git";
       py = "uv run python3";
       pypy = "uv run --python=pypy python3";
-      gca = ca;
-      gcaa = "${ca} --amend --no-edit";
-      nrb = "${ca} && sudo nixos-rebuild switch";
-      nrba = "${ca} --amend --no-edit && sudo nixos-rebuild switch";
+      gca = "git add -A && git commit";
+      gcaa = "${gca} --amend --no-edit";
+      nrb = "${gca} && sudo nixos-rebuild switch";
+      nrba = "${gcaa} && sudo nixos-rebuild switch";
+      mv = "mv -i";
+      rm = "trash";
+    };
+    functions = {
+      fish_prompt = ''
+        set -l last_status $status; set -l last_pipestatus $pipestatus
+
+        set -l login "$(set_color normal)$(prompt_login)"
+        set -l pwd "$(type -q fish_is_root_user && fish_is_root_user && set_color $fish_color_cwd_root || set_color $fish_color_cwd || set_color green)$(prompt_pwd)"
+        set -l pipe "$(set_color $fish_color_status || set_color red)$(test "$last_status" -eq 0 || echo " [$(string join '|' -- $last_pipestatus)]")"
+        set -l vcs "$(set_color normal)$(type -q fish_vcs_prompt && fish_vcs_prompt)" # Includes leading space
+        set -l suffix "$(set_color normal)$(type -q fish_is_root_user && fish_is_root_user && echo '#' || echo '>')"
+
+        echo -n "$login:$pwd$pipe$vcs"\n"$suffix "
+      '';
+      fish_right_prompt = ''
+        set_color normal
+        set -l duration (test $CMD_DURATION -gt 100 && echo (math $CMD_DURATION / 1000)s)
+        set -l venv (set -q VIRTUAL_ENV && string replace -r '.*/' "" -- "$VIRTUAL_ENV")
+        set -l time "$(set_color brgrey)$(date '+%R')$(set_color normal)"
+        string join -n " " -- $venv $duration $time
+      '';
     };
   };
 }
