@@ -9,6 +9,7 @@
       set -q NVIM && fish_default_key_bindings || fish_vi_key_bindings
     '';
     shellAliases = {
+      # TODO: Full-clear bind
       c = "clear && printf '\\e[3J'";
       mkcd = "mkdir $argv && cd";
       uvenv = "source ./.venv/bin/activate.fish";
@@ -29,7 +30,6 @@
         "git ${command}";
     }) config.programs.git.aliases;
 
-    # TODO: Full-clear bind
     functions = {
       fish_prompt = ''
         set -l last_status $status; set -l last_pipestatus $pipestatus
