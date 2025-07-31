@@ -11,6 +11,9 @@
       c = "commit";
       d = "diff";
       a = "add";
+      l = "log";
+
+      whyy = "!echo 'test'";
 
       ca = "!git add -A && git commit";
       ce = "${ca} --amend --no-edit";

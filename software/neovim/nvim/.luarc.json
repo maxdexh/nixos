@@ -11,6 +11,7 @@
       "$LAZY_LIBRARY_PATH_PREFIX/LuaSnip",
       "$LAZY_LIBRARY_PATH_PREFIX/nvim-dap/",
       "$LAZY_LIBRARY_PATH_PREFIX/oil.nvim/lua/oil",
+      "$LAZY_LIBRARY_PATH_PREFIX/noice.nvim/lua",
       "$VIMRUNTIME"
     ],
     "ignoreDir": [

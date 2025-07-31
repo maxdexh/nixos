@@ -161,4 +161,5 @@ return {
    { "LazyVim/LazyVim", opts = { colorscheme = "vscode" } },
 
    { "tokyonight.nvim", enabled = false },
+   { "catpuccin", enabled = false },
 }
