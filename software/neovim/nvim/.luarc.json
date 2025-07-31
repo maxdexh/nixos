@@ -9,7 +9,8 @@
       "$LAZY_LIBRARY_PATH_PREFIX/multicursor.nvim",
       "$LAZY_LIBRARY_PATH_PREFIX/colorful-menu.nvim",
       "$LAZY_LIBRARY_PATH_PREFIX/LuaSnip",
-      "$LAZY_LIBRARY_PATH_PREFIX/nvim-dap",
+      "$LAZY_LIBRARY_PATH_PREFIX/nvim-dap/",
+      "$LAZY_LIBRARY_PATH_PREFIX/oil.nvim/lua/oil",
       "$VIMRUNTIME"
     ],
     "ignoreDir": [
