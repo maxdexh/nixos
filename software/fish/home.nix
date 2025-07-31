@@ -15,10 +15,13 @@
     };
     shellAbbrs = rec {
       g = "git";
-      py = "uv run python3";
-      pypy = "uv run --python=pypy python3";
+      gp = "git push";
+      gs = "git status";
+      gd = "git diff";
       gca = "git add -A && git commit";
       gcaa = "${gca} --amend --no-edit";
+      py = "uv run python3";
+      pypy = "uv run --python=pypy python3";
       nrb = "${gca} && sudo nixos-rebuild switch";
       nrba = "${gcaa} && sudo nixos-rebuild switch";
       mv = "mv -i";
