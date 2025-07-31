@@ -40,9 +40,7 @@
     shellAliases = {
       rm = "echo 'Use `trash` or `command rm`'";
       c = "clear -x";
-      ca = ''
-        clear && printf '\e[3J'
-      '';
+      ca = "clear && printf '\\e[3J'";
       mv = "mv -i";
       mkcd = "mkdir $argv && cd";
       uvenv = "source ./.venv/bin/activate.fish";
