@@ -5,6 +5,7 @@
   home.packages = with pkgs; [
     waybar
     hyprshot
+    hyprpicker
     brightnessctl
     rofi-wayland
     xorg.xrdb # For kde-style xwayland scaling
