@@ -43,7 +43,7 @@ function lang.add_auto_hl_overrides(overrides)
 
    apply()
    vim.api.nvim_create_autocmd("ColorScheme", {
-      group = vim.api.nvim_create_augroup("user_colors", {}),
+      pattern = "*",
       callback = apply,
    })
 end

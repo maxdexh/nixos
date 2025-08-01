@@ -22,6 +22,7 @@
       rm = "trash";
 
       g = "git";
+
     } // lib.concatMapAttrs (alias: command: {
       "g${alias}" = if lib.strings.hasPrefix "!" command then
         lib.strings.removePrefix "!" command

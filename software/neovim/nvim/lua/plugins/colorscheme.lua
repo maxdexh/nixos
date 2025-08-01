@@ -145,20 +145,34 @@ return {
          }
       end,
    },
+
+   { "LazyVim/LazyVim", opts = { colorscheme = "vscode" } },
    {
       "Mofiqul/vscode.nvim",
       lazy = false,
       priority = 2000,
       opts = {
          codedark_modern = true,
+         transparent = true,
+         terminal_colors = true,
       },
       init = function()
          vim.opt.cursorline = false
          libs.r.lang.add_auto_hl_overrides(overrides)
-         vim.cmd([[colorscheme vscode]])
+
+         -- Transparency fixes (Find using colorpicker and searching in :hi)
+         vim.api.nvim_create_autocmd("ColorScheme", {
+            pattern = "*",
+            callback = function()
+               vim.cmd("hi StatusLine guibg=NONE ctermbg=NONE")
+               vim.cmd("hi MoreMsg guibg=NONE")
+               vim.cmd("hi ModeMsg guibg=NONE")
+               vim.cmd("hi TabLineFill guibg=NONE")
+               vim.cmd("hi NormalFloat guibg=NONE")
+            end,
+         })
       end,
    },
-   { "LazyVim/LazyVim", opts = { colorscheme = "vscode" } },
 
    { "tokyonight.nvim", enabled = false },
    { "catpuccin", enabled = false },
