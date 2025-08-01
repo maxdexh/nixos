@@ -20,5 +20,7 @@
         '';
       };
     in "${askpass}/bin/askpass";
+
+    TERMINAL = "kitty";
   };
 }
