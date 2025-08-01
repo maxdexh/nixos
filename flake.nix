@@ -12,7 +12,12 @@
 
   outputs = inputs@{ self, nixpkgs, nixos-hardware, home-manager, ... }: {
     nixosConfigurations = let
-      all-files = map toString (nixpkgs.lib.filesystem.listFilesRecursive ./.);
+      software =
+        map toString (nixpkgs.lib.filesystem.listFilesRecursive ./software);
+      home-auto-import =
+        builtins.filter (nixpkgs.lib.strings.hasSuffix "/home.nix") software;
+      sys-auto-import =
+        builtins.filter (nixpkgs.lib.strings.hasSuffix "/system.nix") software;
 
       host-names = builtins.attrNames (builtins.readDir ./hosts);
 
@@ -45,8 +50,7 @@
           };
 
           sys-main = ({ config, pkgs, lib, ... }: {
-            imports =
-              (builtins.filter (lib.strings.hasSuffix "/system.nix") all-files);
+            imports = sys-auto-import;
 
             system.stateVersion = "25.05";
 
@@ -62,8 +66,7 @@
 
             # Home Manager user config
             home-manager.users.max = { inputs, lib, pkgs, ... }: {
-              imports =
-                builtins.filter (lib.strings.hasSuffix "/home.nix") all-files;
+              imports = home-auto-import;
 
               xdg.enable = true;
 
