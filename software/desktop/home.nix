@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   home.sessionVariables = {
@@ -23,4 +23,6 @@
 
     TERMINAL = "kitty";
   };
+
+  gtk.gtk2.configLocation = "${config.xdg.configHome}/gtkrc-2.0";
 }
