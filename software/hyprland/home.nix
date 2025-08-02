@@ -29,7 +29,7 @@
     # https://discourse.nixos.org/t/tip-how-to-enable-dunst-for-only-select-des-with-nix/65630
     package = let
       mainExe = lib.getExe pkgs.dunst;
-      mainExeName = lib.removePrefix "${pkgs.dunst}/bin/" mainExe;
+      mainExeName = builtins.baseNameOf mainExe;
     in pkgs.writeShellScriptBin mainExeName ''
       if [ "$XDG_CURRENT_DESKTOP" = "KDE" ] || [ "$DESKTOP_SESSION" = "plasma" ]; then
         echo "Dunst: Not starting because session is KDE Plasma."
