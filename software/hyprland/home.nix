@@ -23,7 +23,7 @@
     extraConfig = builtins.readFile ./hyprland.conf;
   };
 
-  # TODO: make this not look like shit
+  # TODO: Try other daemons
   services.dunst = {
     enable = true;
     # https://discourse.nixos.org/t/tip-how-to-enable-dunst-for-only-select-des-with-nix/65630
@@ -37,7 +37,7 @@
     configFile = ./dunstrc;
   };
 
-  # TODO: Configure
+  # TODO: Configure more default apps
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
@@ -62,58 +62,56 @@
     hibernate = {
       name = "Hibernate";
       exec = "systemctl hibernate";
-      # icon = "hibernate";
+      icon = "system-hibernate";
       genericName = "Hibernate";
     };
     suspend = {
       name = "Suspend";
       exec = "systemctl suspend-then-hibernate";
-      # icon = "suspend";
+      icon = "system-suspend";
       genericName = "Put System to Sleep";
     };
     shutdown = {
       name = "Shut Down";
       exec = "shutdown -h now";
-      # icon = "poweroff";
+      icon = "system-shutdown";
       genericName = "Power off the System";
     };
     reboot = {
       name = "Reboot";
       exec = "reboot";
-      # icon = "restart";
+      icon = "system-reboot";
       genericName = "Restart the System";
     };
     logout = {
       name = "Log out";
-      # TODO: More graceful, universal command
-      exec = "hyprctl dispatch exit";
+      exec = "systemctl --user exit";
+      icon = "system-users";
       comment = "Exit Desktop";
     };
 
     networkconfig = {
       name = "Network";
       exec = "plasmawindowed org.kde.plasma.networkmanagement";
-      icon = "settings";
+      icon = "preferences-system-network";
       genericName = "Network Config";
     };
     bluetooth = {
       name = "Bluetooth";
       exec = "plasmawindowed org.kde.plasma.bluetooth";
-      icon = "bluetooth";
+      icon = "preferences-system-bluetooth";
       genericName = "Bluetooth Config";
     };
     volume = {
       name = "Audio";
-      # exec = "plasmawindowed org.kde.plasma.volume";
-      exec = "kcmshell6 kcm_pulseaudio"; # NOTE:
+      exec = "kcmshell6 kcm_pulseaudio";
       icon = "preferences-desktop-sound";
       genericName = "Sound Config";
     };
     energy = {
       name = "Energy";
-      # exec = "plasmawindowed org.kde.plasma.volume";
-      exec = "kcmshell6 kcm_energyinfo"; # NOTE:
-      icon = "settings";
+      exec = "kcmshell6 kcm_energyinfo";
+      icon = "preferences-system-power-management";
       genericName = "Energy Monitor";
     };
   };
