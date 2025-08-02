@@ -88,6 +88,7 @@
       exec = "systemctl --user exit";
       icon = "system-users";
       comment = "Exit Desktop";
+      settings = { Keywords = "logout"; };
     };
 
     networkconfig = {
