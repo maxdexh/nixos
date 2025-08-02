@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   imports = [ ./waybar.nix ];
@@ -27,12 +27,15 @@
   services.dunst = {
     enable = true;
     # https://discourse.nixos.org/t/tip-how-to-enable-dunst-for-only-select-des-with-nix/65630
-    package = pkgs.writeShellScriptBin "dunst" ''
+    package = let
+      mainExe = lib.getExe pkgs.dunst;
+      mainExeName = lib.removePrefix "${pkgs.dunst}/bin/" mainExe;
+    in pkgs.writeShellScriptBin mainExeName ''
       if [ "$XDG_CURRENT_DESKTOP" = "KDE" ] || [ "$DESKTOP_SESSION" = "plasma" ]; then
         echo "Dunst: Not starting because session is KDE Plasma."
         exit 0
       fi
-      exec ${pkgs.dunst}/bin/dunst "$@"
+      exec ${mainExe} "$@"
     '';
     configFile = ./dunstrc;
   };

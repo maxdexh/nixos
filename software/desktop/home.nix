@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   home.sessionVariables = {
@@ -19,7 +19,7 @@
           rofi -theme material -dmenu -password -p "Password" -l 0 -theme-str 'mainbox { children: [inputbar]; }'
         '';
       };
-    in "${askpass}/bin/askpass";
+    in lib.getExe askpass;
 
     TERMINAL = "kitty";
   };
