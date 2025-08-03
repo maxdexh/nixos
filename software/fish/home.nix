@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   programs.fish = {
@@ -24,10 +24,12 @@
       g = "git";
 
     } // lib.concatMapAttrs (alias: command: {
+
       "g${alias}" = if lib.strings.hasPrefix "!" command then
-        lib.strings.removePrefix "!" command
+        lib.removePrefix "!" command
       else
         "git ${command}";
+
     }) config.programs.git.aliases;
 
     functions = {

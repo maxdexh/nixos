@@ -25,6 +25,9 @@ in {
     smartmontools
   ];
 
+  # Make shell integrations explicit
+  home.shell.enableShellIntegration = false;
+
   programs.ripgrep.enable = true;
   programs.bat.enable = true;
 
@@ -35,8 +38,27 @@ in {
 
   programs.nix-your-shell = shellint-no-bash;
 
-  programs.eza = shellint // {
-    # TODO: Icons, git, etc.
+  programs.eza = {
+    enable = true;
+    icons = "auto";
+  };
+  programs.fish = {
+    functions.ls = {
+      body = ''
+        if test -t 1
+          eza $argv
+        else
+          command ls $argv
+        end
+      '';
+      wraps = "eza";
+    };
+    shellAliases = {
+      ll = "ls -l";
+      la = "ls -a";
+      lla = "ls -la";
+      lt = "eza --tree";
+    };
   };
 
   programs.fzf = shellint;
