@@ -12,18 +12,21 @@
 
   outputs = inputs@{ self, nixpkgs, nixos-hardware, home-manager, ... }: {
     nixosConfigurations = let
-      software =
-        map toString (nixpkgs.lib.filesystem.listFilesRecursive ./software);
-      home-auto-import =
-        builtins.filter (nixpkgs.lib.strings.hasSuffix "/home.nix") software;
-      sys-auto-import =
-        builtins.filter (nixpkgs.lib.strings.hasSuffix "/system.nix") software;
+      find-auto-imports = suffix: basedirs:
+        nixpkgs.lib.pipe basedirs [
+          (builtins.concatMap nixpkgs.lib.filesystem.listFilesRecursive)
+          (map toString)
+          (builtins.filter (nixpkgs.lib.strings.hasSuffix suffix))
+        ];
+
+      find-home-auto-imports = find-auto-imports "/home.nix";
+      find-sys-auto-imports = find-auto-imports "/system.nix";
 
       host-names = builtins.attrNames (builtins.readDir ./hosts);
 
       make-host-entry = host-name:
         let
-          host-config = ./hosts/${host-name}/host.nix;
+          auto-import-paths = [ ./software ./hosts/${host-name} ];
 
           type-err = expexted: value:
             throw "${host-name}: Expected ${expexted}, got: ${value}";
@@ -50,7 +53,7 @@
           };
 
           sys-main = ({ config, pkgs, lib, ... }: {
-            imports = sys-auto-import;
+            imports = find-sys-auto-imports auto-import-paths;
 
             system.stateVersion = "25.05";
 
@@ -72,7 +75,7 @@
 
             # Home Manager user config
             home-manager.users.max = { inputs, lib, pkgs, ... }: {
-              imports = home-auto-import;
+              imports = find-home-auto-imports auto-import-paths;
 
               xdg.enable = true;
 
@@ -94,7 +97,6 @@
               home-manager.nixosModules.home-manager
               sys-main
               { networking.hostName = host-name; }
-              host-config
             ];
 
             inherit specialArgs;

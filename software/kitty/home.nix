@@ -1,7 +1,6 @@
 { pkgs, ... }:
 
 {
-  # TODO: Consider configuring more through nix
   programs.kitty = {
     enable = true;
     enableGitIntegration = true;

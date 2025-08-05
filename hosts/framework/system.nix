@@ -66,4 +66,26 @@
   #     echo low > /sys/class/drm/card1/device/power_dpm_force_performance_level
   #   '';
   # };
+
+  services.keyd = {
+    enable = true;
+    keyboards = {
+      default = {
+        ids = [ "*" ];
+        settings = {
+          main = {
+            z = "y";
+            y = "z";
+            capslock = "esc";
+          };
+          # Assumes AltGr key combining with ä on q, ö on p, ü on y.
+          altgr = {
+            a = "G-q";
+            o = "G-p";
+            u = "G-y";
+          };
+        };
+      };
+    };
+  };
 }
