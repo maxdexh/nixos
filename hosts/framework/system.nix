@@ -41,7 +41,7 @@
     "pcie_aspm=force"
 
     # Adaptive brightness level (local dimming), power saving
-    "amdgpu.abmlevel=1" # TODO: Test if level 2 is acceptable
+    "amdgpu.abmlevel=2" # TODO: Test if level 2 is acceptable
 
     "pcie_aspm.policy=powersupersave"
   ];

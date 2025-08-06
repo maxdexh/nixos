@@ -65,6 +65,11 @@ in {
 
   programs.carapace = shellint;
 
+  # This sucks, but I can't be bothered.
+  xdg.configFile."nixpkgs/config.nix".text = ''
+    { allowUnfree = true; }
+  '';
+
   # programs.nix-index = enable-shellint;
 
   # programs.mcfly = enable-shellint;
