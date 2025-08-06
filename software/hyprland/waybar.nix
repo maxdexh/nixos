@@ -1,6 +1,8 @@
-{ lib, g, ... }:
-
 {
+  lib,
+  G,
+  ...
+}: {
   programs.waybar = {
     enable = true;
     style = builtins.readFile ./waybar.css;
@@ -11,7 +13,7 @@
     reload_style_on_change = true;
 
     position = "bottom";
-    modules-left = [ "hyprland/workspaces" ];
+    modules-left = ["hyprland/workspaces"];
     modules-right = let
       modules = [
         "tray"
@@ -24,10 +26,10 @@
         "clock"
       ];
       # TODO: Check if host is a laptop
-    in if g.host.isLaptop then
-      modules
-    else
-      lib.lists.remove "group/energy" modules;
+    in
+      if G.host.isLaptop
+      then modules
+      else lib.lists.remove "group/energy" modules;
 
     # TODO: Make this not suck
     "hyprland/workspaces" = {
@@ -51,7 +53,7 @@
     };
     "group/energy" = {
       orientation = "inherit";
-      modules = [ "power-profiles-daemon" "battery" ];
+      modules = ["power-profiles-daemon" "battery"];
     };
     # TODO: Padding to prevent shifting text
     battery = {
@@ -95,10 +97,10 @@
         # phone = "";
         # portable = "";
         # car = "";
-        default = [ "" "" "" ];
+        default = ["" "" ""];
       };
       on-click = "wpctl set-mute @DEFAULT_SINK@ toggle";
     };
-    tray = { spacing = 10; };
+    tray = {spacing = 10;};
   };
 }

@@ -1,7 +1,5 @@
-{ g, ... }: 
-
-{
-  imports = g.findAutoImports "/home.nix";
+{G, ...}: {
+  imports = G.findAutoImports "/home.nix";
 
   xdg.enable = true;
 

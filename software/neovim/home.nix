@@ -1,8 +1,10 @@
-{ g, config, ... }:
-
 {
+  G,
+  config,
+  ...
+}: {
   xdg.configFile."nvim".source =
-    config.lib.file.mkOutOfStoreSymlink g.localConfigRoot
+    config.lib.file.mkOutOfStoreSymlink G.localConfigRoot
     + "/software/neovim/nvim";
 
   home.sessionVariables = {

@@ -10,55 +10,63 @@
     };
   };
 
-  
-  outputs = inputs@{ self, nixpkgs, nixos-hardware, home-manager, ... }: let
-    lib = nixpkgs.lib;
+  outputs = inputs: let
+    lib = inputs.nixpkgs.lib;
 
-    host-system = host-name: let
-      host-err = exp: got: "${host-name}: Expected ${exp}, got: ${got}";
-      build-args = { isLaptop, localConfigRoot }:
-        assert lib.asserts.assertMsg (builtins.isString localConfigRoot)
-          (host-err "string" localConfigRoot);
-        assert lib.asserts.assertMsg (!lib.strings.hasSuffix "/" localConfigRoot)
-          (host-err "Path without trailing slash" localConfigRoot);
-        assert lib.asserts.assertMsg (builtins.isBool isLaptop)
-          (host-err "bool" isLaptop);
-        {
+    build-global = host-name: let
+      check = p: ex: got: lib.asserts.assertMsg (p got) "${host-name}: Expected ${ex}, got: ${got}";
+      check-not = p: check (got: !(p got));
+      check-bool = check builtins.isBool "bool";
+
+      build-args = {
+        isLaptop,
+        isNixOS,
+        localConfigRoot,
+      }:
+        assert check builtins.isString "string" localConfigRoot;
+        assert check-not (lib.strings.hasSuffix "/") "Path without trailing slash" localConfigRoot;
+        assert check-bool isLaptop;
+        assert check-bool isNixOS; {
           inherit inputs;
 
           host = {
-            inherit isLaptop;
+            inherit isLaptop isNixOS;
             name = host-name;
           };
 
           inherit localConfigRoot;
 
-          findAutoImports = suffix: lib.pipe [ ./software ./hosts/${host-name} ] [
-            (builtins.concatMap lib.filesystem.listFilesRecursive)
-            (map toString)
-            (builtins.filter (lib.strings.hasSuffix suffix))
-          ];
+          findAutoImports = suffix:
+            lib.pipe [./software ./hosts/${host-name}] [
+              (builtins.concatMap lib.filesystem.listFilesRecursive)
+              (map toString)
+              (builtins.filter (lib.strings.hasSuffix suffix))
+            ];
         };
+    in
+      build-args (import ./hosts/${host-name}/host-meta.nix inputs);
 
-      specialArgs.g = build-args (import ./hosts/${host-name}/host-meta.nix inputs);
-
-      in nixpkgs.lib.nixosSystem {
+    host-system = G:
+      lib.nixosSystem {
         modules = [
-          home-manager.nixosModules.home-manager
+          inputs.home-manager.nixosModules.home-manager
           ./system-main.nix
-          { networking.hostName = host-name; }
+          {networking.hostName = G.host.name;}
         ];
 
-        inherit specialArgs;
+        specialArgs.G = G;
       };
-      
-      yup =
-        map (host-name: { ${host-name} = host-system host-name; }) 
-        (builtins.attrNames (builtins.readDir ./hosts));
-      configs = builtins.foldl' 
-        (a: b: a // b)
-        {}
-        yup;
-
-  in { nixosConfigurations = configs; };
+    hosts = lib.pipe (builtins.readDir ./hosts) [
+      builtins.attrNames
+      (map build-global)
+    ];
+  in {
+    nixosConfigurations = lib.pipe hosts [
+      (builtins.filter (G: G.host.isNixOS))
+      (map (G: {
+        ${G.host.name} = host-system G;
+      }))
+      lib.attrsets.mergeAttrsList
+    ];
+  };
 }

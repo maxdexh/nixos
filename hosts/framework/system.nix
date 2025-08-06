@@ -1,15 +1,12 @@
-{ g, ... }:
-
-{
+{G, ...}: {
   imports = [
-    g.inputs.nixos-hardware.nixosModules.framework-13-7040-amd
+    G.inputs.nixos-hardware.nixosModules.framework-13-7040-amd
     ./hardware-configuration.nix
   ];
 
   # TODO: udev rule to prevent the keyboard & touchpad from waking the device from sleep
   # TODO: Try making the lid switch wake the device
   services.logind = {
-
     lidSwitch = "suspend-then-hibernate";
     lidSwitchExternalPower = "suspend";
     lidSwitchDocked = "ignore";
@@ -71,7 +68,7 @@
     enable = true;
     keyboards = {
       default = {
-        ids = [ "*" ];
+        ids = ["*"];
         settings = {
           main = {
             z = "y";
