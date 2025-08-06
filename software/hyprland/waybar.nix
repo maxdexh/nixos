@@ -1,4 +1,4 @@
-{ lib, config-meta, ... }:
+{ lib, g, ... }:
 
 {
   programs.waybar = {
@@ -24,7 +24,7 @@
         "clock"
       ];
       # TODO: Check if host is a laptop
-    in if config-meta.host.isLaptop then
+    in if g.host.isLaptop then
       modules
     else
       lib.lists.remove "group/energy" modules;

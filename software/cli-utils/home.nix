@@ -1,4 +1,5 @@
 { pkgs, ... }:
+
 let
   shellint-no-bash = {
     enable = true;

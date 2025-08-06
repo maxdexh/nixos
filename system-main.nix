@@ -1,0 +1,32 @@
+{ g, ... }:
+
+{
+  imports = g.findAutoImports "/system.nix";
+
+  system.stateVersion = "25.05";
+
+  programs.nix-ld.enable = true;
+
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
+  nix.optimise.automatic = true;
+
+  users.users.max = {
+    isNormalUser = true;
+    description = "Max";
+    extraGroups = [ "networkmanager" "wheel" ];
+  };
+
+  # Home Manager user config
+  home-manager.users.max = import ./home-main.nix;
+
+  home-manager = {
+    useGlobalPkgs = true;
+    verbose = true;
+    extraSpecialArgs.g = g;
+  };
+}
