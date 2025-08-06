@@ -1,12 +1,14 @@
-{ config, pkgs, ... }:
-
 {
-  home.packages = with pkgs; [ rustup ];
+  config,
+  pkgs,
+  ...
+}: {
+  home.packages = with pkgs; [rustup];
   home.sessionVariables = {
     CARGO_HOME = "${config.xdg.dataHome}/cargo";
     RUSTUP_HOME = "${config.xdg.dataHome}/rustup";
   };
-  home.sessionPath = [ "${config.xdg.dataHome}/cargo/bin" ];
+  home.sessionPath = ["${config.xdg.dataHome}/cargo/bin"];
 
   xdg.dataFile = {
     # use x86 stable as default

@@ -1,12 +1,10 @@
-{ pkgs, ... }:
-
-let
+{pkgs, ...}: let
   shellint-no-bash = {
     enable = true;
     enableFishIntegration = true;
   };
 
-  shellint = { enableBashIntegration = true; } // shellint-no-bash;
+  shellint = {enableBashIntegration = true;} // shellint-no-bash;
 in {
   home.packages = with pkgs; [
     gh
@@ -32,10 +30,12 @@ in {
   programs.ripgrep.enable = true;
   programs.bat.enable = true;
 
-  programs.zoxide = shellint // {
-    # Shadow cd
-    options = [ "--cmd cd" ];
-  };
+  programs.zoxide =
+    shellint
+    // {
+      # Shadow cd
+      options = ["--cmd cd"];
+    };
 
   programs.nix-your-shell = shellint-no-bash;
 

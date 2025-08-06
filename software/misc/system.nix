@@ -1,7 +1,5 @@
-{ pkgs, ... }:
-
-{
-  environment.systemPackages = with pkgs; [ openvpn gnumake ];
+{pkgs, ...}: {
+  environment.systemPackages = with pkgs; [openvpn gnumake];
 
   programs.steam.enable = true;
 }

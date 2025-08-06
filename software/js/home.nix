@@ -1,8 +1,11 @@
-{ config, pkgs, ... }:
-
+{
+  config,
+  pkgs,
+  ...
+}:
 # Mason uses npm :/
 {
-  home.packages = with pkgs; [ nodejs pnpm ];
+  home.packages = with pkgs; [nodejs pnpm];
 
   home.sessionVariables = {
     NODE_REPL_HISTORY = "${config.xdg.stateHome}/node_repl_history";

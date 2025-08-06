@@ -1,6 +1,4 @@
-{ ... }:
-
-{
+{...}: {
   # TODO: https://github.com/AlexNabokikh/nix-config/blob/master/modules/home-manager/desktop/kde/default.nix
 
   # home.file.".config/kde.org".source = ./kde.org;

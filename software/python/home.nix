@@ -1,11 +1,13 @@
-{ config, pkgs, ... }:
-
 {
-  home.packages = with pkgs; [ python3 mypy ];
+  config,
+  pkgs,
+  ...
+}: {
+  home.packages = with pkgs; [python3 mypy];
 
   programs.uv = {
     enable = true;
-    settings = { python-preference = "only-managed"; };
+    settings = {python-preference = "only-managed";};
   };
 
   home.sessionVariables = {

@@ -1,6 +1,9 @@
-{ config, lib, pkgs, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   programs.fish = {
     enable = true;
     interactiveShellInit = ''
@@ -13,24 +16,24 @@
       mkcd = "mkdir $argv && cd";
       uvenv = "source ./.venv/bin/activate.fish";
     };
-    shellAbbrs = {
-      py = "uv run python3";
-      pypy = "uv run --python=pypy python3";
+    shellAbbrs =
+      {
+        py = "uv run python3";
+        pypy = "uv run --python=pypy python3";
 
-      mv = "mv -i";
+        mv = "mv -i";
 
-      rm = "trash";
+        rm = "trash";
 
-      g = "git";
-
-    } // lib.concatMapAttrs (alias: command: {
-
-      "g${alias}" = if lib.strings.hasPrefix "!" command then
-        lib.removePrefix "!" command
-      else
-        "git ${command}";
-
-    }) config.programs.git.aliases;
+        g = "git";
+      }
+      // lib.concatMapAttrs (alias: command: {
+        "g${alias}" =
+          if lib.strings.hasPrefix "!" command
+          then lib.removePrefix "!" command
+          else "git ${command}";
+      })
+      config.programs.git.aliases;
 
     functions = {
       fish_prompt = ''

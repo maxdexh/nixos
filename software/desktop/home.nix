@@ -1,6 +1,9 @@
-{ config, pkgs, lib, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   home.sessionVariables = {
     # gtk.theme is dysfunctional, but this works nicely, except that it still has window decorations.
     GTK_THEME = "Breeze:dark"; # or: "Adwaita:dark"
@@ -14,7 +17,7 @@
     SUDO_ASKPASS = with {
       askpass = pkgs.writeShellApplication {
         name = "askpass";
-        runtimeInputs = [ pkgs.rofi-wayland ];
+        runtimeInputs = [pkgs.rofi-wayland];
         text = ''
           rofi -theme material -dmenu -password -p "Password" -l 0 -theme-str 'mainbox { children: [inputbar]; }'
         '';

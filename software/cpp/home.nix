@@ -1,5 +1,3 @@
-{ pkgs, ... }:
-
-{
-  home.packages = with pkgs; [ gcc ];
+{pkgs, ...}: {
+  home.packages = with pkgs; [gcc];
 }

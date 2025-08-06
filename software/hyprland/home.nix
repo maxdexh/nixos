@@ -1,7 +1,9 @@
-{ pkgs, lib, ... }:
-
 {
-  imports = [ ./waybar.nix ];
+  pkgs,
+  lib,
+  ...
+}: {
+  imports = [./waybar.nix];
   home.packages = with pkgs; [
     waybar
     hyprshot
@@ -30,13 +32,14 @@
     package = let
       mainExe = lib.getExe pkgs.dunst;
       mainExeName = builtins.baseNameOf mainExe;
-    in pkgs.writeShellScriptBin mainExeName ''
-      if [ "$XDG_CURRENT_DESKTOP" = "KDE" ] || [ "$DESKTOP_SESSION" = "plasma" ]; then
-        echo "Dunst: Not starting because session is KDE Plasma."
-        exit 0
-      fi
-      exec ${mainExe} "$@"
-    '';
+    in
+      pkgs.writeShellScriptBin mainExeName ''
+        if [ "$XDG_CURRENT_DESKTOP" = "KDE" ] || [ "$DESKTOP_SESSION" = "plasma" ]; then
+          echo "Dunst: Not starting because session is KDE Plasma."
+          exit 0
+        fi
+        exec ${mainExe} "$@"
+      '';
     configFile = ./dunstrc;
   };
 
@@ -92,7 +95,7 @@
       exec = "systemctl --user exit";
       icon = "system-users";
       comment = "Exit Desktop";
-      settings = { Keywords = "logout"; };
+      settings = {Keywords = "logout";};
     };
 
     networkconfig = {
