@@ -6,14 +6,14 @@ return {
    {
       "mason.nvim",
       opts = {
-         ensure_installed = { "nil", "nixfmt" },
+         ensure_installed = { "nil", "alejandra" },
       },
    },
    {
       "stevearc/conform.nvim",
       opts = {
          formatters_by_ft = {
-            nix = { "nixfmt" },
+            nix = { "alejandra" },
          },
       },
    },
