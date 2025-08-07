@@ -48,5 +48,10 @@ in {
           end | string sub -s 3 --end=-4 | sort | uniq
         '';
     })
+    (writeFishApplication {
+      name = "find-unpushed";
+      text = builtins.readFile ./find-unpushed.fish;
+      runtimeInputs = [pkgs.fd];
+    })
   ];
 }
