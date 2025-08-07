@@ -71,6 +71,11 @@ in {
     { allowUnfree = true; }
   '';
 
+  home.file.".ignore".text = ''
+    /.cache
+    /.local/share
+  '';
+
   # programs.nix-index = enable-shellint;
 
   # programs.mcfly = enable-shellint;
