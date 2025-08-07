@@ -71,9 +71,32 @@ in {
     { allowUnfree = true; }
   '';
 
+  # nix run github:b3nj5m1n/xdg-ninja
   home.file.".ignore".text = ''
     /.cache
     /.local/share
+    /.local/state
+    /.lunarclient
+    /.minecraft
+    /.mozilla
+    /.dotnet
+    /.thunderbird
+    /.steam
+    /.steampid
+    /.pki
+  '';
+  xdg.configFile.".ignore".text = ''
+    /discord
+    /BraveSoftware
+    /Code
+    /lunarclient
+    /libreoffice
+    /obs-studio
+    /GIMP
+  '';
+  home.file."Repos/.ignore".text = ''
+    .venv/
+    .idea/
   '';
 
   # programs.nix-index = enable-shellint;
