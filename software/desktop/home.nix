@@ -14,7 +14,7 @@
     # No idea what this was, i think it had to do with electron using wayland too?
     NIXOS_OZONE_WL = "1";
 
-    SUDO_ASKPASS = with {
+    SUDO_ASKPASS = let
       askpass = pkgs.writeShellApplication {
         name = "askpass";
         runtimeInputs = [pkgs.rofi-wayland];
@@ -22,7 +22,7 @@
           rofi -theme material -dmenu -password -p "Password" -l 0 -theme-str 'mainbox { children: [inputbar]; }'
         '';
       };
-    };
+    in
       lib.getExe askpass;
 
     TERMINAL = "kitty";
