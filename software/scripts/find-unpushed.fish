@@ -6,7 +6,7 @@ set git_repos (
 )
 
 function list_out_of_git
-    set -l extra_ignores tmp/ ~/.ssh
+    set -l extra_ignores ~/.ssh/ ~/tmp/ ~/Pictures/Screenshots/ ~/Downloads/
     set -l out_of_git (
       fd --hidden --type file {--exclude,$git_repos} {--exclude,$extra_ignores} --color always --full-path --glob "$HOME/**" / \
           | sort \
@@ -31,8 +31,8 @@ function check_git_repos
     end
 end
 if contains -- --no-repo $argv
-    list_out_of_git $argv
+    list_out_of_git
 end
 if contains -- --unpushed $argv
-    check_git_repos $argv
+    check_git_repos
 end
