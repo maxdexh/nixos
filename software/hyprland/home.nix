@@ -92,7 +92,7 @@
     };
     logout = {
       name = "Log out";
-      exec = "systemctl --user exit";
+      exec = "hyprctl dispatch exit";
       icon = "system-users";
       comment = "Exit Desktop";
       settings = {Keywords = "logout";};
