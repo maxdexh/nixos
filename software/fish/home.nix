@@ -1,15 +1,13 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: {
   programs.fish = {
     enable = true;
     interactiveShellInit = ''
       set fish_greeting
-      bind ctrl-c cancel-commandline
-      for mode in (bind -L); bind -M $mode ctrl-alt-l 'clear && printf "\\e[3J"' repaint; end
+      for mode in (bind -L); bind -M $mode ctrl-l 'clear && printf "\\e[3J"' repaint; end
       set -q NVIM && fish_default_key_bindings || fish_vi_key_bindings
     '';
     shellAliases = {
