@@ -23,9 +23,9 @@ set -a commands no-repo
 function no-repo
     set -l extra_ignores ~/.ssh/ ~/tmp/ ~/Pictures/Screenshots/ ~/Downloads/
     set -l out_of_git (
-      fd --hidden --type file {--exclude,$git_repos} {--exclude,$extra_ignores} --color always --full-path --glob "$HOME/**" / \
-          | sort \
-          | uniq \
+        fd --hidden --type file {--exclude,$git_repos} {--exclude,$extra_ignores} --color always --full-path --glob "$HOME/**" \
+            | sort \
+            | uniq \
     )
     string join \n -- $out_of_git
 end
@@ -55,10 +55,10 @@ function main
     set -q argv[1] || print-usage 0
 
     set -g git_repos (
-      fd --hidden --fixed-strings --type=directory '.git' / \
-        | string match --regex --groups-only '(.*)/\.git/' \
-        | sort \
-        | uniq \
+        fd --hidden --fixed-strings --type=directory '.git' / \
+            | string match --regex --groups-only '(.*)/\.git/' \
+            | sort \
+            | uniq \
     )
     $argv
 end
