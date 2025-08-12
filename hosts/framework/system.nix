@@ -28,7 +28,6 @@
 
   boot.kernelParams = [
     # Enables AMD's preferred CPU scaling driver
-    # NOTE: This is set in hardware repo already
     "amd_pstate=active"
 
     # Enables USB autosuspend globally
@@ -38,8 +37,9 @@
     "pcie_aspm=force"
 
     # Adaptive brightness level (local dimming), power saving
-    "amdgpu.abmlevel=2" # TODO: Test if level 2 is acceptable
+    "amdgpu.abmlevel=2"
 
+    # idk if this does anything
     "pcie_aspm.policy=powersupersave"
   ];
 
@@ -54,15 +54,6 @@
     enable = true;
     powertop.enable = true;
   };
-
-  # TODO: `cat /sys/class/drm/card1/device/power_dpm_state` is currently alaways "performance". Try testing:
-  # systemd.services.amdgpu-power-save = {
-  #   description = "Set AMD GPU to low power mode";
-  #   wantedBy = [ "multi-user.target" ];
-  #   serviceConfig.ExecStart = ''
-  #     echo low > /sys/class/drm/card1/device/power_dpm_force_performance_level
-  #   '';
-  # };
 
   services.keyd = {
     enable = true;

@@ -180,7 +180,6 @@ function iter.filter(it, f)
          local args, len = libs.r.vararg.capture(it())
          if args[1] == nil then
             return nil
-            -- TODO: Can this be done with only 1 unpack?
          elseif f(unpack(args, 1, len)) then
             return unpack(args, 1, len)
          end

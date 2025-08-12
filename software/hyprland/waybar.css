@@ -1,7 +1,5 @@
 /* DEFAULT: https://github.com/Alexays/Waybar/blob/master/resources/style.css */
 
-/* TODO: Cleanup styles, borders */
-
 * {
     /* `otf-font-awesome` is required to be installed for icons */
     font-family: CaskaydiaMonoNerdFontPropo; /* , FontAwesome, Roboto, Helvetica, Arial, sans-serif; */

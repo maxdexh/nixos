@@ -53,21 +53,4 @@ return {
          end
       end,
    },
-   -- TODO: hydra cell nav (see Notebook-Setup)
-   {
-      "kiyoon/jupynium.nvim",
-      enabled = false,
-      build = "uv pip install . --python " .. vim.g.python3_host_prog,
-      opts = {
-         jupyter_command = {
-            "uv",
-            "run",
-            "--python",
-            vim.g.python3_host_prog,
-            "jupyter",
-         },
-         auto_download_ipynb = false,
-         notebook_dir = "/tmp",
-      },
-   },
 }

@@ -25,13 +25,11 @@
 
         "clock"
       ];
-      # TODO: Check if host is a laptop
     in
       if G.host.isLaptop
       then modules
       else lib.lists.remove "group/energy" modules;
 
-    # TODO: Make this not suck
     "hyprland/workspaces" = {
       format = "{icon}";
       on-scroll-up = "hyprctl dispatch workspace e+1";

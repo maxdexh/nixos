@@ -5,11 +5,6 @@
 -- Disable spellchecking
 vim.opt.spelllang = {}
 
--- https://www.reddit.com/r/neovim/comments/12lf0ke/does_anyone_have_a_cmdheight0_setup_without/
--- 0 looks way better, but causes annoying hit-enter prompts when editing lua files
--- TODO: Is there a better way to handle this? See :h hit-enter for how to reduce prompt frequency
-vim.opt.cmdheight = 1
-
 vim.opt.timeoutlen = 750
 
 vim.cmd([[
