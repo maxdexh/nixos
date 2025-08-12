@@ -1,3 +1,7 @@
+libs = require("util.libs")
+
+libs.r.nvim.set_ft_tabwidth("fish", 4)
+
 return {
    {
       "neovim/nvim-lspconfig",

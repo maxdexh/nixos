@@ -32,7 +32,7 @@ deps = {
    ls = require("luasnip"),
 
    lazy_eval = require("util.lazy-eval"),
-   lazyvim = require("util.lazyvim"),
+   nvim = require("util.nvim"),
    lang = require("util.lang"),
    keymap = require("util.keymap"),
    list = require("util.list"),

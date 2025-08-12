@@ -1,3 +1,0 @@
-local lazyvim = {}
-
-return lazyvim

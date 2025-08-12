@@ -49,8 +49,8 @@ in {
         '';
     })
     (writeFishApplication {
-      name = "find-unpushed";
-      text = builtins.readFile ./find-unpushed.fish;
+      name = "find-unsynced";
+      text = builtins.readFile ./find-unsynced.fish;
       runtimeInputs = [pkgs.fd];
     })
   ];
