@@ -48,8 +48,6 @@ function lang.add_auto_hl_overrides(overrides)
    })
 end
 
---FIXME: Why does the LSP sometimes not attach itself?
-
 ---@param name string
 ---@param buf? integer
 function lang.attach_client(name, buf)
