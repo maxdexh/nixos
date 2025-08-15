@@ -1,6 +1,8 @@
 {
   pkgs,
   lib,
+  G,
+  config,
   ...
 }: {
   imports = [./waybar.nix];
@@ -22,7 +24,12 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
-    extraConfig = builtins.readFile ./hyprland.conf;
+
+    extraConfig = "source = ${
+      config.lib.file.mkOutOfStoreSymlink G.host.localConfigRoot
+      + "/software/hyprland/hyprland.conf"
+    }";
+    # extraConfig = builtins.readFile ./hyprland.conf;
   };
 
   # TODO: Try other daemons
