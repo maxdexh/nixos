@@ -9,6 +9,7 @@
   home.packages = with pkgs; [
     waybar
     hyprshot
+    (flameshot.override {enableWlrSupport = true;})
     hyprpicker
     brightnessctl
     rofi-wayland

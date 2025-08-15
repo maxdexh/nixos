@@ -2,7 +2,7 @@
   description = "My NixOS configuration flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "nixpkgs/nixos-25.05";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
@@ -13,7 +13,7 @@
   outputs = inputs: let
     lib = inputs.nixpkgs.lib;
 
-    build-global = name: let
+    build-G = name: let
       check = p: ex: got: lib.asserts.assertMsg (p got) "${name}: Expected ${ex}, got: ${got}";
       check-not = p: check (got: !(p got));
       check-bool = check builtins.isBool "bool";
@@ -28,7 +28,9 @@
         assert check-bool isLaptop;
         assert check-bool isNixOS; {
           inherit inputs;
+
           host = host-config // {inherit name;};
+
           findAutoImports = suffix:
             lib.pipe [./software ./hosts/${name}] [
               (builtins.concatMap lib.filesystem.listFilesRecursive)
@@ -51,7 +53,7 @@
       };
     hosts = lib.pipe (builtins.readDir ./hosts) [
       builtins.attrNames
-      (map build-global)
+      (map build-G)
     ];
   in {
     nixosConfigurations = lib.pipe hosts [
