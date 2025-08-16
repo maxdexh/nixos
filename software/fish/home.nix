@@ -20,6 +20,7 @@
         pypy = "uv run --python=pypy python3";
 
         mv = "mv -i";
+        cp = "cp -i";
 
         rm = "trash";
 
