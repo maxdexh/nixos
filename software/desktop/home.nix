@@ -26,6 +26,9 @@
       lib.getExe askpass;
 
     TERMINAL = "kitty";
+
+    GTK2_RC_FILES = config.gtk.gtk2.configLocation;
+    XCOMPOSECACHE = "${config.xdg.cacheHome}/X11/xcompose";
   };
 
   gtk.gtk2.configLocation = "${config.xdg.configHome}/gtkrc-2.0";
