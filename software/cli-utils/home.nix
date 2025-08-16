@@ -22,6 +22,8 @@ in {
     powertop
     nvme-cli
     smartmontools
+
+    nix-search
   ];
 
   # Make shell integrations explicit
