@@ -18,7 +18,7 @@
       text = ''
         #!${lib.getExe pkgs.fish}
 
-        set --append PATH (string split ':' -- "${
+        set --prepend PATH (string split ':' -- "${
           lib.makeBinPath runtimeInputs
         }")
 
