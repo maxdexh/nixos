@@ -22,12 +22,9 @@ set -g commands
 set -a commands no-repo
 function no-repo
     set -l extra_ignores ~/.ssh/ ~/tmp/ ~/Pictures/Screenshots/ ~/Downloads/
-    set -l out_of_git (
-        fd --hidden --type file {--exclude,$git_repos} {--exclude,$extra_ignores} --color always --full-path --glob "$HOME/**" \
-            | sort \
-            | uniq \
-    )
-    string join \n -- $out_of_git
+    fd --hidden --type file {--exclude,$git_repos} {--exclude,$extra_ignores} --color always --full-path --glob ~/'**' / \
+        | sort \
+        | uniq
 end
 
 set -a commands unpushed
