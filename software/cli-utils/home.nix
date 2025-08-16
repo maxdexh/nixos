@@ -23,7 +23,7 @@ in {
     nvme-cli
     smartmontools
 
-    nix-search
+    nix-search-cli
   ];
 
   # Make shell integrations explicit
