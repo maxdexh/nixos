@@ -12,6 +12,10 @@
     options = "--delete-older-than 14d";
   };
   nix.optimise.automatic = true;
+  systemd.services = {
+    nix-optimise.serviceConfig.ConditionACPower = true;
+    nix-gc.serviceConfig.ConditionACPower = true;
+  };
 
   users.users.max = {
     isNormalUser = true;
