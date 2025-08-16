@@ -5,6 +5,9 @@
 
   programs.nix-ld.enable = true;
 
+  # broken under flakes
+  programs.command-not-found.enable = false;
+
   nix.settings.experimental-features = ["nix-command" "flakes"];
   nix.gc = {
     automatic = true;
