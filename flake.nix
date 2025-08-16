@@ -54,6 +54,7 @@
           modules = [
             inputs.home-manager.nixosModules.home-manager
             ./system-main.nix
+            ./global-overlays.nix
             {networking.hostName = G.host.name;}
           ];
 
