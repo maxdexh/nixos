@@ -24,19 +24,22 @@
         ];
 
       host = let
-        check = p: ex: got: lib.asserts.assertMsg (p got) "${name}: Expected ${ex}, got: ${got}";
-        check-not = p: check (got: !(p got));
-        check-bool = check builtins.isBool "bool";
+        check-msg = cond: msg: lib.asserts.assertMsg cond "${name}: ${msg}";
+        expect = p: ex: got: check-msg (p got) "Expected ${ex}, got: ${got}";
+        expect-not = p: expect (got: !(p got));
+        expect-bool = expect builtins.isBool "bool";
 
         check-host = host-config @ {
           isLaptop,
           isNixOS,
           localConfigRoot,
+          system,
         }:
-          assert check builtins.isString "string" localConfigRoot;
-          assert check-not (lib.strings.hasSuffix "/") "Path without trailing slash" localConfigRoot;
-          assert check-bool isLaptop;
-          assert check-bool isNixOS;
+          assert expect-bool isLaptop;
+          assert expect-bool isNixOS;
+          assert expect (it: inputs.nixpkgs.legacyPackages ? ${it}) "Nixpkgs system" system;
+          assert expect builtins.isString "string" localConfigRoot;
+          assert expect-not (lib.strings.hasSuffix "/") "Path without trailing slash" localConfigRoot;
             host-config // {inherit name;};
       in
         check-host (import ./hosts/${name}/host-meta.nix inputs);
@@ -46,22 +49,32 @@
       builtins.attrNames
       (map build-G)
     ];
+
+    nixos-system = G: {
+      system = G.host.system;
+
+      modules = [
+        inputs.home-manager.nixosModules.home-manager
+        ./system-main.nix
+        ./global-overlays.nix
+        {networking.hostName = G.host.name;}
+      ];
+
+      specialArgs.G = G;
+    };
   in {
     nixosConfigurations = lib.pipe hosts [
       (builtins.filter (G: G.host.isNixOS))
-      (map (G: {
-        ${G.host.name} = lib.nixosSystem {
-          modules = [
-            inputs.home-manager.nixosModules.home-manager
-            ./system-main.nix
-            ./global-overlays.nix
-            {networking.hostName = G.host.name;}
-          ];
-
-          specialArgs.G = G;
-        };
-      }))
+      (map (
+        G: {
+          ${G.host.name} = lib.nixosSystem (nixos-system G);
+        }
+      ))
       lib.attrsets.mergeAttrsList
     ];
   };
+
+  # TODO: Standalone hm config for user, with overlays (bc globalPkgs is not a thing there)
+  # TODO: Check whether Standalone hm can be used together with module hm
+  # TODO: How to decide what host G to use from hm flake?
 }
