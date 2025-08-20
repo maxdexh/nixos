@@ -4,6 +4,7 @@
     withUWSM = true;
     xwayland.enable = true;
   };
+  programs.dconf.enable = true;
 
   # HACK: This fixes dolphin not seeing file associations in hyprland.
   #       this file is created by kbuildsycoca5 (also overwrites mimeapps.list)

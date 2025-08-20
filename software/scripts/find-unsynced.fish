@@ -52,7 +52,7 @@ function main
     set -q argv[1] || print-usage 0
 
     set -g git_repos (
-        fd --hidden --fixed-strings --type=directory '.git' / \
+        fd --hidden --fixed-strings --full-path --type=directory --exclude /nix/store/ '.git' / \
             | string match --regex --groups-only '(.*)/\.git/' \
             | sort \
             | uniq \

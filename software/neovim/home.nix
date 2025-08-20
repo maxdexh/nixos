@@ -1,11 +1,6 @@
-{
-  G,
-  config,
-  ...
-}: {
+{config, ...}: {
   xdg.configFile."nvim".source =
-    config.lib.file.mkOutOfStoreSymlink G.host.localConfigRoot
-    + "/software/neovim/nvim";
+    config.lib.file.linkLocalConfigFile ./nvim;
 
   home.sessionVariables = {
     VISUAL = "nvim";

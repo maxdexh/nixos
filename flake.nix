@@ -16,33 +16,34 @@
     build-G = name: {
       inherit inputs;
 
+      host = let
+        check-msg = cond: msg: lib.asserts.assertMsg cond "${name}: ${msg}";
+        expect = p: ex: got: check-msg (p got) "Expected ${ex}, got: ${got}";
+        expect-bool = expect builtins.isBool "bool";
+        check-host = host-config @ {
+          isLaptop,
+          isNixOS,
+          system,
+          localConfigRoot ? "",
+        }:
+          assert expect-bool isLaptop;
+          assert expect-bool isNixOS;
+          assert expect (it: inputs.nixpkgs.legacyPackages ? ${it}) "Nixpkgs system" system;
+          assert expect builtins.isString "string" localConfigRoot;
+            host-config
+            // {
+              inherit name;
+              localConfigRoot = lib.removeSuffix "/" localConfigRoot;
+            };
+      in
+        check-host (import ./hosts/${name}/host-meta.nix inputs);
+
       findAutoImports = suffix:
         lib.pipe [./software ./hosts/${name}] [
           (builtins.concatMap lib.filesystem.listFilesRecursive)
           (map toString)
           (builtins.filter (lib.strings.hasSuffix suffix))
         ];
-
-      host = let
-        check-msg = cond: msg: lib.asserts.assertMsg cond "${name}: ${msg}";
-        expect = p: ex: got: check-msg (p got) "Expected ${ex}, got: ${got}";
-        expect-not = p: expect (got: !(p got));
-        expect-bool = expect builtins.isBool "bool";
-
-        check-host = host-config @ {
-          isLaptop,
-          isNixOS,
-          localConfigRoot,
-          system,
-        }:
-          assert expect-bool isLaptop;
-          assert expect-bool isNixOS;
-          assert expect (it: inputs.nixpkgs.legacyPackages ? ${it}) "Nixpkgs system" system;
-          assert expect builtins.isString "string" localConfigRoot;
-          assert expect-not (lib.strings.hasSuffix "/") "Path without trailing slash" localConfigRoot;
-            host-config // {inherit name;};
-      in
-        check-host (import ./hosts/${name}/host-meta.nix inputs);
     };
 
     hosts = lib.pipe (builtins.readDir ./hosts) [

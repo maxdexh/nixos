@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  G,
   config,
   ...
 }: {
@@ -9,7 +8,6 @@
   home.packages = with pkgs; [
     waybar
     hyprshot
-    (flameshot.override {enableWlrSupport = true;})
     hyprpicker
     brightnessctl
     rofi-wayland
@@ -26,11 +24,7 @@
   wayland.windowManager.hyprland = {
     enable = true;
 
-    extraConfig = "source = ${
-      config.lib.file.mkOutOfStoreSymlink G.host.localConfigRoot
-      + "/software/hyprland/hyprland.conf"
-    }";
-    # extraConfig = builtins.readFile ./hyprland.conf;
+    extraConfig = "source = ${config.lib.file.linkLocalConfigFile ./hyprland.conf}";
   };
 
   # TODO: Try other daemons

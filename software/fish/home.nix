@@ -53,6 +53,7 @@
         set -l time "$(set_color brgrey)$(date '+%R')$(set_color normal)"
         string join -n " " -- $venv $duration $time
       '';
+      show_args = "set --show argv";
     };
   };
 }
