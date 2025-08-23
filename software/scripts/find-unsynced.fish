@@ -22,7 +22,15 @@ set -g commands
 set -a commands no-repo
 function no-repo
     set -l extra_ignores ~/.ssh/ ~/tmp/ ~/Pictures/Screenshots/ ~/Downloads/
-    fd --hidden --type file {--exclude,$git_repos} {--exclude,$extra_ignores} --color always --full-path --glob ~/'**' / \
+    fd \
+        --color always \
+        --glob \
+        --full-path \
+        --hidden \
+        --type file \
+        {--exclude,$git_repos} \
+        {--exclude,$extra_ignores} \
+        "$HOME/**" / \
         | sort \
         | uniq
 end
@@ -44,6 +52,19 @@ function unpushed
     end
 end
 
+function find-git-repos
+    fd \
+        --fixed-strings \
+        --full-path \
+        --hidden \
+        --type=directory \
+        --exclude /nix/store/ \
+        '.git' / \
+        | string match --regex --groups-only '(.*)/\.git/' \
+        | sort \
+        | uniq
+end
+
 set -g usage
 
 function main
@@ -51,12 +72,7 @@ function main
     set -ql _flag_help && print-usage
     set -q argv[1] || print-usage 0
 
-    set -g git_repos (
-        fd --hidden --fixed-strings --full-path --type=directory --exclude /nix/store/ '.git' / \
-            | string match --regex --groups-only '(.*)/\.git/' \
-            | sort \
-            | uniq \
-    )
+    set -g git_repos (find-git-repos)
     $argv
 end
 

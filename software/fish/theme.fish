@@ -2,7 +2,7 @@
 
 fish_color_autosuggestion brblack
 fish_color_cancel --reverse
-fish_color_command blue
+fish_color_command brblue
 fish_color_comment red
 fish_color_cwd green
 fish_color_cwd_root red
@@ -12,7 +12,7 @@ fish_color_escape brcyan
 fish_color_history_current --bold
 fish_color_host normal
 fish_color_host_remote yellow
-fish_color_keyword blue
+fish_color_keyword brblue
 fish_color_match --background=brblue
 fish_color_normal normal
 fish_color_operator brcyan

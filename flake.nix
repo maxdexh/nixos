@@ -66,11 +66,9 @@
   in {
     nixosConfigurations = lib.pipe hosts [
       (builtins.filter (G: G.host.isNixOS))
-      (map (
-        G: {
-          ${G.host.name} = lib.nixosSystem (nixos-system G);
-        }
-      ))
+      (map (G: {
+        ${G.host.name} = lib.nixosSystem (nixos-system G);
+      }))
       lib.attrsets.mergeAttrsList
     ];
   };

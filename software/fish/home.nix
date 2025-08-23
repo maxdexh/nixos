@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: {
   programs.fish = {
@@ -11,6 +12,7 @@
         bind -M $mode ctrl-l 'clear && printf "\\e[3J"' repaint;
       end
       set -q NVIM && fish_default_key_bindings || fish_vi_key_bindings
+      set -U grc_plugin_ignore_execs ls
     '';
     shellAliases = {
       mkcd = "mkdir $argv && cd";
@@ -27,14 +29,42 @@
         rm = "trash";
 
         g = "git";
+
+        nrb = "sudo nixos-rebuild switch";
       }
-      // lib.concatMapAttrs (alias: command: {
-        "g${alias}" =
-          if lib.strings.hasPrefix "!" command
-          then lib.removePrefix "!" command
-          else "git ${command}";
-      })
-      config.programs.git.aliases;
+      // lib.pipe config.programs.git.aliases [
+        (lib.concatMapAttrs (alias: command: {
+          "g${alias}" = "git ${
+            if lib.hasPrefix "!" command
+            then alias
+            else command
+          }";
+        }))
+      ]
+      // lib.pipe [
+        "env"
+        "df"
+        "du"
+        "findmnt"
+        "getfacl"
+        "id"
+        "ifconfig"
+        "last"
+        "lspci"
+        "ping"
+        "ps"
+        "ss"
+        "stat"
+        "sysctl"
+        "systemctl"
+        "traceroute"
+        "uptime"
+      ] [
+        (map (cmd: {
+          ${cmd} = "grc ${cmd}";
+        }))
+        lib.mergeAttrsList
+      ];
 
     functions = {
       fish_prompt = ''
@@ -57,5 +87,18 @@
       '';
       show_args = "set --show argv";
     };
+
+    plugins = [
+      {
+        name = "tide";
+        src = pkgs.fishPlugins.tide.src;
+      }
+      {
+        name = "autopair";
+        src = pkgs.fishPlugins.autopair.src;
+      }
+    ];
   };
+
+  home.packages = [pkgs.grc];
 }
