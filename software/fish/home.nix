@@ -42,7 +42,6 @@
         }))
       ]
       // lib.pipe [
-        "env"
         "df"
         "du"
         "findmnt"
