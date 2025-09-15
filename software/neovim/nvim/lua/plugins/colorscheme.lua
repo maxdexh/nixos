@@ -36,6 +36,7 @@ local hl_remaps = {
    ["@namespace"] = "@module",
 
    ["@lsp.type.macro"] = "Macro",
+   ["@function.macro.rust"] = "Macro",
 
    ["@lsp.type.method"] = "@lsp.type.function",
    ["@lsp.typemod.method.declaration"] = "@lsp.typemod.function.declaration",
@@ -43,6 +44,7 @@ local hl_remaps = {
    ["@lsp.type.parameter"] = "parameter",
    ["rustMacroVariable"] = "parameter",
    ["@keyword"] = "keyword",
+   ["@constant"] = "@variable",
 
    ["@lsp.type.lifetime"] = "@lsp.type.typeParameter",
    ["@keyword.import.rust"] = "keyword",
@@ -51,7 +53,7 @@ local hl_remaps = {
 }
 ---@type string[]
 local deleted_hls = {
-   "@function.macro.rust", -- treesitter randomly matches stuff in macros, including all parameters
+   -- "@function.macro.rust", -- treesitter randomly matches stuff in macros, including all parameters
    "@variable.rust", -- treesitter likes to randomly view keywords as variables in macro_rules
    "@operator.rust", -- treesitter turns macro exclamation marks into operators
    "@variable.builtin.rust", -- causes self to be colored as a parameter
@@ -63,6 +65,9 @@ local deleted_hls = {
    "@punctuation.bracket", -- Breaks rainbow-brackets because treesitter takes precedence
    "rustFoldBraces", -- See above
    "@lsp.type.operator.lua", -- For some reason this is applied to brackets and braces, breaking rainbow-brackets
+
+   "@markup.link.markdown_inline", -- disable underlining of links (for comment highlighting)
+   "@lsp.type.comment.rust", -- would override injections due to high priority
 
    -- TODO: Override string highlighting for nix string injections
    -- "@string.nix",
