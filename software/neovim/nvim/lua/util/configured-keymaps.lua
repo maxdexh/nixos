@@ -91,14 +91,10 @@ function configured_keymaps.set_global_keybinds()
       -- TODO: Set <C-v> individually in fish and here so that we can paste in multicursor mode
       { "<C-c>", '"+y', desc = "Copy Selection", mode = "v" },
       { "<ESC><ESC>", "<C-\\><C-n>", desc = "Exit Terminal mode", mode = "t" },
-      {
-         "<C-s>",
-         function()
-            vim.notify("no")
-         end,
-         desc = "Save File",
-         mode = { "n", "i" },
-      },
+      -- Unlike lazyvim's keybind, this escapes before saving, because the other order interrupts the formatter
+      -- in case of automatic clearing of whitespace only line when switching to normal mode
+      { "<C-s>", "<ESC><Cmd>wa<CR>", desc = "Save File", mode = "i" },
+      { "<C-s>", "<Cmd>wa<CR>", desc = "Save File", mode = "n" },
    })
 
    -- emmy doesnt like -1 literal (which is not even the correct argument type lol)
