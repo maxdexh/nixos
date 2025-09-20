@@ -42,6 +42,7 @@ local hl_remaps = {
    ["@lsp.typemod.method.declaration"] = "@lsp.typemod.function.declaration",
 
    ["@lsp.type.parameter"] = "parameter",
+   ["@lsp.type.selfKeyword.rust"] = "keyword",
    ["rustMacroVariable"] = "parameter",
    ["@keyword"] = "keyword",
    ["@constant"] = "@variable",
@@ -70,6 +71,7 @@ local deleted_hls = {
    "@lsp.type.comment.rust", -- would override injections due to high priority
 
    -- TODO: Override string highlighting for nix string injections
+   -- Fallback to highlighting as string if no injections match
    -- "@string.nix",
 }
 
@@ -181,4 +183,13 @@ return {
 
    { "tokyonight.nvim", enabled = false },
    { "catpuccin", enabled = false },
+
+   {
+      "nvim-treesitter/nvim-treesitter",
+      opts = {
+         ensure_installed = {
+            "all",
+         },
+      },
+   },
 }
