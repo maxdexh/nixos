@@ -24,6 +24,10 @@ in {
     smartmontools
 
     nix-search-cli
+
+    pdfgrep
+    glow
+    openvpn
   ];
 
   # Make shell integrations explicit
