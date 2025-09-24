@@ -41,6 +41,9 @@
 
     # idk if this does anything
     "pcie_aspm.policy=powersupersave"
+
+    "rcu_nocbs=all"
+    "rcutree.enable_rcu_lazy=1"
   ];
 
   services.power-profiles-daemon.enable = true;
