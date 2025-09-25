@@ -28,6 +28,7 @@ in {
     pdfgrep
     glow
     openvpn
+    glances
   ];
 
   # Make shell integrations explicit
