@@ -30,20 +30,8 @@
     # Enables AMD's preferred CPU scaling driver
     "amd_pstate=active"
 
-    # Enables USB autosuspend globally
-    "usbcore.autosuspend=1"
-
-    # Enables PCIe Active State Power Management (careful with some devices)
-    "pcie_aspm=force"
-
     # Adaptive brightness level (local dimming), power saving
     "amdgpu.abmlevel=2"
-
-    # idk if this does anything
-    "pcie_aspm.policy=powersupersave"
-
-    "rcu_nocbs=all"
-    "rcutree.enable_rcu_lazy=1"
   ];
 
   services.power-profiles-daemon.enable = true;
