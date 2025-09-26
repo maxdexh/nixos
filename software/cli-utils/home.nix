@@ -26,6 +26,8 @@ in {
     nix-search-cli
 
     pdfgrep
+    pdftk
+
     glow
     openvpn
   ];
