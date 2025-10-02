@@ -26,7 +26,10 @@
     # };
   };
 
-  # NOTE: sddm doesn't unlock gnome-keyring and is weird with biometrics
+  # NOTE:
+  # - sddm password login takes ~30s if biometrics are available (https://github.com/sddm/sddm/issues/284)
+  # - sddm sometimes often for login twice
+  # - try https://invent.kde.org/plasma/plasma-login-manager once it's ready
   # services.displayManager.sddm.enable = true;
 
   fonts.packages = with pkgs; [

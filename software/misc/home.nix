@@ -25,7 +25,7 @@
   ];
 
   # Keep home directory clean (in case we use these through nix-shell or nix-env)
-  home.sessionVariables = {
+  systemd.user.sessionVariables = {
     BOGOFILTER_DIR = "${config.xdg.dataHome}/bogofilter";
     DOTNET_CLI_HOME = "${config.xdg.dataHome}/dotnet";
     GRADLE_USER_HOME = "${config.xdg.dataHome}/gradle";

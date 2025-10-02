@@ -4,7 +4,7 @@
   lib,
   ...
 }: {
-  home.sessionVariables = {
+  systemd.user.sessionVariables = {
     # gtk.theme is dysfunctional, but this works nicely, except that it still has window decorations.
     GTK_THEME = "Breeze:dark"; # or: "Adwaita:dark"
 
