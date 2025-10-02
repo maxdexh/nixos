@@ -12,7 +12,6 @@
         bind -M $mode ctrl-l 'clear && printf "\\e[3J"' repaint;
       end
       set -q NVIM && fish_default_key_bindings || fish_vi_key_bindings
-      set -U grc_plugin_ignore_execs ls
     '';
     shellAliases = {
       mkcd = "mkdir $argv && cd";
@@ -40,29 +39,6 @@
             else command
           }";
         }))
-      ]
-      // lib.pipe [
-        "df"
-        "du"
-        "findmnt"
-        "getfacl"
-        "id"
-        "ifconfig"
-        "last"
-        "lspci"
-        "ping"
-        "ps"
-        "ss"
-        "stat"
-        "sysctl"
-        "systemctl"
-        "traceroute"
-        "uptime"
-      ] [
-        (map (cmd: {
-          ${cmd} = "grc ${cmd}";
-        }))
-        lib.mergeAttrsList
       ];
 
     functions = {
@@ -98,6 +74,4 @@
       }
     ];
   };
-
-  home.packages = [pkgs.grc];
 }
