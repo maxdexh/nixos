@@ -1,6 +1,4 @@
 {pkgs, ...}: {
-  # FIXME: When logging in through means other than sddm, gnome
-  # When using sddm, gnome-keyring doesn't
   programs.hyprland = {
     enable = true;
     withUWSM = true;

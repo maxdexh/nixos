@@ -7,9 +7,23 @@
     platformTheme = "kde6";
   };
 
+  services.xserver.enable = true;
+
+  services.displayManager = {
+    defaultSession = "hyprland-uwsm";
+    # autoLogin = {
+    #   enable = true;
+    #   user = "max";
+    # };
+  };
   services.xserver.displayManager.gdm = {
     enable = true;
     wayland = true;
+    # settings = {
+    #   greeter = {
+    #     IncludeAll = true;
+    #   };
+    # };
   };
 
   # FIXME: sddm doesn't unlock gnome-keyring
