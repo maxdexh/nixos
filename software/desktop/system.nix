@@ -26,7 +26,7 @@
     # };
   };
 
-  # FIXME: sddm doesn't unlock gnome-keyring
+  # NOTE: sddm doesn't unlock gnome-keyring and is weird with biometrics
   # services.displayManager.sddm.enable = true;
 
   fonts.packages = with pkgs; [
