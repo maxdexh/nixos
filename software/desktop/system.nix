@@ -7,13 +7,13 @@
     platformTheme = "kde6";
   };
 
-  # services.xserver.displayManager.gdm = {
-  #   enable = true;
-  #   wayland = true;
-  # };
+  services.xserver.displayManager.gdm = {
+    enable = true;
+    wayland = true;
+  };
 
   # FIXME: sddm doesn't unlock gnome-keyring
-  services.displayManager.sddm.enable = true;
+  # services.displayManager.sddm.enable = true;
 
   fonts.packages = with pkgs; [
     # cascadia-code
