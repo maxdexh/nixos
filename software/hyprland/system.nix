@@ -1,18 +1,11 @@
 {pkgs, ...}: {
-  xdg.portal = {
-    enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-hyprland
-      xdg-desktop-portal-gtk
-    ];
-    xdgOpenUsePortal = true;
-  };
+  # FIXME: When logging in through means other than sddm, gnome
+  # When using sddm, gnome-keyring doesn't
   programs.hyprland = {
     enable = true;
     withUWSM = true;
     xwayland.enable = true;
   };
-  programs.dconf.enable = true;
 
   # HACK: This fixes dolphin not seeing file associations in hyprland.
   #       this file is created by kbuildsycoca5 (also overwrites mimeapps.list)
