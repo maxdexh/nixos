@@ -129,7 +129,7 @@ return {
             enable = true,
             -- FIXME: This is laggy and is likely what breaks rainbow delims sometimes
             -- TODO: Highlight inside macros without this
-            additional_vim_regex_highlighting = { "rust" },
+            -- additional_vim_regex_highlighting = { "rust" },
          },
          indent = { enable = true, disable = { "python", "css", "rust" } },
       },
