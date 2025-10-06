@@ -30,6 +30,7 @@ local hl_remaps = {
    ["@lsp.type.builtinType"] = "@type",
    ["variable"] = "@variable",
    ["@lsp.type.const"] = "@variable",
+   ["@lsp.type.builtinAttribute.rust"] = "@attribute",
 
    ["@lsp.type.interface"] = "@interface",
 
@@ -54,7 +55,8 @@ local hl_remaps = {
 }
 ---@type string[]
 local deleted_hls = {
-   -- "@function.macro.rust", -- treesitter randomly matches stuff in macros, including all parameters
+   -- NOTE:  This group matches builtin attrs and metavars because the lsp doesnt, which is unfortunate; sadly this is the only one that applies to `macro_rules`
+   -- "@function.macro.rust",
    "@variable.rust", -- treesitter likes to randomly view keywords as variables in macro_rules
    "@operator.rust", -- treesitter turns macro exclamation marks into operators
    "@variable.builtin.rust", -- causes self to be colored as a parameter

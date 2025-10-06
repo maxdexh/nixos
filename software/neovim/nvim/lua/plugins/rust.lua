@@ -3,7 +3,7 @@ return {
    {
       "mrcjkb/rustaceanvim",
       lazy = true, -- Lazy by design my ass, takes 20ms
-      event = "VeryLazy",
+      ft = { "rust", "toml" },
       init = function()
          vim.g.rustaceanvim = {
             server = {
@@ -21,13 +21,5 @@ return {
             },
          }
       end,
-   },
-   {
-      "nvim-treesitter/nvim-treesitter",
-      opts = {
-         ensure_installed = {
-            "rust",
-         },
-      },
    },
 }

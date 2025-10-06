@@ -18,14 +18,6 @@ return {
       },
    },
    {
-      "nvim-treesitter/nvim-treesitter",
-      opts = {
-         ensure_installed = {
-            "nix",
-         },
-      },
-   },
-   {
       "calops/hmts.nvim",
       version = "*",
    },
