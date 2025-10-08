@@ -9,15 +9,70 @@ return {
    -- TODO: Try to register layer without config
    config = function(_, opts)
       autolib.multicursor.setup(opts)
+
       autolib.lang.dbg_err(function()
-         autolib.configured_keymaps.set_multicursor_layer()
+         autolib.multicursor.addKeymapLayer(function(set)
+            autolib.keymap.set_many({
+               setter = set,
+               {
+                  "<esc>",
+                  function()
+                     if not autolib.multicursor.cursorsEnabled() then
+                        autolib.multicursor.enableCursors()
+                     else
+                        autolib.multicursor.clearCursors()
+                     end
+                  end,
+                  desc = "Enable and Clear cursors",
+               },
+            })
+         end)
       end)
    end,
 
-   keys = autolib.lang.dbg_err(
-      ---@return unknown
-      function()
-         return autolib.keymap.to_lazyvim_key_extender(autolib.configured_keymaps.get_multicursor_globals)
-      end
-   ),
+   keys = autolib.keymap.to_lazyvim_key_extender(function()
+      return autolib.list.flat_map(autolib.keymap.normalize_shared, {
+         {
+            {
+               "<c-leftmouse>",
+               function()
+                  autolib.multicursor.handleMouse()
+               end,
+               desc = "Add cursor",
+            },
+            {
+               "<c-leftdrag>",
+               function()
+                  autolib.multicursor.handleMouseDrag()
+               end,
+               desc = "Add cursor",
+            },
+            {
+               "<c-leftrelease>",
+               function()
+                  autolib.multicursor.handleMouseRelease()
+               end,
+               desc = "Add cursor",
+            },
+         },
+         {
+            mode = { "n", "x" },
+            {
+               "<M-j>",
+               function()
+                  autolib.multicursor.lineAddCursor(1)
+               end,
+               desc = "Add cursor below",
+            },
+            {
+               "<M-k>",
+               function()
+                  autolib.multicursor.lineAddCursor(-1)
+               end,
+               desc = "Add cursor above",
+            },
+            -- TODO: Select next/all occurence(s)
+         },
+      })
+   end),
 }

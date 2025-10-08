@@ -5,10 +5,11 @@ local keymap = {}
 ---@alias Util.keymap.Action string|fun()
 ---@alias Util.keymap.Binding string
 ---@alias Util.keymap.Mode string[]|string
+---@alias Util.keymap.Setter fun(mode: Util.keymap.Mode, binding: Util.keymap.Binding, action: Util.keymap.Action, opts: vim.keymap.set.Opts)
 ---
 ---@class Util.keymap.SharedOpts: vim.keymap.set.Opts
 ---@field mode? Util.keymap.Mode
----@field setter? fun(mode: Util.keymap.Mode, binding: Util.keymap.Binding, action: Util.keymap.Action, opts: vim.keymap.set.Opts)
+---@field setter? Util.keymap.Setter
 ---
 ---@class (exact) Util.keymap.KeyOpts: Util.keymap.SharedOpts
 ---@field desc string
@@ -16,7 +17,7 @@ local keymap = {}
 ---@field [2] Util.keymap.Action
 
 ---@param opts Util.keymap.KeyOpts
-function keymap.set(opts)
+local function keymap_set(opts)
    local action = autolib.tbl.pop_key(opts, 2)
    local binding = autolib.tbl.pop_key(opts, 1)
    local mode = autolib.tbl.pop_key(opts, "mode") or "n"
@@ -69,18 +70,18 @@ end
 ---@param keymaps Util.keymap.KeyOpts[]|Util.keymap.KeyMapsAndSharedOpts
 function keymap.set_many(keymaps)
    for _, opts in ipairs(keymap.normalize_shared(keymaps)) do
-      keymap.set(opts)
+      keymap_set(opts)
    end
 end
 
----@param keymaps Util.keymap.KeyMapsAndSharedOpts
+---@param keymaps Util.keymap.KeyOpts[]|Util.keymap.KeyMapsAndSharedOpts
 ---@return LazyKeysSpec[]
-function keymap.to_lazy_keys_spec(keymaps)
+local function keymap_to_lazy_keys_spec(keymaps)
    -- Formats happen to be compatible
    return keymap.normalize_shared(keymaps) --[[@as any]]
 end
 
----@param keymaps fun(): Util.keymap.KeyMapsAndSharedOpts
+---@param keymaps fun(): Util.keymap.KeyOpts[]
 ---@return fun(self: LazyPlugin, keys: string[]): (string | LazyKeysSpec)[]
 function keymap.to_lazyvim_key_extender(keymaps)
    ---@param _ LazyPlugin
@@ -90,7 +91,7 @@ function keymap.to_lazyvim_key_extender(keymaps)
       return autolib.lang.try_catch(
          ---@return unknown
          function()
-            return vim.list_extend(keys, keymap.to_lazy_keys_spec(keymaps()))
+            return vim.list_extend(keys, keymap_to_lazy_keys_spec(keymaps()))
          end,
          ---@return unknown
          function(err)

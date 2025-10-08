@@ -8,7 +8,7 @@ local function copy_placeholder(placeholder_values)
 end
 
 local function rust_snippets()
-   local ls = require("luasnip")
+   local ls = require("luasnip") --[[@as any]]
    local fmta = require("luasnip.extras.fmt").fmta
 
    local default_pat = "$($t:tt)*"
@@ -106,7 +106,7 @@ return {
    {
       "L3MON4D3/LuaSnip",
       opts = function(_, opts)
-         local ls = require("luasnip")
+         local ls = require("luasnip") --[[@as any]]
 
          -- TODO: Use VSCode loader for snippets, split by lang
          ls.add_snippets("rust", snippets(rust_snippets))

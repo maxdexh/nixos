@@ -22,7 +22,6 @@ deps = {
    keymap = require("util.keymap"),
    list = require("util.list"),
    log = require("util.log"),
-   configured_keymaps = require("util.configured-keymaps"),
 }
 
 ---@return any
