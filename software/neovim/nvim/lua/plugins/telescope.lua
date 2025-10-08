@@ -16,9 +16,11 @@ return {
          live_grep_args = {},
          frecency = {},
       },
-      ---@return Util.keymap.KeyOpts[]
-      keys = autolib.keymap.to_lazyvim_key_extender(function()
-         return {
+      keys = function(_, keys)
+         local setter = autolib.keymap.lazy_keys_spec_setter(keys)
+
+         autolib.keymap.set_many({
+            setter = setter,
             {
                "<leader>sG",
                function()
@@ -44,8 +46,8 @@ return {
                LazyVim.pick("files"),
                desc = "Find Files (Root Dir)",
             },
-         }
-      end),
+         })
+      end,
    },
    {
       "nvim-neo-tree/neo-tree.nvim",

@@ -30,49 +30,51 @@ return {
       end)
    end,
 
-   keys = autolib.keymap.to_lazyvim_key_extender(function()
-      return autolib.list.flat_map(autolib.keymap.normalize_shared, {
+   keys = function(_, keys)
+      local setter = autolib.keymap.lazy_keys_spec_setter(keys)
+      autolib.keymap.set_many({
+         setter = setter,
          {
-            {
-               "<c-leftmouse>",
-               function()
-                  autolib.multicursor.handleMouse()
-               end,
-               desc = "Add cursor",
-            },
-            {
-               "<c-leftdrag>",
-               function()
-                  autolib.multicursor.handleMouseDrag()
-               end,
-               desc = "Add cursor",
-            },
-            {
-               "<c-leftrelease>",
-               function()
-                  autolib.multicursor.handleMouseRelease()
-               end,
-               desc = "Add cursor",
-            },
+            "<c-leftmouse>",
+            function()
+               autolib.multicursor.handleMouse()
+            end,
+            desc = "Add cursor",
          },
          {
-            mode = { "n", "x" },
-            {
-               "<M-j>",
-               function()
-                  autolib.multicursor.lineAddCursor(1)
-               end,
-               desc = "Add cursor below",
-            },
-            {
-               "<M-k>",
-               function()
-                  autolib.multicursor.lineAddCursor(-1)
-               end,
-               desc = "Add cursor above",
-            },
-            -- TODO: Select next/all occurence(s)
+            "<c-leftdrag>",
+            function()
+               autolib.multicursor.handleMouseDrag()
+            end,
+            desc = "Add cursor",
+         },
+         {
+            "<c-leftrelease>",
+            function()
+               autolib.multicursor.handleMouseRelease()
+            end,
+            desc = "Add cursor",
          },
       })
-   end),
+      autolib.keymap.set_many({
+         setter = setter,
+         mode = { "n", "x" },
+         {
+            "<M-j>",
+            function()
+               autolib.multicursor.lineAddCursor(1)
+            end,
+            desc = "Add cursor below",
+         },
+         {
+            "<M-k>",
+            function()
+               autolib.multicursor.lineAddCursor(-1)
+            end,
+            desc = "Add cursor above",
+         },
+         -- TODO: Select next/all occurence(s)
+      })
+      return keys
+   end,
 }

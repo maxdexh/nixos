@@ -32,7 +32,7 @@ end
 
 ---@param keymaps Util.keymap.KeyOpts[]|Util.keymap.KeyMapsAndSharedOpts
 ---@return Util.keymap.KeyOpts[]
-function keymap.normalize_shared(keymaps)
+local function keymap_normalize_shared(keymaps)
    local shared_opts = {}
    for k, v in pairs(keymaps) do
       -- copy over all named fields
@@ -69,39 +69,9 @@ end
 
 ---@param keymaps Util.keymap.KeyOpts[]|Util.keymap.KeyMapsAndSharedOpts
 function keymap.set_many(keymaps)
-   for _, opts in ipairs(keymap.normalize_shared(keymaps)) do
+   for _, opts in ipairs(keymap_normalize_shared(keymaps)) do
       keymap_set(opts)
    end
-end
-
----@param keymaps Util.keymap.KeyOpts[]|Util.keymap.KeyMapsAndSharedOpts
----@return LazyKeysSpec[]
-local function keymap_to_lazy_keys_spec(keymaps)
-   -- Formats happen to be compatible
-   return keymap.normalize_shared(keymaps) --[[@as any]]
-end
-
----@param keymaps fun(): Util.keymap.KeyOpts[]
----@return fun(self: LazyPlugin, keys: string[]): (string | LazyKeysSpec)[]
-function keymap.to_lazyvim_key_extender(keymaps)
-   ---@param _ LazyPlugin
-   ---@param keys string[]
-   ---@return (string | LazyKeysSpec)[]
-   local function it(_, keys)
-      return autolib.lang.try_catch(
-         ---@return unknown
-         function()
-            return vim.list_extend(keys, keymap_to_lazy_keys_spec(keymaps()))
-         end,
-         ---@return unknown
-         function(err)
-            autolib.log.dbgv("error", err, keys)
-            return {}
-         end
-      )
-   end
-   -- HACK: Type checker is stupid
-   return it --[[@as any]]
 end
 
 ---@param cmd string
@@ -109,6 +79,19 @@ end
 function keymap.cmdfunc(cmd)
    return function()
       vim.cmd(cmd)
+   end
+end
+
+---@param keys (string | LazyKeysSpec)[]
+---@return Util.keymap.Setter
+function keymap.lazy_keys_spec_setter(keys)
+   ---@param opts vim.keymap.set.Opts
+   return function(mode, binding, action, opts)
+      local spec = opts --[[@as LazyKeysSpec]]
+      spec[1] = binding
+      spec[2] = action
+      spec.mode = mode
+      table.insert(keys, spec)
    end
 end
 
