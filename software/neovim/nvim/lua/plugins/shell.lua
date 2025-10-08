@@ -1,6 +1,6 @@
-libs = require("util.libs")
+autolib = require("util.autolib")
 
-libs.r.nvim.set_ft_tabwidth("fish", 4)
+autolib.nvim.set_ft_tabwidth("fish", 4)
 
 return {
    {

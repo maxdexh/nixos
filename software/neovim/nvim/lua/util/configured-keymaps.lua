@@ -1,4 +1,4 @@
-local libs = require("util.libs")
+local autolib = require("util.autolib")
 
 local configured_keymaps = {}
 
@@ -25,8 +25,8 @@ end
 ---@return fun()
 local function with_fallback(try, fallback)
    return function()
-      return libs.r.lang.try_catch(try, function(err)
-         libs.r.log.dbg(err, "error")
+      return autolib.lang.try_catch(try, function(err)
+         autolib.log.dbg(err, "error")
          fallback()
       end)
    end
@@ -40,25 +40,34 @@ local function cmdfunc(cmd)
    end
 end
 
--- https://www.reddit.com/r/neovim/comments/137biza/keep_all_results_of_telescope_live_grep_in_a/
---
--- TODO: Just use commands for the telescope stuff
+-- TODO: Use "Telescope ..." commands instead of telescope.builtin for telescope
+-- FIXME: Consider switching from telescope to something that can be optionally opened as a persistent buffer/split
+-- TODO: Optionally open definitions, implementations, references, diagnostics as a persistent split
 function configured_keymaps.set_lsp_keybinds(buf)
-   libs.r.keymap.set_many({
+   autolib.keymap.set_many({
       buffer = buf,
       {
          "gd",
-         with_fallback(libs.f.telef.lsp_definitions, vim.lsp.buf.definition),
+         function()
+            -- vim.lsp.buf.definition()
+            autolib.tscope_funcs.lsp_definitions()
+         end,
          desc = "Goto Definition",
       },
       {
          "gi",
-         with_fallback(libs.f.telef.lsp_implementations, vim.lsp.buf.implementation),
+         function()
+            -- vim.lsp.buf.implementation()
+            autolib.tscope_funcs.lsp_implementations()
+         end,
          desc = "View Implementations",
       },
       {
          "gr",
-         with_fallback(libs.f.telef.lsp_references, vim.lsp.buf.references),
+         function()
+            -- vim.lsp.buf.references()
+            autolib.tscope_funcs.lsp_references()
+         end,
          desc = "View References",
       },
       { "<leader>vd", vim.diagnostic.open_float, desc = "Diagnostics floating window" },
@@ -69,25 +78,25 @@ function configured_keymaps.set_lsp_keybinds(buf)
       { "<C-h>", vim.lsp.buf.signature_help, desc = "Signature Help", mode = "i" },
       {
          "<leader>xx",
-         with_fallback(
-            libs.r.func.partial(libs.f.telef.diagnostics, { severity_limit = "warn" }),
-            cmdfunc("Trouble diagnostics toggle")
-         ),
+         function()
+            -- vim.cmd("Trouble diagnostics toggle")
+            autolib.tscope_funcs.diagnostics({ severity_limit = "warn" })
+         end,
          desc = "Diagnostics",
       },
       {
          "<leader>xX",
-         with_fallback(
-            libs.r.func.partial(libs.f.telef.diagnostics, { bufnr = 0, severity_limit = "warn" }),
-            cmdfunc("Trouble diagnostics toggle filter.buf=0")
-         ),
+         function()
+            -- vim.cmd("Trouble diagnostics toggle filter.buf=0")
+            autolib.tscope_funcs.diagnostics({ bufnr = 0, severity_limit = "warn" })
+         end,
          desc = "Diagnostics (Current buffer)",
       },
    })
 end
 
 function configured_keymaps.set_global_keybinds()
-   libs.r.keymap.set_many({
+   autolib.keymap.set_many({
       -- TODO: Set <C-v> individually in fish and here so that we can paste in multicursor mode
       { "<C-c>", '"+y', desc = "Copy Selection", mode = "v" },
       { "<ESC><ESC>", "<C-\\><C-n>", desc = "Exit Terminal mode", mode = "t" },
@@ -98,21 +107,21 @@ function configured_keymaps.set_global_keybinds()
    })
 
    -- emmy doesnt like -1 literal (which is not even the correct argument type lol)
-   ---@cast libs.r.mc.lineAddCursor fun(d?: integer)
+   ---@cast autolib.mc.lineAddCursor fun(d?: integer)
 
-   libs.r.keymap.set_many({
+   autolib.keymap.set_many({
       mode = { "n", "x" },
       {
          "<M-j>",
          function()
-            libs.r.mc.lineAddCursor(vim.v.count1)
+            autolib.multicursor.lineAddCursor(vim.v.count1)
          end,
          desc = "Add cursor below",
       },
       {
          "<M-k>",
          function()
-            libs.r.mc.lineAddCursor(-vim.v.count1)
+            autolib.multicursor.lineAddCursor(-vim.v.count1)
          end,
          desc = "Add cursor above",
       },
@@ -136,7 +145,7 @@ function configured_keymaps.set_global_keybinds()
       end
    end
    -- NOTE: lazyvim uses deprecated functions to implement this and these do not respect vim.diagnostic.config
-   libs.r.keymap.set_many({
+   autolib.keymap.set_many({
       { "]d", jump(1), desc = "Next Diagnostic" },
       { "[d", jump(-1), desc = "Prev Diagnostic" },
       { "]e", jump(1, "ERROR"), desc = "Next Error" },
@@ -149,36 +158,42 @@ end
 
 ---@return Util.keymap.KeyOpts[]
 function configured_keymaps.get_multicursor_globals()
-   return libs.r.keymap.normalize_shared({
+   return autolib.keymap.normalize_shared({
       {
          "<c-leftmouse>",
-         libs.r.func.from_callable(libs.f.mc.handleMouse),
+         function()
+            autolib.multicursor.handleMouse()
+         end,
          desc = "Add cursor",
       },
       {
          "<c-leftdrag>",
-         libs.r.func.from_callable(libs.f.mc.handleMouseDrag),
+         function()
+            autolib.multicursor.handleMouseDrag()
+         end,
          desc = "Add cursor",
       },
       {
          "<c-leftrelease>",
-         libs.r.func.from_callable(libs.f.mc.handleMouseRelease),
+         function()
+            autolib.multicursor.handleMouseRelease()
+         end,
          desc = "Add cursor",
       },
    })
 end
 
 function configured_keymaps.set_multicursor_layer()
-   libs.r.mc.addKeymapLayer(function(set)
-      libs.r.keymap.set_many({
+   autolib.multicursor.addKeymapLayer(function(set)
+      autolib.keymap.set_many({
          setter = set,
          {
             "<esc>",
             function()
-               if not libs.r.mc.cursorsEnabled() then
-                  libs.r.mc.enableCursors()
+               if not autolib.multicursor.cursorsEnabled() then
+                  autolib.multicursor.enableCursors()
                else
-                  libs.r.mc.clearCursors()
+                  autolib.multicursor.clearCursors()
                end
             end,
             desc = "Enable and Clear cursors",
@@ -192,23 +207,29 @@ function configured_keymaps.get_telescope_bindings()
    return {
       {
          "<leader>sG",
-         libs.r.func.from_callable(libs.f.tele.extensions.live_grep_args.live_grep_args),
+         function()
+            autolib.tscope.extensions.live_grep_args.live_grep_args()
+         end,
          desc = "Live Grep (Args)",
       },
       {
          "<leader>sx",
-         libs.r.func.from_callable(libs.f.telef.resume),
+         function()
+            autolib.tscope_funcs.resume()
+         end,
          desc = "Resume telescope",
       },
       {
          "<leader>fE",
-         libs.r.func.partial(libs.f.tele.extensions.file_browser.file_browser, { quiet = true }),
+         function()
+            autolib.tscope.extensions.file_browser.file_browser({ quiet = true })
+         end,
          desc = "File Browser (cwd)",
       },
       {
          "<leader>fe",
          function()
-            libs.r.tele.extensions.file_browser.file_browser({
+            autolib.tscope.extensions.file_browser.file_browser({
                quiet = true,
                select_buffer = true,
                path = vim.fn.expand("%:p:h"),

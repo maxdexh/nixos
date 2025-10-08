@@ -1,4 +1,4 @@
-local libs = require("util.libs")
+local autolib = require("util.autolib")
 
 return {
    {
@@ -16,10 +16,10 @@ return {
          live_grep_args = {},
          frecency = {},
       },
-      keys = libs.r.lang.dbg_err(
+      keys = autolib.lang.dbg_err(
          ---@return unknown
          function()
-            return libs.r.keymap.to_lazyvim_key_extender(libs.r.configured_keymaps.get_telescope_bindings)
+            return autolib.keymap.to_lazyvim_key_extender(autolib.configured_keymaps.get_telescope_bindings)
          end
       ),
    },

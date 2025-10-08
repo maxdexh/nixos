@@ -1,4 +1,4 @@
-local libs = require("util.libs")
+local autolib = require("util.autolib")
 
 local keymap = {}
 
@@ -19,7 +19,7 @@ local keymap = {}
 function keymap.set(opts)
    local action = table.remove(opts, 2) --[[@as Util.keymap.Action]]
    local binding = table.remove(opts, 1) --[[@as Util.keymap.Binding]]
-   libs.r.lang.dbg_err(function()
+   autolib.lang.dbg_err(function()
       local mode = opts.mode or "n"
       opts.mode = nil
 
@@ -48,7 +48,7 @@ function keymap.normalize_shared(keymaps)
 
    local ret = {}
    for _, opts in ipairs(keymaps) do
-      libs.r.lang.dbg_err(function()
+      autolib.lang.dbg_err(function()
          local acc_opts = {}
 
          -- copy shared
@@ -92,14 +92,14 @@ function keymap.to_lazyvim_key_extender(keymaps)
    ---@param keys string[]
    ---@return (string | LazyKeysSpec)[]
    local function it(_, keys)
-      return libs.r.lang.try_catch(
+      return autolib.lang.try_catch(
          ---@return unknown
          function()
             return vim.list_extend(keys, keymap.to_lazyvim_keys(keymaps()))
          end,
          ---@return unknown
          function(err)
-            libs.r.log.dbgv("error", err, keys)
+            autolib.log.dbgv("error", err, keys)
             return {}
          end
       )

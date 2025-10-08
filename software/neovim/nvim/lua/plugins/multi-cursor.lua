@@ -1,4 +1,4 @@
-local libs = require("util.libs")
+local autolib = require("util.autolib")
 
 return {
    "jake-stewart/multicursor.nvim",
@@ -8,16 +8,16 @@ return {
 
    -- TODO: Try to register layer without config
    config = function(_, opts)
-      libs.r.mc.setup(opts)
-      libs.r.lang.dbg_err(function()
-         libs.r.configured_keymaps.set_multicursor_layer()
+      autolib.multicursor.setup(opts)
+      autolib.lang.dbg_err(function()
+         autolib.configured_keymaps.set_multicursor_layer()
       end)
    end,
 
-   keys = libs.r.lang.dbg_err(
+   keys = autolib.lang.dbg_err(
       ---@return unknown
       function()
-         return libs.r.keymap.to_lazyvim_key_extender(libs.r.configured_keymaps.get_multicursor_globals)
+         return autolib.keymap.to_lazyvim_key_extender(autolib.configured_keymaps.get_multicursor_globals)
       end
    ),
 }

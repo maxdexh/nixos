@@ -1,11 +1,4 @@
-local libs = require("util.libs")
-
-local cmds = libs.r.func.cmds
-
-local function notebook_dir()
-   local path = vim.fn.stdpath("cache") .. "/jupynium-notebooks"
-   return path
-end
+local autolib = require("util.autolib")
 
 return {
    {
@@ -46,7 +39,7 @@ return {
       "nvimtools/none-ls.nvim",
       opts = function(_, opts)
          opts.sources = {
-            libs.r.nls.builtins.diagnostics.mypy,
+            autolib.nls.builtins.diagnostics.mypy,
          }
          opts.should_attach = function(bufnr)
             return vim.api.nvim_buf_get_name(bufnr):match(".py$")

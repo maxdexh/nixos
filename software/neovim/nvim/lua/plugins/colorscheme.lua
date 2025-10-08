@@ -1,4 +1,4 @@
-local libs = require("util.libs")
+local autolib = require("util.autolib")
 
 ---@type table<string, string>
 local fg_color_overrides = {
@@ -92,9 +92,9 @@ local others = {
 }
 
 ---@type table<string, vim.api.keyset.highlight>
-local overrides = libs.r.tbl.merge(
+local overrides = autolib.tbl.merge(
    "error",
-   libs.r.tbl.map_vals(
+   autolib.tbl.map_vals(
       hl_remaps,
       ---@param color string
       ---@return vim.api.keyset.highlight
@@ -102,7 +102,7 @@ local overrides = libs.r.tbl.merge(
          return { link = color }
       end
    ),
-   libs.r.tbl.map_vals(
+   autolib.tbl.map_vals(
       fg_color_overrides,
       ---@param color string
       ---@return vim.api.keyset.highlight
@@ -110,7 +110,7 @@ local overrides = libs.r.tbl.merge(
          return { fg = color }
       end
    ),
-   libs.r.list.associate(
+   autolib.list.associate(
       deleted_hls,
       ---@return vim.api.keyset.highlight
       function()
@@ -167,7 +167,7 @@ return {
       },
       init = function()
          vim.opt.cursorline = false
-         libs.r.lang.add_auto_hl_overrides(overrides)
+         autolib.lang.add_auto_hl_overrides(overrides)
 
          -- Transparency fixes (Find using colorpicker and searching in :hi)
          vim.api.nvim_create_autocmd("ColorScheme", {

@@ -1,4 +1,4 @@
-local libs = require("util.libs")
+local autolib = require("util.autolib")
 
 local list = {}
 
@@ -23,7 +23,7 @@ function list.associate(lst, entry, strict)
    local ret = {}
    for i, x in ipairs(lst) do
       local e = entry(x, i)
-      libs.r.tbl.set(ret, x, e, strict)
+      autolib.tbl.set(ret, x, e, strict)
    end
    return ret
 end

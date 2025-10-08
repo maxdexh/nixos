@@ -1,5 +1,5 @@
 -- See :LazyExtras; NOTE: Compatibility with friendly-snippets is handled by the extra
-local libs = require("util.libs")
+local autolib = require("util.autolib")
 
 ---@param placeholder_values string[]
 ---@return string
@@ -8,8 +8,8 @@ local function copy_placeholder(placeholder_values)
 end
 
 local function rust_snippets()
-   local ls = libs.r.ls
-   local fmta = libs.r.ls_fmt.fmta
+   local ls = autolib.ls
+   local fmta = autolib.ls_fmt.fmta
 
    local default_pat = "$($t:tt)*"
    local opts = { indent_string = "   " }
@@ -98,7 +98,7 @@ local function rust_snippets()
 end
 
 function snippets(func)
-   return libs.r.lang.dbg_err(func) or {}
+   return autolib.lang.dbg_err(func) or {}
 end
 
 return {

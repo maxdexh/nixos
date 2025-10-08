@@ -1,4 +1,4 @@
-local libs = require("util.libs")
+local autolib = require("util.autolib")
 
 local lang = {}
 
@@ -25,7 +25,7 @@ function lang.dbg_err(try, level)
       try,
       ---@return unknown
       function(err)
-         libs.r.log.dbg(err, level or "error")
+         autolib.log.dbg(err, level or "error")
          return nil
       end
    )
@@ -58,7 +58,7 @@ function lang.attach_client(name, buf)
          return
       end
    end
-   libs.r.log.dbg("Not found", "warn")
+   autolib.log.dbg("Not found", "warn")
 end
 
 return lang

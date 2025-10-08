@@ -1,4 +1,4 @@
-local libs = require("util.libs")
+local autolib = require("util.autolib")
 
 local tbl = {}
 
@@ -27,7 +27,7 @@ function tbl.set(obj, k, v, strict)
          return
       elseif strict ~= nil and strict ~= "default" then
          ---@cast strict Util.log.Level
-         libs.r.log.dbg("Duplicate Key: \n" .. vim.inspect({ [k] = v }), strict)
+         autolib.log.dbg("Duplicate Key: \n" .. vim.inspect({ [k] = v }), strict)
       end
    end
    obj[k] = v

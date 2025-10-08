@@ -1,4 +1,4 @@
-local libs = require("util.libs")
+local autolib = require("util.autolib")
 
 ---Iterator utility module.
 ---
@@ -177,7 +177,7 @@ end
 function iter.filter(it, f)
    return function()
       while true do
-         local args, len = libs.r.vararg.capture(it())
+         local args, len = autolib.vararg.capture(it())
          if args[1] == nil then
             return nil
          elseif f(unpack(args, 1, len)) then

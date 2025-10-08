@@ -1,4 +1,4 @@
-local libs = require("util.libs")
+local autolib = require("util.autolib")
 
 -- TODO: https://www.johntobin.ie/blog/debugging_in_neovim_with_nvim-dap/
 return {
@@ -12,7 +12,7 @@ return {
       },
       lazy = true,
       config = function()
-         local dap = libs.r.dap
+         local dap = autolib.dap
          dap.adapters.codelldb = {
             type = "server",
             host = "127.0.0.1",
@@ -26,8 +26,20 @@ return {
          require("nvim-dap-virtual-text") -- make sure it gets loaded
       end,
       keys = {
-         { "<leader>db", libs.r.func.from_callable(libs.f.dap.toggle_breakpoint), mode = "n" },
-         { "<leader>dc", libs.r.func.from_callable(libs.f.dap.run_to_cursor), mode = "n" },
+         {
+            "<leader>db",
+            function()
+               autolib.dap.toggle_breakpoint()
+            end,
+            mode = "n",
+         },
+         {
+            "<leader>dc",
+            function()
+               autolib.dap.run_to_cursor()
+            end,
+            mode = "n",
+         },
       },
    },
    {
