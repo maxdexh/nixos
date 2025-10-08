@@ -3,34 +3,29 @@ local autolib = require("util.autolib")
 local keymap = {}
 
 ---@alias Util.keymap.Action string|fun()
----@alias Util.keymap.Mode string[]|string
 ---@alias Util.keymap.Binding string
+---@alias Util.keymap.Mode string[]|string
 ---
 ---@class Util.keymap.SharedOpts: vim.keymap.set.Opts
 ---@field mode? Util.keymap.Mode
 ---@field setter? fun(mode: Util.keymap.Mode, binding: Util.keymap.Binding, action: Util.keymap.Action, opts: vim.keymap.set.Opts)
 ---
----@class Util.keymap.KeyOpts: Util.keymap.SharedOpts
+---@class (exact) Util.keymap.KeyOpts: Util.keymap.SharedOpts
 ---@field desc string
 ---@field [1] Util.keymap.Binding
 ---@field [2] Util.keymap.Action
 
 ---@param opts Util.keymap.KeyOpts
 function keymap.set(opts)
-   local action = table.remove(opts, 2) --[[@as Util.keymap.Action]]
-   local binding = table.remove(opts, 1) --[[@as Util.keymap.Binding]]
+   local action = autolib.tbl.pop_key(opts, 2)
+   local binding = autolib.tbl.pop_key(opts, 1)
+   local mode = autolib.tbl.pop_key(opts, "mode") or "n"
+   local setter = autolib.tbl.pop_key(opts, "setter") or vim.keymap.set
+
    autolib.lang.dbg_err(function()
-      local mode = opts.mode or "n"
-      opts.mode = nil
-
-      local setter = opts.setter or vim.keymap.set
-      opts.setter = nil
-
       setter(mode, binding, action, opts)
    end)
 end
-
--- FIXME: setter should really only be allowed specifically in set_many
 
 ---@class Util.keymap.KeyMapsAndSharedOpts: { [integer]: Util.keymap.KeyOpts }, Util.keymap.SharedOpts
 
@@ -80,7 +75,7 @@ end
 
 ---@param keymaps Util.keymap.KeyMapsAndSharedOpts
 ---@return LazyKeysSpec[]
-function keymap.to_lazyvim_keys(keymaps)
+function keymap.to_lazy_keys_spec(keymaps)
    -- Formats happen to be compatible
    return keymap.normalize_shared(keymaps) --[[@as any]]
 end
@@ -95,7 +90,7 @@ function keymap.to_lazyvim_key_extender(keymaps)
       return autolib.lang.try_catch(
          ---@return unknown
          function()
-            return vim.list_extend(keys, keymap.to_lazyvim_keys(keymaps()))
+            return vim.list_extend(keys, keymap.to_lazy_keys_spec(keymaps()))
          end,
          ---@return unknown
          function(err)
@@ -106,6 +101,14 @@ function keymap.to_lazyvim_key_extender(keymaps)
    end
    -- HACK: Type checker is stupid
    return it --[[@as any]]
+end
+
+---@param cmd string
+---@return fun()
+function keymap.cmdfunc(cmd)
+   return function()
+      vim.cmd(cmd)
+   end
 end
 
 return keymap

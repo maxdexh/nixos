@@ -16,12 +16,36 @@ return {
          live_grep_args = {},
          frecency = {},
       },
-      keys = autolib.lang.dbg_err(
-         ---@return unknown
-         function()
-            return autolib.keymap.to_lazyvim_key_extender(autolib.configured_keymaps.get_telescope_bindings)
-         end
-      ),
+      ---@return Util.keymap.KeyOpts[]
+      keys = autolib.keymap.to_lazyvim_key_extender(function()
+         return {
+            {
+               "<leader>sG",
+               function()
+                  autolib.tscope.extensions.live_grep_args.live_grep_args()
+               end,
+               desc = "Live Grep (Args)",
+            },
+            {
+               "<leader>sx",
+               function()
+                  autolib.tscope_funcs.resume()
+               end,
+               desc = "Resume telescope",
+            },
+            {
+               "<leader>ff",
+               autolib.keymap.cmdfunc("Telescope find_files"), -- LazyVim.pick("files", { root = false })
+               desc = "Find Files (cwd)",
+            },
+            {
+               -- TODO: How does lazyvim find root dir?
+               "<leader>fF",
+               LazyVim.pick("files"),
+               desc = "Find Files (Root Dir)",
+            },
+         }
+      end),
    },
    {
       "nvim-neo-tree/neo-tree.nvim",

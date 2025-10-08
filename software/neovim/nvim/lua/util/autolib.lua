@@ -1,5 +1,3 @@
----@diagnostic disable: duplicate-require
-
 local deps
 
 local real_require = require
@@ -8,34 +6,22 @@ local function require(mod)
    return mod
 end
 deps = {
-   lspc = require("lspconfig"),
-
-   lspcc = require("lspconfig.configs"),
-
    tscope = require("telescope"),
 
    tscope_funcs = require("telescope.builtin"),
 
-   quarto_runner = require("quarto.runner"),
-
-   tbl = require("util.tbl"),
    nls = require("null-ls"),
 
    multicursor = require("multicursor-nvim"),
    dap = require("dap"),
 
-   cmenu = require("colorful-menu"),
+   colorful_menu = require("colorful-menu"),
 
-   ls_fmt = require("luasnip.extras.fmt"),
-   ls = require("luasnip"),
-
-   nvim = require("util.nvim"),
+   tbl = require("util.tbl"),
    lang = require("util.lang"),
    keymap = require("util.keymap"),
    list = require("util.list"),
    log = require("util.log"),
-   iter = require("util.iter"),
-   vararg = require("util.vararg"),
    configured_keymaps = require("util.configured-keymaps"),
 }
 

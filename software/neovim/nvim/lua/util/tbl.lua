@@ -1,3 +1,5 @@
+-- https://github.com/EmmyLuaLs/emmylua-analyzer-rust/tree/4c50b71fdc46fc68b41af87187f14494caf0635a/docs/emmylua_doc/annotations_EN
+
 local autolib = require("util.autolib")
 
 local tbl = {}
@@ -6,7 +8,7 @@ local tbl = {}
 ---@param strict Util.DuplicateKeyBehavior
 ---@param ... T
 ---@return T
----@see vim.tbl_extend DOES NOT HAVE THE SAME SEMANTICS
+---@see vim.tbl_extend
 ---@overload fun(strict: Util.DuplicateKeyBehavior): {}
 function tbl.merge(strict, ...)
    local ret = {}
@@ -26,7 +28,6 @@ function tbl.set(obj, k, v, strict)
       if strict == "keep" then
          return
       elseif strict ~= nil and strict ~= "default" then
-         ---@cast strict Util.log.Level
          autolib.log.dbg("Duplicate Key: \n" .. vim.inspect({ [k] = v }), strict)
       end
    end
@@ -71,10 +72,10 @@ function tbl.filter(t, f)
    return dst
 end
 
----@generic K, V
----@param t table<K, V>
----@param key K
----@return V
+---@generic K, T
+---@param t T
+---@param key std.ConstTpl<K>
+---@return std.RawGet<T, K>
 function tbl.pop_key(t, key)
    local val = t[key]
    t[key] = nil

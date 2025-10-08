@@ -32,24 +32,17 @@ local function with_fallback(try, fallback)
    end
 end
 
----@param cmd string
----@return fun()
-local function cmdfunc(cmd)
-   return function()
-      vim.cmd(cmd)
-   end
-end
-
 -- TODO: Use "Telescope ..." commands instead of telescope.builtin for telescope
 -- FIXME: Consider switching from telescope to something that can be optionally opened as a persistent buffer/split
--- TODO: Optionally open definitions, implementations, references, diagnostics as a persistent split
+-- TODO: Optionally open definitions, implementations, references, diagnostics as a persistent split (using vim.lsp or trouble)
+-- NOTE: <C-w>j (or h,k,l) to switch between splits
 function configured_keymaps.set_lsp_keybinds(buf)
    autolib.keymap.set_many({
       buffer = buf,
       {
          "gd",
          function()
-            -- vim.lsp.buf.definition()
+            -- TODO: optionally vim.lsp.buf.definition() / Trouble lsp_definitions
             autolib.tscope_funcs.lsp_definitions()
          end,
          desc = "Goto Definition",
@@ -57,7 +50,7 @@ function configured_keymaps.set_lsp_keybinds(buf)
       {
          "gi",
          function()
-            -- vim.lsp.buf.implementation()
+            -- TODO: vim.lsp.buf.implementation() / Trouble
             autolib.tscope_funcs.lsp_implementations()
          end,
          desc = "View Implementations",
@@ -65,17 +58,20 @@ function configured_keymaps.set_lsp_keybinds(buf)
       {
          "gr",
          function()
-            -- vim.lsp.buf.references()
+            -- TODO: vim.lsp.buf.references() / Trouble
             autolib.tscope_funcs.lsp_references()
          end,
          desc = "View References",
       },
-      { "<leader>vd", vim.diagnostic.open_float, desc = "Diagnostics floating window" },
-      { "<leader>vca", vim.lsp.buf.code_action, desc = "Code Action" },
-      { "<leader>vrn", vim.lsp.buf.rename, desc = "Rename Symbol" },
+
+      { "<leader>cd", vim.diagnostic.open_float, desc = "Show diagnostic" },
+      { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action" },
+      { "<leader>cr", vim.lsp.buf.rename, desc = "Rename Symbol" },
+      { "<leader>cws", vim.lsp.buf.workspace_symbol, desc = "List workspace Symbols (Filter Query)" },
+
       { "K", vim.lsp.buf.hover, desc = "Hover Information" },
-      { "<leader>vws", vim.lsp.buf.workspace_symbol, desc = "List workspace Symbols (Filter Query)" },
       { "<C-h>", vim.lsp.buf.signature_help, desc = "Signature Help", mode = "i" },
+
       {
          "<leader>xx",
          function()
@@ -200,55 +196,6 @@ function configured_keymaps.set_multicursor_layer()
          },
       })
    end)
-end
-
----@return Util.keymap.KeyOpts[]
-function configured_keymaps.get_telescope_bindings()
-   return {
-      {
-         "<leader>sG",
-         function()
-            autolib.tscope.extensions.live_grep_args.live_grep_args()
-         end,
-         desc = "Live Grep (Args)",
-      },
-      {
-         "<leader>sx",
-         function()
-            autolib.tscope_funcs.resume()
-         end,
-         desc = "Resume telescope",
-      },
-      {
-         "<leader>fE",
-         function()
-            autolib.tscope.extensions.file_browser.file_browser({ quiet = true })
-         end,
-         desc = "File Browser (cwd)",
-      },
-      {
-         "<leader>fe",
-         function()
-            autolib.tscope.extensions.file_browser.file_browser({
-               quiet = true,
-               select_buffer = true,
-               path = vim.fn.expand("%:p:h"),
-            })
-         end,
-         desc = "File Browser (current buffer dir)",
-      },
-      -- These are swapped from the regular bindings
-      {
-         "<leader>fF",
-         LazyVim.pick("files"),
-         desc = "Find Files (Root Dir)",
-      },
-      {
-         "<leader>ff",
-         LazyVim.pick("files", { root = false }),
-         desc = "Find Files (cwd)",
-      },
-   }
 end
 
 return configured_keymaps

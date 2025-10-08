@@ -1,6 +1,10 @@
 autolib = require("util.autolib")
 
-autolib.nvim.set_ft_tabwidth("fish", 4)
+-- TODO: Is there a better way to do this?
+vim.api.nvim_create_autocmd("FileType", {
+   pattern = "fish",
+   command = "setlocal shiftwidth=4 tabstop=4",
+})
 
 return {
    {

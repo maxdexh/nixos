@@ -8,8 +8,8 @@ local function copy_placeholder(placeholder_values)
 end
 
 local function rust_snippets()
-   local ls = autolib.ls
-   local fmta = autolib.ls_fmt.fmta
+   local ls = require("luasnip")
+   local fmta = require("luasnip.extras.fmt").fmta
 
    local default_pat = "$($t:tt)*"
    local opts = { indent_string = "   " }
@@ -97,6 +97,7 @@ local function rust_snippets()
    }
 end
 
+---@return any
 function snippets(func)
    return autolib.lang.dbg_err(func) or {}
 end
@@ -106,7 +107,6 @@ return {
       "L3MON4D3/LuaSnip",
       opts = function(_, opts)
          local ls = require("luasnip")
-         local fmta = require("luasnip.extras.fmt").fmta
 
          -- TODO: Use VSCode loader for snippets, split by lang
          ls.add_snippets("rust", snippets(rust_snippets))

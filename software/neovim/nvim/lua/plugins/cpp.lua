@@ -2,7 +2,7 @@
 return {
    {
       "neovim/nvim-lspconfig",
-      ---@class (partial) PluginLspOpts
+      ---@class (partial) PluginLspOpts2
       opts = {
          inlay_hints = {
             enabled = false,
