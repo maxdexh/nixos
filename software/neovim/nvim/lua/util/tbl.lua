@@ -28,7 +28,7 @@ function tbl.set(obj, k, v, strict)
       if strict == "keep" then
          return
       elseif strict ~= nil and strict ~= "default" then
-         autolib.log.dbg("Duplicate Key: \n" .. vim.inspect({ [k] = v }), strict)
+         autolib.misc.dbg("Duplicate Key: \n" .. vim.inspect({ [k] = v }), strict)
       end
    end
    obj[k] = v
@@ -58,20 +58,6 @@ function tbl.map_vals(t, f)
    return dst
 end
 
----@generic K, V
----@param t { [K]: V }
----@param f fun(val: V, key: K): any
----@return table<K, V>
-function tbl.filter(t, f)
-   local dst = {}
-   for k, v in pairs(t) do
-      if f(k, v) then
-         dst[k] = v
-      end
-   end
-   return dst
-end
-
 ---@generic K, T
 ---@param t T
 ---@param key std.ConstTpl<K>
@@ -80,6 +66,20 @@ function tbl.pop_key(t, key)
    local val = t[key]
    t[key] = nil
    return val
+end
+
+---@generic K, V
+---@param lst K[]
+---@param entry fun(item: K, idx: integer): V?
+---@param strict? Util.DuplicateKeyBehavior
+---@return table<K, V>
+function tbl.associate_list(lst, entry, strict)
+   local ret = {}
+   for i, x in ipairs(lst) do
+      local e = entry(x, i)
+      autolib.tbl.set(ret, x, e, strict)
+   end
+   return ret
 end
 
 return tbl

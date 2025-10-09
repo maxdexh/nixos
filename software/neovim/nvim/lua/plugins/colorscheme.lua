@@ -110,7 +110,7 @@ local overrides = autolib.tbl.merge(
          return { fg = color }
       end
    ),
-   autolib.list.associate(
+   autolib.tbl.associate_list(
       deleted_hls,
       ---@return vim.api.keyset.highlight
       function()
@@ -167,7 +167,7 @@ return {
       },
       init = function()
          vim.opt.cursorline = false
-         autolib.lang.add_auto_hl_overrides(overrides)
+         autolib.misc.add_auto_hl_overrides(overrides)
 
          -- Transparency fixes (Find using colorpicker and searching in :hi)
          vim.api.nvim_create_autocmd("ColorScheme", {
@@ -182,7 +182,6 @@ return {
          })
       end,
    },
-
    { "tokyonight.nvim", enabled = false },
    { "catpuccin", enabled = false },
 

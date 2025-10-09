@@ -23,7 +23,7 @@ local function keymap_set(opts)
    local mode = autolib.tbl.pop_key(opts, "mode") or "n"
    local setter = autolib.tbl.pop_key(opts, "setter") or vim.keymap.set
 
-   autolib.lang.dbg_err(function()
+   autolib.misc.dbg_err(function()
       setter(mode, binding, action, opts)
    end)
 end
@@ -44,7 +44,7 @@ local function keymap_normalize_shared(keymaps)
 
    local ret = {}
    for _, opts in ipairs(keymaps) do
-      autolib.lang.dbg_err(function()
+      autolib.misc.dbg_err(function()
          local acc_opts = {}
 
          -- copy shared

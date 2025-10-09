@@ -3,7 +3,7 @@
 -- Add any additional keymaps here
 local autolib = require("util.autolib")
 
-autolib.lang.dbg_err(function()
+autolib.misc.dbg_err(function()
    autolib.keymap.set_many({
       -- TODO: Set <C-v> individually in fish and here so that we can paste in multicursor mode
       { "<C-c>", '"+y', desc = "Copy Selection", mode = "v" },
@@ -108,7 +108,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
    ---@param args vim.api.keyset.create_autocmd.callback_args
    callback = function(args)
-      autolib.lang.dbg_err(function()
+      autolib.misc.dbg_err(function()
          set_lsp_keybinds(args.buf)
       end)
    end,

@@ -18,10 +18,8 @@ deps = {
    colorful_menu = require("colorful-menu"),
 
    tbl = require("util.tbl"),
-   lang = require("util.lang"),
+   misc = require("util.misc"),
    keymap = require("util.keymap"),
-   list = require("util.list"),
-   log = require("util.log"),
 }
 
 ---@return any

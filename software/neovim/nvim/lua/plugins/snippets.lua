@@ -99,7 +99,7 @@ end
 
 ---@return any
 function snippets(func)
-   return autolib.lang.dbg_err(func) or {}
+   return autolib.misc.dbg_err(func) or {}
 end
 
 return {

@@ -10,7 +10,7 @@ return {
    config = function(_, opts)
       autolib.multicursor.setup(opts)
 
-      autolib.lang.dbg_err(function()
+      autolib.misc.dbg_err(function()
          autolib.multicursor.addKeymapLayer(function(set)
             autolib.keymap.set_many({
                setter = set,
