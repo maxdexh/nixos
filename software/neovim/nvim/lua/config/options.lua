@@ -7,9 +7,7 @@ vim.opt.spelllang = {}
 
 vim.opt.timeoutlen = 750
 
-vim.cmd([[
-set shell=fish
-]])
+vim.cmd("set shell=fish")
 
 vim.g.tex_conceal = ""
 vim.opt.conceallevel = 0
@@ -19,12 +17,3 @@ vim.g.snacks_animate = false
 vim.g.c_syntax_for_h = true
 vim.opt.clipboard = "" --[[@as any]]
 -- vim.g.lazyvim_rust_diagnostics = "bacon-ls"
-
--- TODO: Find a good way to do this in nix
---
--- local venv = vim.fn.stdpath("config") .. "/.venv"
--- if vim.uv.fs_stat(venv) then ---@diagnostic disable-line:undefined-field
---    vim.g.python3_host_prog = venv .. "/bin/python3"
--- else
---    vim.notify("MISSING PYTHON VENV", vim.log.levels.ERROR)
--- end

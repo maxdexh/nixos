@@ -1,6 +1,6 @@
 local autolib = require("util.autolib")
 
-local keymap = {}
+local M = {}
 
 ---@alias Util.keymap.Action string|fun()
 ---@alias Util.keymap.Binding string
@@ -18,10 +18,10 @@ local keymap = {}
 
 ---@param opts Util.keymap.KeyOpts
 local function keymap_set(opts)
-   local action = autolib.tbl.pop_key(opts, 2)
-   local binding = autolib.tbl.pop_key(opts, 1)
-   local mode = autolib.tbl.pop_key(opts, "mode") or "n"
-   local setter = autolib.tbl.pop_key(opts, "setter") or vim.keymap.set
+   local action = autolib.misc.pop_key(opts, 2)
+   local binding = autolib.misc.pop_key(opts, 1)
+   local mode = autolib.misc.pop_key(opts, "mode") or "n"
+   local setter = autolib.misc.pop_key(opts, "setter") or vim.keymap.set
 
    autolib.misc.dbg_err(function()
       setter(mode, binding, action, opts)
@@ -68,7 +68,7 @@ local function keymap_normalize_shared(keymaps)
 end
 
 ---@param keymaps Util.keymap.KeyOpts[]|Util.keymap.KeyMapsAndSharedOpts
-function keymap.set_many(keymaps)
+function M.set_many(keymaps)
    for _, opts in ipairs(keymap_normalize_shared(keymaps)) do
       keymap_set(opts)
    end
@@ -76,7 +76,7 @@ end
 
 ---@param cmd string
 ---@return fun()
-function keymap.cmdfunc(cmd)
+function M.cmdfunc(cmd)
    return function()
       vim.cmd(cmd)
    end
@@ -84,7 +84,7 @@ end
 
 ---@param keys (string | LazyKeysSpec)[]
 ---@return Util.keymap.Setter
-function keymap.lazy_keys_spec_setter(keys)
+function M.lazy_keys_spec_setter(keys)
    ---@param opts vim.keymap.set.Opts
    return function(mode, binding, action, opts)
       local spec = opts --[[@as LazyKeysSpec]]
@@ -95,4 +95,4 @@ function keymap.lazy_keys_spec_setter(keys)
    end
 end
 
-return keymap
+return M

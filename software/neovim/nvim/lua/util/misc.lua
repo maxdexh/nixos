@@ -1,5 +1,8 @@
 local M = {}
 
+---@alias Util.log.Level "error" | "warn" | "info" | "debug" | "trace" | "off"
+---@class (partial) PluginLspOpts2: PluginLspOpts
+
 ---@generic T
 ---@param level Util.log.Level
 ---@param ... T...
@@ -15,15 +18,7 @@ function M.dbgv(level, ...)
       end
    end
    message = table.concat(str_args, "\n")
-   if level == "hard-error" then
-      error(message)
-   else
-      vim.notify(
-         message,
-         ---@diagnostic disable-next-line: param-type-not-match
-         level
-      )
-   end
+   vim.notify(message, level --[[@as any]])
 
    return ...
 end
@@ -65,6 +60,16 @@ function M.add_auto_hl_overrides(overrides)
       pattern = "*",
       callback = apply,
    })
+end
+
+---@generic K, T
+---@param t T
+---@param key std.ConstTpl<K>
+---@return std.RawGet<T, K>
+function M.pop_key(t, key)
+   local val = t[key]
+   t[key] = nil
+   return val
 end
 
 return M

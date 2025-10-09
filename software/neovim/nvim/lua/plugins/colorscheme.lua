@@ -72,7 +72,7 @@ local deleted_hls = {
 }
 
 ---@type table<string, vim.api.keyset.highlight>
-local others = {
+local overrides = {
    -- Diagnostic hls from tomasiser/vim-code-dark
    ["DiagnosticUnderlineWarn"] = {
       underline = true,
@@ -83,38 +83,26 @@ local others = {
       sp = "NvimLightRed",
    },
 }
-
----@type table<string, vim.api.keyset.highlight>
-local overrides = autolib.tbl.merge_args(
-   "error",
-   autolib.tbl.map_vals(
-      hl_remaps,
-      ---@return vim.api.keyset.highlight
-      function(color)
-         return { link = color }
+autolib.misc.dbg_err(function()
+   local function put(name, hl)
+      if overrides[name] ~= nil then
+         autolib.misc.dbg("Duplicate override: " .. name, "error")
       end
-   ),
-   autolib.tbl.map_vals(
-      fg_color_overrides,
-      ---@return vim.api.keyset.highlight
-      function(color)
-         return { fg = color }
-      end
-   ),
-   autolib.tbl.associate_list(
-      deleted_hls,
-      ---@return vim.api.keyset.highlight
-      function()
-         return {}
-      end,
-      "error"
-   ),
-   others
-)
+      overrides[name] = hl
+   end
+   for name, color in pairs(fg_color_overrides) do
+      put(name, { fg = color })
+   end
+   for name, link in pairs(hl_remaps) do
+      put(name, { link = link })
+   end
+   for _, name in ipairs(deleted_hls) do
+      put(name, {})
+   end
+end)
 
 return {
    {
-      -- TODO: Split into corresponding files
       "nvim-treesitter/nvim-treesitter",
       opts = {
          auto_install = true,

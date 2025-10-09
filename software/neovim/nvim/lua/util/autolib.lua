@@ -15,7 +15,6 @@ deps = {
    multicursor = require("multicursor-nvim"),
    dap = require("dap"),
 
-   tbl = require("util.tbl"),
    misc = require("util.misc"),
    keymap = require("util.keymap"),
 }
