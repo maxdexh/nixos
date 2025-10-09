@@ -55,8 +55,6 @@ local hl_remaps = {
 }
 ---@type string[]
 local deleted_hls = {
-   -- NOTE:  This group matches builtin attrs and metavars because the lsp doesnt, which is unfortunate; sadly this is the only one that applies to `macro_rules`
-   -- "@function.macro.rust",
    "@variable.rust", -- treesitter likes to randomly view keywords as variables in macro_rules
    "@operator.rust", -- treesitter turns macro exclamation marks into operators
    "@variable.builtin.rust", -- causes self to be colored as a parameter
@@ -71,16 +69,11 @@ local deleted_hls = {
 
    "@markup.link.markdown_inline", -- disable underlining of links (for comment highlighting)
    "@lsp.type.comment.rust", -- would override injections due to high priority
-
-   -- TODO: Override string highlighting for nix string injections
-   -- Fallback to highlighting as string if no injections match
-   -- "@string.nix",
 }
 
--- From tomasiser/vim-code-dark
---
 ---@type table<string, vim.api.keyset.highlight>
 local others = {
+   -- Diagnostic hls from tomasiser/vim-code-dark
    ["DiagnosticUnderlineWarn"] = {
       underline = true,
       sp = "NvimLightYellow",
@@ -92,11 +85,10 @@ local others = {
 }
 
 ---@type table<string, vim.api.keyset.highlight>
-local overrides = autolib.tbl.merge(
+local overrides = autolib.tbl.merge_args(
    "error",
    autolib.tbl.map_vals(
       hl_remaps,
-      ---@param color string
       ---@return vim.api.keyset.highlight
       function(color)
          return { link = color }
@@ -104,7 +96,6 @@ local overrides = autolib.tbl.merge(
    ),
    autolib.tbl.map_vals(
       fg_color_overrides,
-      ---@param color string
       ---@return vim.api.keyset.highlight
       function(color)
          return { fg = color }
@@ -129,8 +120,6 @@ return {
          auto_install = true,
          highlight = {
             enable = true,
-            -- FIXME: This is laggy and is likely what breaks rainbow delims sometimes
-            -- TODO: Highlight inside macros without this
             -- additional_vim_regex_highlighting = { "rust" },
          },
          indent = { enable = true, disable = { "python", "css", "rust" } },

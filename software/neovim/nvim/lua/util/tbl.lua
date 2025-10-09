@@ -10,7 +10,7 @@ local tbl = {}
 ---@return T
 ---@see vim.tbl_extend
 ---@overload fun(strict: Util.DuplicateKeyBehavior): {}
-function tbl.merge(strict, ...)
+function tbl.merge_args(strict, ...)
    local ret = {}
    for i = 1, select("#", ...) do
       tbl.set_all(ret, select(i, ...), strict)

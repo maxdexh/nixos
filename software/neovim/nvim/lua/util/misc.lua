@@ -33,7 +33,7 @@ end
 ---@param level? Util.log.Level
 ---@return T
 function M.dbg(value, level)
-   return log.dbgv(level or "info", value)
+   return M.dbgv(level or "info", value)
 end
 
 ---@generic R

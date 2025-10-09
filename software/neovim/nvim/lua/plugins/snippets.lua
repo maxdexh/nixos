@@ -11,61 +11,23 @@ local function rust_snippets()
    local ls = require("luasnip") --[[@as any]]
    local fmta = require("luasnip.extras.fmt").fmta
 
-   local default_pat = "$($t:tt)*"
    local opts = { indent_string = "   " }
    return {
-      ls.snippet(
-         "macrule",
-         fmta(
-            [[
-               macro_rules! <> {
-                  [ <> ] =>> {
-                     <>
-                  };
-               }
-            ]],
-            {
-               ls.insert_node(1, "name"),
-               ls.insert_node(2, default_pat),
-               ls.insert_node(3),
-            },
-            opts
-         )
-      ),
-      ls.snippet(
-         "macexport",
-         fmta(
-            [[
-               #[macro_export]
-               macro_rules! <> {
-                  [ <> ] =>> {
-                     <>
-                  };
-               }
-            ]],
-            {
-               ls.insert_node(1, "name"),
-               ls.insert_node(2, default_pat),
-               ls.insert_node(3),
-            },
-            opts
-         )
-      ),
       ls.snippet(
          "maccrate",
          fmta(
             [[
                macro_rules! <> {
-                  [ <> ] =>> {
+                  ( <> ) =>> {
                      <>
                   };
                }
                pub(crate) use <>;
             ]],
             {
-               ls.insert_node(1, "name"),
-               ls.insert_node(2, default_pat),
-               ls.insert_node(3),
+               ls.insert_node(1),
+               ls.insert_node(2),
+               ls.insert_node(0),
                ls.function_node(copy_placeholder, 1),
             },
             opts
@@ -78,7 +40,7 @@ local function rust_snippets()
                #[macro_export]
                #[doc(hidden)]
                macro_rules! __<> {
-                  [ <> ] =>> {
+                  ( <> ) =>> {
                      <>
                   };
                }
@@ -86,20 +48,15 @@ local function rust_snippets()
             ]],
             {
                ls.function_node(copy_placeholder, 1),
-               ls.insert_node(2, default_pat),
-               ls.insert_node(3),
+               ls.insert_node(2),
+               ls.insert_node(0),
                ls.function_node(copy_placeholder, 1),
-               ls.insert_node(1, "name"),
+               ls.insert_node(1),
             },
             opts
          )
       ),
    }
-end
-
----@return any
-function snippets(func)
-   return autolib.misc.dbg_err(func) or {}
 end
 
 return {
@@ -109,7 +66,7 @@ return {
          local ls = require("luasnip") --[[@as any]]
 
          -- TODO: Use VSCode loader for snippets, split by lang
-         ls.add_snippets("rust", snippets(rust_snippets))
+         ls.add_snippets("rust", autolib.misc.dbg_err(rust_snippets) or {})
 
          return opts
       end,
