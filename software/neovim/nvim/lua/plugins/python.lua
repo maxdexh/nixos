@@ -1,5 +1,3 @@
-local autolib = require("util.autolib")
-
 return {
    {
       "neovim/nvim-lspconfig",
@@ -37,9 +35,11 @@ return {
    },
    {
       "nvimtools/none-ls.nvim",
+
       opts = function(_, opts)
+         local nls = require("null-ls")
          opts.sources = {
-            autolib.nls.builtins.diagnostics.mypy,
+            nls.builtins.diagnostics.mypy,
          }
          opts.should_attach = function(bufnr)
             return vim.api.nvim_buf_get_name(bufnr):match(".py$")

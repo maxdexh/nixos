@@ -1,4 +1,8 @@
-local autolib = require("util.autolib")
+local libs = require("util.libs")
+
+local get_mc = libs.misc.store_lazily(function()
+   return require("multicursor-nvim")
+end)
 
 return {
    "jake-stewart/multicursor.nvim",
@@ -8,68 +12,68 @@ return {
 
    -- TODO: Try to register layer without config
    config = function(_, opts)
-      autolib.multicursor.setup(opts)
+      local mc = get_mc()
+      mc.setup(opts)
 
-      autolib.misc.dbg_err(function()
-         autolib.multicursor.addKeymapLayer(function(set)
-            autolib.keymap.set_many({
-               setter = set,
-               {
-                  "<esc>",
-                  function()
-                     if not autolib.multicursor.cursorsEnabled() then
-                        autolib.multicursor.enableCursors()
-                     else
-                        autolib.multicursor.clearCursors()
-                     end
-                  end,
-                  desc = "Enable and Clear cursors",
-               },
-            })
-         end)
+      mc.addKeymapLayer(function(set)
+         libs.keymap.set_many({
+            setter = set,
+            {
+               "<esc>",
+               function()
+                  if not mc.cursorsEnabled() then
+                     mc.enableCursors()
+                  else
+                     mc.clearCursors()
+                  end
+               end,
+               desc = "Enable and Clear cursors",
+            },
+         })
       end)
    end,
 
    keys = function(_, keys)
-      local setter = autolib.keymap.lazy_keys_spec_setter(keys)
-      autolib.keymap.set_many({
+      local setter = libs.keymap.lazy_spec_setter(keys)
+
+      libs.keymap.set_many({
          setter = setter,
          {
             "<c-leftmouse>",
             function()
-               autolib.multicursor.handleMouse()
+               get_mc().handleMouse()
             end,
             desc = "Add cursor",
          },
          {
             "<c-leftdrag>",
             function()
-               autolib.multicursor.handleMouseDrag()
+               get_mc().handleMouseDrag()
             end,
             desc = "Add cursor",
          },
          {
             "<c-leftrelease>",
             function()
-               autolib.multicursor.handleMouseRelease()
+               get_mc().handleMouseRelease()
             end,
             desc = "Add cursor",
          },
       })
-      autolib.keymap.set_many({
+      libs.keymap.set_many({
          setter = setter,
          mode = { "n", "x" },
          {
             "<M-j>",
             function()
-               autolib.multicursor.lineAddCursor(1)
+               get_mc().lineAddCursor(1)
             end,
             desc = "Add cursor below",
          },
          {
             "<M-k>",
             function()
-               autolib.multicursor.lineAddCursor(-1)
+               get_mc().lineAddCursor(-1)
             end,
             desc = "Add cursor above",
          },

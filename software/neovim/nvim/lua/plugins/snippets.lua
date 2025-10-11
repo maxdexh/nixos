@@ -1,5 +1,5 @@
 -- See :LazyExtras; NOTE: Compatibility with friendly-snippets is handled by the extra
-local autolib = require("util.autolib")
+local libs = require("util.libs")
 
 ---@param placeholder_values string[]
 ---@return string
@@ -66,7 +66,7 @@ return {
          local ls = require("luasnip") --[[@as any]]
 
          -- TODO: Use VSCode loader for snippets, split by lang
-         ls.add_snippets("rust", autolib.misc.dbg_err(rust_snippets) or {})
+         ls.add_snippets("rust", libs.misc.dbg_err(rust_snippets) or {})
 
          return opts
       end,

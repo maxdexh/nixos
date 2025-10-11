@@ -1,4 +1,8 @@
-local autolib = require("util.autolib")
+local libs = require("util.libs")
+
+local get_dap = libs.misc.store_lazily(function()
+   return require("dap")
+end)
 
 -- TODO: https://www.johntobin.ie/blog/debugging_in_neovim_with_nvim-dap/
 return {
@@ -12,7 +16,7 @@ return {
       },
       lazy = true,
       config = function()
-         local dap = autolib.dap
+         local dap = get_dap()
          dap.adapters.codelldb = {
             type = "server",
             host = "127.0.0.1",
@@ -29,14 +33,14 @@ return {
          {
             "<leader>db",
             function()
-               autolib.dap.toggle_breakpoint()
+               get_dap().toggle_breakpoint()
             end,
             mode = "n",
          },
          {
             "<leader>dc",
             function()
-               autolib.dap.run_to_cursor()
+               get_dap().run_to_cursor()
             end,
             mode = "n",
          },

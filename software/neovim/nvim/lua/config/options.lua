@@ -10,10 +10,10 @@ vim.opt.timeoutlen = 750
 vim.cmd("set shell=fish")
 
 vim.g.tex_conceal = ""
-vim.opt.conceallevel = 0
-vim.opt.termguicolors = true
+vim.o.conceallevel = 0
+vim.o.termguicolors = true
 vim.g.lazyvim_picker = "telescope"
 vim.g.snacks_animate = false
 vim.g.c_syntax_for_h = true
-vim.opt.clipboard = "" --[[@as any]]
+vim.o.clipboard = "" --[[@as any]]
 -- vim.g.lazyvim_rust_diagnostics = "bacon-ls"

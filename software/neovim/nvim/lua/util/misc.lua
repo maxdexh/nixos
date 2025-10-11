@@ -72,4 +72,19 @@ function M.pop_key(t, key)
    return val
 end
 
+---@generic T
+---@param f fun(): T
+---@return fun(): T
+function M.store_lazily(f)
+   local value ---@type any
+
+   return function()
+      if f ~= nil then
+         value = f()
+         f = nil --[[@as any]]
+      end
+      return value
+   end
+end
+
 return M

@@ -1,4 +1,4 @@
-local autolib = require("util.autolib")
+local libs = require("util.libs")
 
 ---@type table<string, string>
 local fg_color_overrides = {
@@ -83,10 +83,10 @@ local overrides = {
       sp = "NvimLightRed",
    },
 }
-autolib.misc.dbg_err(function()
+libs.misc.dbg_err(function()
    local function put(name, hl)
       if overrides[name] ~= nil then
-         autolib.misc.dbg("Duplicate override: " .. name, "error")
+         libs.misc.dbg("Duplicate override: " .. name, "error")
       end
       overrides[name] = hl
    end
@@ -144,7 +144,7 @@ return {
       },
       init = function()
          vim.opt.cursorline = false
-         autolib.misc.add_auto_hl_overrides(overrides)
+         libs.misc.add_auto_hl_overrides(overrides)
 
          -- Transparency fixes (Find using colorpicker and searching in :hi)
          vim.api.nvim_create_autocmd("ColorScheme", {

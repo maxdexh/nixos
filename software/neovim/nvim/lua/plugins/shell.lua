@@ -1,9 +1,9 @@
-autolib = require("util.autolib")
-
--- TODO: Is there a better way to do this?
 vim.api.nvim_create_autocmd("FileType", {
    pattern = "fish",
-   command = "setlocal shiftwidth=4 tabstop=4",
+   callback = function()
+      vim.o.shiftwidth = 4
+      vim.o.tabstop = 4
+   end,
 })
 
 return {

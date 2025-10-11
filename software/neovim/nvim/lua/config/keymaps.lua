@@ -1,11 +1,10 @@
 -- Keymaps are automatically loaded on the VeryLazy event
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
-local autolib = require("util.autolib")
+local libs = require("util.libs")
 
-autolib.misc.dbg_err(function()
-   autolib.keymap.set_many({
-      -- TODO: Set <C-v> individually in fish and here so that we can paste in multicursor mode
+libs.misc.dbg_err(function()
+   libs.keymap.set_many({
       { "<C-c>", '"+y', desc = "Copy Selection", mode = "v" },
       { "<ESC><ESC>", "<C-\\><C-n>", desc = "Exit Terminal mode", mode = "t" },
       -- Unlike lazyvim's keybind, this escapes before saving, because the other order interrupts the formatter
@@ -32,14 +31,13 @@ autolib.misc.dbg_err(function()
       end
    end
 
-   autolib.keymap.set_many({
+   libs.keymap.set_many({
       { "]d", jump(1), desc = "Next Diagnostic" },
       { "[d", jump(-1), desc = "Prev Diagnostic" },
       { "]e", jump(1, "ERROR"), desc = "Next Error" },
       { "[e", jump(-1, "ERROR"), desc = "Prev Error" },
       { "]w", jump(1, "WARN"), desc = "Next Warning" },
       { "[w", jump(-1, "WARN"), desc = "Prev Warning" },
-      mode = "n",
    })
 end)
 
@@ -48,13 +46,16 @@ end)
 -- TODO: Optionally open definitions, implementations, references, diagnostics as a persistent split (using vim.lsp or trouble)
 -- NOTE: <C-w>j (or h,k,l) to switch between splits
 local function set_lsp_keybinds(buf)
-   autolib.keymap.set_many({
+   local get_tscope = libs.misc.store_lazily(function()
+      return require("telescope.builtin")
+   end)
+   libs.keymap.set_many({
       buffer = buf,
       {
          "gd",
          function()
             -- TODO: optionally vim.lsp.buf.definition() / Trouble lsp_definitions
-            autolib.tscope_funcs.lsp_definitions()
+            get_tscope().lsp_definitions()
          end,
          desc = "Goto Definition",
       },
@@ -62,7 +63,7 @@ local function set_lsp_keybinds(buf)
          "gi",
          function()
             -- TODO: vim.lsp.buf.implementation() / Trouble
-            autolib.tscope_funcs.lsp_implementations()
+            get_tscope().lsp_implementations()
          end,
          desc = "View Implementations",
       },
@@ -70,7 +71,7 @@ local function set_lsp_keybinds(buf)
          "gr",
          function()
             -- TODO: vim.lsp.buf.references() / Trouble
-            autolib.tscope_funcs.lsp_references()
+            get_tscope().lsp_references()
          end,
          desc = "View References",
       },
@@ -87,7 +88,7 @@ local function set_lsp_keybinds(buf)
          "<leader>xx",
          function()
             -- vim.cmd("Trouble diagnostics toggle")
-            autolib.tscope_funcs.diagnostics({ severity_limit = "warn" })
+            get_tscope().diagnostics({ severity_limit = "warn" })
          end,
          desc = "Diagnostics",
       },
@@ -95,7 +96,7 @@ local function set_lsp_keybinds(buf)
          "<leader>xX",
          function()
             -- vim.cmd("Trouble diagnostics toggle filter.buf=0")
-            autolib.tscope_funcs.diagnostics({ bufnr = 0, severity_limit = "warn" })
+            get_tscope().diagnostics({ bufnr = 0, severity_limit = "warn" })
          end,
          desc = "Diagnostics (Current buffer)",
       },
@@ -108,7 +109,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
    ---@param args vim.api.keyset.create_autocmd.callback_args
    callback = function(args)
-      autolib.misc.dbg_err(function()
+      libs.misc.dbg_err(function()
          set_lsp_keybinds(args.buf)
       end)
    end,

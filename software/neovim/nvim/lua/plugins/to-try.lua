@@ -1,5 +1,5 @@
 return {
-   -- oil.nvim
+   { "sindrets/diffview.nvim" },
    -- diffview.nvim
    -- romgrk/barbar.nvim (instead of bufferline.nvim)
    -- { "airblade/vim-gitgutter" },
