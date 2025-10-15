@@ -7,6 +7,9 @@
     platformTheme = "kde6";
   };
 
+  services.ratbagd.enable = true; # For piper
+  environment.systemPackages = with pkgs; [piper];
+
   services.xserver.enable = true;
 
   services.displayManager = {
