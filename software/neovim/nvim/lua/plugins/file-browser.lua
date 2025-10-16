@@ -8,6 +8,11 @@ return {
       buf_options = {
          buflisted = false,
       },
+      -- NOTE: If they change the defaults again, this was a known good point:
+      -- https://github.com/stevearc/oil.nvim/tree/abbfbd0dbcaa78c3dcdada191ea23e50a41e5806
+      float = {
+         border = "rounded",
+      },
       delete_to_trash = true,
       skip_confirm_for_simple_edits = true,
 

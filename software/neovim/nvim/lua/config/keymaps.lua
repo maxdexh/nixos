@@ -76,7 +76,6 @@ local function set_lsp_keybinds(buf)
          desc = "View References",
       },
 
-      { "<leader>cd", vim.diagnostic.open_float, desc = "Show diagnostic" },
       { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action" },
       { "<leader>cr", vim.lsp.buf.rename, desc = "Rename Symbol" },
       { "<leader>cws", vim.lsp.buf.workspace_symbol, desc = "List workspace Symbols (Filter Query)" },
@@ -84,6 +83,7 @@ local function set_lsp_keybinds(buf)
       { "K", vim.lsp.buf.hover, desc = "Hover Information" },
       { "<C-h>", vim.lsp.buf.signature_help, desc = "Signature Help", mode = "i" },
 
+      { "<leader>xc", vim.diagnostic.open_float, desc = "Show diagnostic" },
       {
          "<leader>xx",
          function()

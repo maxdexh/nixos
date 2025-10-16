@@ -17,7 +17,7 @@ function M.dbgv(level, ...)
          str_args[i] = vim.inspect(x)
       end
    end
-   message = table.concat(str_args, "\n")
+   local message = table.concat(str_args, "\n")
    vim.notify(message, level --[[@as any]])
 
    return ...
