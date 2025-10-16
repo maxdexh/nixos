@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  G,
+  ...
+}: let
   shellint-no-bash = {
     enable = true;
     enableFishIntegration = true;
@@ -31,6 +35,10 @@ in {
     glow
     openvpn
   ];
+
+  systemd.user.sessionVariables = {
+    NIX_CONFIG_ROOT = G.host.localConfigRoot;
+  };
 
   # Make shell integrations explicit
   home.shell.enableShellIntegration = false;
