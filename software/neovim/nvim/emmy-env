@@ -1,0 +1,10 @@
+#!/usr/bin/env fish
+
+cd "$(dirname (status --current-filename))"
+set -l envs (nvim -l ./.emmy-get-env.lua)
+if set -q argv[1]
+    export $envs
+    exec $argv
+else
+    string join \n -- $envs
+end

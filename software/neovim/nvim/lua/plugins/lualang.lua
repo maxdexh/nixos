@@ -1,6 +1,7 @@
 -- See .luarc.json
 vim.fn.setenv("LAZY_LIBRARY_PATH_PREFIX", vim.fn.stdpath("data") .. "/lazy/")
 
+-- vim.api.nvim_list_runtime_paths()
 local config_locations = {
    vim.fn.expand("~/.local/share/nvim"),
    vim.fn.expand("~/.config/nvim"),

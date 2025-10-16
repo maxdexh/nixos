@@ -17,7 +17,7 @@
       "$LAZY_LIBRARY_PATH_PREFIX/LuaSnip/lua",
       "$LAZY_LIBRARY_PATH_PREFIX/nvim-dap/lua",
       "$LAZY_LIBRARY_PATH_PREFIX/oil.nvim/lua",
-      "$VIMRUNTIME"
+      "$VIMRUNTIME/lua"
     ],
     "moduleMap": [],
     "workspaceRoots": [
@@ -26,6 +26,11 @@
   },
   "runtime": {
     "version": "LuaJIT"
+  },
+  "diagnostics": {
+    "globals": [
+      "vim"
+    ]
   },
   "strict": {
     "arrayIndex": true,
