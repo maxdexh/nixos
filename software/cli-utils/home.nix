@@ -100,6 +100,7 @@ in {
     /.steam
     /.steampid
     /.pki
+    /Games
   '';
   xdg.configFile.".ignore".text = ''
     /discord
