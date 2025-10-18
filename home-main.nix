@@ -6,7 +6,7 @@
 }: {
   imports = G.findAutoImports "/home.nix";
 
-  lib.file.linkLocalConfigFile = p:
+  lib.file.symlinkNixConfig = p:
     if G.host.localConfigRoot == ""
     then p
     else let

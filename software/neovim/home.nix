@@ -1,7 +1,7 @@
 {config, pkgs, ...}: {
   home.packages = with pkgs; [tree-sitter];
   xdg.configFile."nvim".source =
-    config.lib.file.linkLocalConfigFile ./nvim;
+    config.lib.file.symlinkNixConfig ./nvim;
 
   systemd.user.sessionVariables = {
     VISUAL = "nvim";

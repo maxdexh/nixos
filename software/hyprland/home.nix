@@ -24,25 +24,42 @@
   wayland.windowManager.hyprland = {
     enable = true;
 
-    extraConfig = "source = ${config.lib.file.linkLocalConfigFile ./hyprland.conf}";
+    extraConfig = "source = ${config.lib.file.symlinkNixConfig ./hyprland.conf}";
   };
 
-  # TODO: Try other daemons
-  services.dunst = {
+  services.swaync = {
     enable = true;
-    # https://discourse.nixos.org/t/tip-how-to-enable-dunst-for-only-select-des-with-nix/65630
     package = let
-      mainExe = lib.getExe pkgs.dunst;
+      base = pkgs.swaynotificationcenter;
+      mainExe = lib.getExe base;
       mainExeName = builtins.baseNameOf mainExe;
-    in
-      pkgs.writeShellScriptBin mainExeName ''
+
+      # https://discourse.nixos.org/t/tip-how-to-enable-dunst-for-only-select-des-with-nix/65630
+      patched = pkgs.writeShellScriptBin mainExeName ''
         if [ "$XDG_CURRENT_DESKTOP" = "KDE" ] || [ "$DESKTOP_SESSION" = "plasma" ]; then
-          echo "Dunst: Not starting because session is KDE Plasma."
+          echo "SwayNC: Not starting because session is KDE Plasma."
           exit 0
         fi
         exec ${mainExe} "$@"
       '';
-    configFile = ./dunstrc;
+    in
+      pkgs.symlinkJoin {
+        name = "swaync-kde-patch";
+        # NOTE: patched shadows base
+        paths = [patched base];
+        meta = base.meta;
+      };
+  };
+
+  # WARN: This forcibly overrides home-manager's config file, so services.swaync.settings will not work.
+  xdg.configFile."swaync/config.json" = lib.mkForce {
+    source = config.lib.file.symlinkNixConfig ./swaync.json;
+  };
+
+  # TODO: Configure this
+  # https://github.com/ErikReider/SwayNotificationCenter/discussions/183
+  xdg.configFile."swaync/style.css" = {
+    source = config.lib.file.symlinkNixConfig ./swaync.css;
   };
 
   # TODO: Configure more default apps
