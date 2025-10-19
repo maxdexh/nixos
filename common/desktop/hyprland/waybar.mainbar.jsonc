@@ -1,0 +1,67 @@
+{
+  "reload_style_on_change": true,
+  "position": "bottom",
+  "hyprland/workspaces": {
+    "format": "{icon}"
+  },
+  "tray": {
+    "spacing": 10
+  },
+  "clock": {
+    "format": "{:%H:%M %d/%m}",
+    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>\n"
+  },
+  "clock#time": {
+    "format": "{:%H:%M}",
+    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>\n"
+  },
+  // Power (Laptops only)
+  "group/energy": {
+    "modules": [
+      "power-profiles-daemon",
+      "battery"
+    ],
+    "orientation": "inherit"
+  },
+  "battery": {
+    "format": "{capacity}% -{power:3.1f}W",
+    "format-charging": "{capacity}% +{power:3.1f}W",
+    "format-plugged": "{format_charging}",
+    "interval": 30
+  },
+  "power-profiles-daemon": {
+    "format": "{icon} ",
+    "format-icons": {
+      "balanced": "",
+      "default": "",
+      "performance": "",
+      "power-saver": ""
+    },
+    "tooltip": true,
+    "tooltip-format": "Power profile: {profile}\nDriver: {driver}\n"
+  },
+  // Audio
+  "pulseaudio#mic": {
+    "format": "{format_source}",
+    "format-source": " {volume}%",
+    "format-source-muted": " {volume}%",
+    "on-click": "wpctl set-mute @DEFAULT_SOURCE@ toggle",
+    "on-click-right": "pactl set-source-volume @DEFAULT_SOURCE@ 100%",
+    "on-scroll-down": "pactl set-source-volume @DEFAULT_SOURCE@ -1%",
+    "on-scroll-up": "pactl set-source-volume @DEFAULT_SOURCE@ +1%"
+  },
+  "pulseaudio#out": {
+    "format": "{icon} {volume}%",
+    "format-bluetooth": "{icon} {volume}%",
+    "format-bluetooth-muted": " {volume}%",
+    "format-icons": {
+      "default": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "format-muted": " {volume}%",
+    "on-click": "wpctl set-mute @DEFAULT_SINK@ toggle"
+  }
+}

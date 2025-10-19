@@ -2,9 +2,9 @@
   pkgs,
   lib,
   config,
+  G,
   ...
 }: {
-  imports = [./waybar.nix];
   home.packages = with pkgs; [
     waybar
     hyprshot
@@ -29,6 +29,34 @@
     settings = {
       "$terminal" = "kitty";
       source = ["${config.lib.file.symlinkNixConfig ./hypr-conf}/*"];
+    };
+  };
+
+  programs.waybar = {
+    enable = true;
+    style = config.lib.file.symlinkNixConfig ./waybar.css;
+    settings.mainBar = {
+      modules-left = ["hyprland/workspaces"];
+
+      modules-right = let
+        modules = [
+          "tray"
+
+          "pulseaudio#mic"
+          "pulseaudio#out"
+
+          "group/energy"
+
+          "clock"
+        ];
+      in
+        if G.host.isLaptop
+        then modules
+        else lib.lists.remove "group/energy" modules;
+
+      # TODO: Get 'inspiration' from omarchy
+      # TODO: Move things to swaync panel
+      include = [(toString (config.lib.file.symlinkNixConfig ./waybar.mainbar.jsonc))];
     };
   };
 
