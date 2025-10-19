@@ -1,4 +1,4 @@
-{...}: {
+{pkgs, ...}: {
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -51,4 +51,12 @@
     enable = true;
     powerOnBoot = false;
   };
+
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true;
+  };
+  environment.systemPackages = with pkgs; [
+    wl-clipboard
+  ];
 }

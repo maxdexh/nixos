@@ -44,7 +44,8 @@
         lib.pipe [./common ./hosts/${name}] [
           (builtins.concatMap lib.filesystem.listFilesRecursive)
           (map toString)
-          (builtins.filter (lib.strings.hasSuffix suffix))
+          (builtins.filter (path: lib.strings.hasSuffix ".${suffix}" path || lib.strings.hasSuffix "/${suffix}" path))
+          (files: builtins.trace "Found ${toString (builtins.length files)} imports for '${suffix}'" files)
         ];
 
       pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};

@@ -4,7 +4,7 @@
   config,
   ...
 }: {
-  imports = (G.findAutoImports "/home.nix") ++ (G.findAutoImports ".home.nix");
+  imports = G.findAutoImports "home.nix";
 
   lib.file.symlinkNixConfig = p:
     if G.host.localConfigRoot == ""
