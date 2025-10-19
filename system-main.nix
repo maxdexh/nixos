@@ -24,10 +24,11 @@
   };
 
   # Home Manager user config
+  # TODO: Consider using standalone hm, with synced nixpkgs instance
   home-manager.users.max = import ./home-main.nix;
 
   home-manager = {
-    useGlobalPkgs = true;
+    useGlobalPkgs = true; # TODO: Where does this matter? Possibly for hyprland?
     verbose = true;
     extraSpecialArgs.G = G;
   };

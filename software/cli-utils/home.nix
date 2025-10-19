@@ -18,6 +18,8 @@ in {
 
     fd
 
+    hyperfine
+
     trash-cli
 
     zip

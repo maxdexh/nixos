@@ -3,6 +3,9 @@
   G,
   ...
 }: {
+  # TODO: Get 'inspiration' from omarchy
+  # TODO: Move things to swaync panel
+  # TODO: Use a json config for better reloading, use https://github.com/Alexays/Waybar/pull/995 include property for conditional stuff
   programs.waybar = {
     enable = true;
     style = builtins.readFile ./waybar.css;
@@ -32,8 +35,6 @@
 
     "hyprland/workspaces" = {
       format = "{icon}";
-      on-scroll-up = "hyprctl dispatch workspace e+1";
-      on-scroll-down = "hyprctl dispatch workspace e-1";
     };
     "clock" = {
       format = "{:%H:%M %d/%m}";

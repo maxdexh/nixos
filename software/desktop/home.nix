@@ -46,4 +46,83 @@
   };
 
   gtk.gtk2.configLocation = "${config.xdg.configHome}/gtkrc-2.0";
+
+  # TODO: Configure more default apps
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "application/pdf" = "firefox.desktop";
+      "text/html" = "firefox.desktop";
+      "text/plain" = "nvim.desktop";
+
+      "x-scheme-handler/http" = "firefox.desktop";
+      "x-scheme-handler/https" = "firefox.desktop";
+      "x-scheme-handler/chrome" = "firefox.desktop";
+      "application/x-extension-htm" = "firefox.desktop";
+      "application/x-extension-html" = "firefox.desktop";
+      "application/x-extension-shtml" = "firefox.desktop";
+      "application/xhtml+xml" = "firefox.desktop";
+      "application/x-extension-xhtml" = "firefox.desktop";
+      "application/x-extension-xht" = "firefox.desktop";
+    };
+  };
+
+  xdg.desktopEntries = {
+    hibernate = {
+      name = "Hibernate";
+      exec = "systemctl hibernate";
+      icon = "system-hibernate";
+      genericName = "Hibernate";
+    };
+    suspend = {
+      name = "Suspend";
+      exec = "systemctl suspend-then-hibernate";
+      icon = "system-suspend";
+      genericName = "Put System to Sleep";
+    };
+    shutdown = {
+      name = "Shut Down";
+      exec = "shutdown -h now";
+      icon = "system-shutdown";
+      genericName = "Power off the System";
+    };
+    reboot = {
+      name = "Reboot";
+      exec = "reboot";
+      icon = "system-reboot";
+      genericName = "Restart the System";
+    };
+    logout = {
+      name = "Log out";
+      exec = "uwsm stop"; # FIXME: Make this work on KDE too
+      icon = "system-users";
+      comment = "Exit Desktop";
+      settings = {Keywords = "logout";};
+    };
+
+    networkconfig = {
+      name = "Network";
+      exec = "plasmawindowed org.kde.plasma.networkmanagement";
+      icon = "preferences-system-network";
+      genericName = "Network Config";
+    };
+    bluetooth = {
+      name = "Bluetooth";
+      exec = "plasmawindowed org.kde.plasma.bluetooth";
+      icon = "preferences-system-bluetooth";
+      genericName = "Bluetooth Config";
+    };
+    volume = {
+      name = "Audio";
+      exec = "kcmshell6 kcm_pulseaudio";
+      icon = "preferences-desktop-sound";
+      genericName = "Sound Config";
+    };
+    energy = {
+      name = "Energy";
+      exec = "kcmshell6 kcm_energyinfo";
+      icon = "preferences-system-power-management";
+      genericName = "Energy Monitor";
+    };
+  };
 }

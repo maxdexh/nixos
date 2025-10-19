@@ -24,7 +24,12 @@
   wayland.windowManager.hyprland = {
     enable = true;
 
-    extraConfig = "source = ${config.lib.file.symlinkNixConfig ./hyprland.conf}";
+    sourceFirst = false;
+
+    settings = {
+      "$terminal" = "kitty";
+      source = ["${config.lib.file.symlinkNixConfig ./hypr-conf}/*"];
+    };
   };
 
   services.swaync = {
@@ -34,6 +39,7 @@
       mainExe = lib.getExe base;
       mainExeName = builtins.baseNameOf mainExe;
 
+      # Patch swaync to do nothing under KDE
       # https://discourse.nixos.org/t/tip-how-to-enable-dunst-for-only-select-des-with-nix/65630
       patched = pkgs.writeShellScriptBin mainExeName ''
         if [ "$XDG_CURRENT_DESKTOP" = "KDE" ] || [ "$DESKTOP_SESSION" = "plasma" ]; then
@@ -45,101 +51,20 @@
     in
       pkgs.symlinkJoin {
         name = "swaync-kde-patch";
-        # NOTE: patched shadows base
-        paths = [patched base];
+        paths = [patched base]; # NOTE: patched shadows base
         meta = base.meta;
       };
   };
 
-  # WARN: This forcibly overrides home-manager's config file, so services.swaync.settings will not work.
+  # Override home-manager's config file # NOTE: services.swaync.settings will not work.
   xdg.configFile."swaync/config.json" = lib.mkForce {
     source = config.lib.file.symlinkNixConfig ./swaync.json;
   };
 
   # TODO: Configure this
   # https://github.com/ErikReider/SwayNotificationCenter/discussions/183
+  # TODO: Make this work together with hm's css by importing (like with hyprland.conf)
   xdg.configFile."swaync/style.css" = {
     source = config.lib.file.symlinkNixConfig ./swaync.css;
-  };
-
-  # TODO: Configure more default apps
-  xdg.mimeApps = {
-    enable = true;
-    defaultApplications = {
-      "application/pdf" = "firefox.desktop";
-      "text/html" = "firefox.desktop";
-      "text/plain" = "nvim.desktop";
-
-      "x-scheme-handler/http" = "firefox.desktop";
-      "x-scheme-handler/https" = "firefox.desktop";
-      "x-scheme-handler/chrome" = "firefox.desktop";
-      "application/x-extension-htm" = "firefox.desktop";
-      "application/x-extension-html" = "firefox.desktop";
-      "application/x-extension-shtml" = "firefox.desktop";
-      "application/xhtml+xml" = "firefox.desktop";
-      "application/x-extension-xhtml" = "firefox.desktop";
-      "application/x-extension-xht" = "firefox.desktop";
-
-      # TODO: Add desktop entry that opens a new kitty tab with nvim for text
-    };
-  };
-
-  xdg.desktopEntries = {
-    hibernate = {
-      name = "Hibernate";
-      exec = "systemctl hibernate";
-      icon = "system-hibernate";
-      genericName = "Hibernate";
-    };
-    suspend = {
-      name = "Suspend";
-      exec = "systemctl suspend-then-hibernate";
-      icon = "system-suspend";
-      genericName = "Put System to Sleep";
-    };
-    shutdown = {
-      name = "Shut Down";
-      exec = "shutdown -h now";
-      icon = "system-shutdown";
-      genericName = "Power off the System";
-    };
-    reboot = {
-      name = "Reboot";
-      exec = "reboot";
-      icon = "system-reboot";
-      genericName = "Restart the System";
-    };
-    logout = {
-      name = "Log out";
-      exec = "hyprctl dispatch exit";
-      icon = "system-users";
-      comment = "Exit Desktop";
-      settings = {Keywords = "logout";};
-    };
-
-    networkconfig = {
-      name = "Network";
-      exec = "plasmawindowed org.kde.plasma.networkmanagement";
-      icon = "preferences-system-network";
-      genericName = "Network Config";
-    };
-    bluetooth = {
-      name = "Bluetooth";
-      exec = "plasmawindowed org.kde.plasma.bluetooth";
-      icon = "preferences-system-bluetooth";
-      genericName = "Bluetooth Config";
-    };
-    volume = {
-      name = "Audio";
-      exec = "kcmshell6 kcm_pulseaudio";
-      icon = "preferences-desktop-sound";
-      genericName = "Sound Config";
-    };
-    energy = {
-      name = "Energy";
-      exec = "kcmshell6 kcm_energyinfo";
-      icon = "preferences-system-power-management";
-      genericName = "Energy Monitor";
-    };
   };
 }
