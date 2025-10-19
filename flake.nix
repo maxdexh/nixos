@@ -77,8 +77,4 @@
       lib.attrsets.mergeAttrsList
     ];
   };
-
-  # TODO: Standalone hm config for user, with overlays (bc globalPkgs is not a thing there)
-  # TODO: Check whether Standalone hm can be used together with module hm
-  # TODO: How to decide what host G to use from hm flake?
 }
