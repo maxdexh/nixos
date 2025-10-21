@@ -5,6 +5,13 @@
   ...
 }: {
   home.packages = with pkgs; [qt6ct];
+
+  qt = {
+    # TODO: How to configure light/dark theme for qt?
+    enable = true;
+    platformTheme.name = "qtct";
+  };
+
   systemd.user.sessionVariables = {
     # gtk.theme is dysfunctional, but this works nicely, except that it still has window decorations.
     GTK_THEME = "Breeze:dark"; # or: "Adwaita:dark"
@@ -20,7 +27,9 @@
     #   - Breeze Dark
     # - Interface
     #   - Dialog Buttons Layout, Keyboard Scheme: KDE
-    QT_QPA_PLATFORMTHEME = "qt6ct";
+    # Also requires configuring KDE to do the correct thing
+    # FIXME: Find a proper way to configure Qt
+    QT_QPA_PLATFORMTHEME = lib.mkForce "qt6ct";
 
     # Make electron apps use wayland directly rather than running through xwayland
     ELECTRON_OZONE_PLATFORM_HINT = "auto";
@@ -44,6 +53,7 @@
     GTK2_RC_FILES = config.gtk.gtk2.configLocation;
     XCOMPOSECACHE = "${config.xdg.cacheHome}/X11/xcompose";
   };
+  home.sessionVariables.QT_QPA_PLATFORMTHEME = lib.mkForce config.systemd.user.sessionVariables.QT_QPA_PLATFORMTHEME;
 
   gtk.gtk2.configLocation = "${config.xdg.configHome}/gtkrc-2.0";
 

@@ -4,7 +4,7 @@
     # TODO: How to configure light/dark theme for qt?
     enable = true;
     style = "breeze";
-    platformTheme = "kde6";
+    platformTheme = "qt5ct";
   };
 
   services.ratbagd.enable = true; # For piper
