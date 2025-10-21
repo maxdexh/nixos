@@ -1,8 +1,17 @@
-{G, ...}: {
+{
+  config,
+  G,
+  ...
+}: {
   imports = [
     G.inputs.nixos-hardware.nixosModules.framework-13-7040-amd
     ./hardware-configuration.nix
   ];
+
+  hardware.nvidia = {
+    open = false;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
+  };
 
   services.logind = {
     extraConfig = ''
@@ -17,7 +26,7 @@
 
   hardware.cpu.amd.updateMicrocode = true;
   hardware.enableAllFirmware = true;
-	
+
   services.keyd = {
     enable = true;
     keyboards = {
