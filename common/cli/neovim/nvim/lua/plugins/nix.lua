@@ -6,7 +6,7 @@ return {
    {
       "mason.nvim",
       opts = {
-         ensure_installed = { "nil", "alejandra" },
+         ensure_installed = { "nil", "alejandra" }, -- NOTE: This might require installing a rust toolchain first
       },
    },
    {

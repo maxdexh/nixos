@@ -1,12 +1,4 @@
-# FIXME: How much of this config only works properly because of plasma6.enable = true?
 {pkgs, ...}: {
-  qt = {
-    # TODO: How to configure light/dark theme for qt?
-    enable = true;
-    style = "breeze";
-    platformTheme = "qt5ct";
-  };
-
   services.ratbagd.enable = true; # For piper
   environment.systemPackages = with pkgs; [piper];
 
