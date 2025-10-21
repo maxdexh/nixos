@@ -1,5 +1,5 @@
 # vi: ft=fish
-# Save via `fish_config theme dump > ...`, load via `fish_config theme choose ...`
+# Save via `fish_config theme dump > ...`, load via `fish_config theme save ...` (name from ~/.config/fish/themes/name.theme)
 
 fish_color_autosuggestion brblack
 fish_color_cancel --reverse
@@ -20,17 +20,17 @@ fish_color_operator brcyan
 fish_color_option cyan
 fish_color_param cyan
 fish_color_quote yellow
-fish_color_redirection 'cyan'  '--bold'
-fish_color_search_match 'bryellow'  '--background=brblack'
-fish_color_selection 'white'  '--bold'  '--background=brblack'
+fish_color_redirection cyan --bold
+fish_color_search_match bryellow '--background=brblack'
+fish_color_selection white --bold '--background=brblack'
 fish_color_status red
 fish_color_user brgreen
 fish_color_valid_path --underline
 fish_pager_color_background
 fish_pager_color_completion normal
-fish_pager_color_description 'yellow'  '--italics'
-fish_pager_color_prefix 'normal'  '--bold'  '--underline'
-fish_pager_color_progress 'brwhite'  '--background=cyan'
+fish_pager_color_description yellow --italics
+fish_pager_color_prefix normal --bold --underline
+fish_pager_color_progress brwhite '--background=cyan'
 fish_pager_color_secondary_background
 fish_pager_color_secondary_completion
 fish_pager_color_secondary_description
