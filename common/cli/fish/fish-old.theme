@@ -1,4 +1,5 @@
-# Save via `fish_config theme dump > ...`, load via `source ...`
+# vi: ft=fish
+# Save via `fish_config theme dump > ...`, load via `fish_config theme choose ...`
 
 fish_color_autosuggestion brblack
 fish_color_cancel --reverse
