@@ -1,6 +1,6 @@
 {...}: {
   qt = {
     enable = true;
-    platformTheme = "kde";
+    platformTheme = "kde6";
   };
 }

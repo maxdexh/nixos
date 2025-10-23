@@ -4,7 +4,7 @@
   # Cusror theme: https://store.kde.org/p/2075700
   qt = {
     enable = true;
-    platformTheme.name = "kde";
+    platformTheme.name = "kde6";
   };
-  systemd.user.sessionVariables.QT_QPA_PLATFORMTHEME = "kde";
+  # systemd.user.sessionVariables.QT_QPA_PLATFORMTHEME = "kde";
 }
