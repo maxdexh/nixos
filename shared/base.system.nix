@@ -1,4 +1,16 @@
 {pkgs, ...}: {
+  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
+  nix.optimise.automatic = true;
+  systemd.services = {
+    nix-optimise.serviceConfig.ConditionACPower = true;
+    nix-gc.serviceConfig.ConditionACPower = true;
+  };
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;

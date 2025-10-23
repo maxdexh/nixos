@@ -66,8 +66,15 @@
       system = G.host.system;
 
       modules = [
-        ./system-main.nix
         {networking.hostName = G.host.name;}
+        # Configuration for nixpkgs, such as overlays. Only import from system because useGlobalPkgs = true
+        ./nixpkgs-conf
+        # System base
+        {
+          imports = G.findAutoImports "system";
+          system.stateVersion = "25.05";
+        }
+        # Users
         inputs.home-manager.nixosModules.home-manager
         {
           users.users.max = {
@@ -79,7 +86,6 @@
           # Home Manager user config
           home-manager.users.max = {
             imports = G.findAutoImports "home";
-
             home.stateVersion = "25.05";
           };
 
