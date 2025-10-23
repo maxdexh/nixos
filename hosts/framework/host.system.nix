@@ -67,6 +67,10 @@
       };
     };
   };
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "altgr-intl";
+  };
 
   # Fix palm rejection and disable-while-typing by telling libinput to treat the keyd virtual kb as a builtin keyboard
   environment.etc."libinput/local-overrides.quirks".text = ''
