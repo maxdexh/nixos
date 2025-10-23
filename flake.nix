@@ -50,17 +50,9 @@
         in
           builtins.trace "Found ${toString (builtins.length it)} auto-imports of kind '${kind}'" it;
 
-        auto-imports-mixed = lib.pipe "mixed" [
-          auto-imports-of-kind
-          (map import)
-        ];
-        mixed-of-kind = kind:
-          lib.pipe auto-imports-mixed [
-            (builtins.filter (it: it ? ${kind}))
-            (builtins.map (it: it . ${kind}))
-          ];
+        auto-imports-mixed = auto-imports-of-kind "mixed";
       in
-        kind: assert kind != "mixed"; (auto-imports-of-kind kind) ++ (mixed-of-kind kind);
+        kind: assert kind != "mixed"; (auto-imports-of-kind kind) ++ auto-imports-mixed;
 
       pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
     };
@@ -78,9 +70,25 @@
         ./system-main.nix
         ./global-overlays.nix
         {networking.hostName = G.host.name;}
+        {
+          users.users.max = {
+            isNormalUser = true;
+            description = "Max";
+            extraGroups = ["networkmanager" "wheel"];
+          };
+
+          # Home Manager user config
+          home-manager.users.max = import ./home-main.nix;
+
+          home-manager = {
+            useGlobalPkgs = true;
+            verbose = true;
+            extraSpecialArgs.G = G // {kind = "home";};
+          };
+        }
       ];
 
-      specialArgs.G = G;
+      specialArgs.G = G // {kind = "system";};
     };
   in {
     nixosConfigurations = lib.pipe hosts [

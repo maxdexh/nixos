@@ -16,19 +16,4 @@
     nix-optimise.serviceConfig.ConditionACPower = true;
     nix-gc.serviceConfig.ConditionACPower = true;
   };
-
-  users.users.max = {
-    isNormalUser = true;
-    description = "Max";
-    extraGroups = ["networkmanager" "wheel"];
-  };
-
-  # Home Manager user config
-  home-manager.users.max = import ./home-main.nix;
-
-  home-manager = {
-    useGlobalPkgs = true;
-    verbose = true;
-    extraSpecialArgs.G = G;
-  };
 }
