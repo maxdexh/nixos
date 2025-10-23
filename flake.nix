@@ -15,11 +15,35 @@
   outputs = inputs: let
     lib = inputs.nixpkgs.lib;
 
-    build-G = name: rec {
+    find-imports-in = relpath: let
+      basepath = ./${relpath};
+      candidates = lib.pipe basepath [
+        lib.filesystem.listFilesRecursive
+        (map toString)
+        (builtins.filter (lib.strings.hasSuffix ".nix"))
+      ];
+      filter-kind = kind: let
+        imports = builtins.filter (path: lib.strings.hasSuffix ".${kind}.nix" path || lib.strings.hasSuffix "/${kind}.nix" path) candidates;
+      in
+        builtins.trace "Found ${toString (builtins.length imports)} auto-imports of kind '${kind}' in ./${relpath}" imports;
+
+      mixed = filter-kind "mixed";
+    in
+      kind: mixed ++ (filter-kind kind);
+
+    find-host-imports = let
+      find-host-agnostic = find-imports-in "shared";
+    in
+      host: let
+        find-host-specific = find-imports-in "hosts/${host}";
+      in
+        kind: builtins.concatMap (find: find kind) [find-host-specific find-host-agnostic];
+
+    build-G = host-name: rec {
       inherit inputs;
 
       host = let
-        check-msg = cond: msg: lib.asserts.assertMsg cond "${name}: ${msg}";
+        check-msg = cond: msg: lib.asserts.assertMsg cond "${host-name}: ${msg}";
         expect = p: ex: got: check-msg (p got) "Expected ${ex}, got: ${got}";
         expect-bool = expect builtins.isBool "bool";
         check-host = host-config @ {
@@ -34,35 +58,23 @@
           assert expect builtins.isString "string" nixosConfigLocation;
             host-config
             // {
-              inherit name;
+              name = host-name;
               nixosConfigLocation = lib.removeSuffix "/" nixosConfigLocation;
             };
       in
-        check-host (import ./hosts/${name}/host-meta.nix inputs);
-
-      findAutoImports = let
-        import-candidates = lib.pipe [./shared ./hosts/${name}] [
-          (builtins.concatMap lib.filesystem.listFilesRecursive)
-          (map toString)
-        ];
-        auto-imports-of-kind = kind: let
-          it = builtins.filter (path: lib.strings.hasSuffix ".${kind}.nix" path || lib.strings.hasSuffix "/${kind}.nix" path) import-candidates;
-        in
-          builtins.trace "Found ${toString (builtins.length it)} auto-imports of kind '${kind}'" it;
-
-        auto-imports-mixed = auto-imports-of-kind "mixed";
-      in
-        kind: assert kind != "mixed"; (auto-imports-of-kind kind) ++ auto-imports-mixed;
+        check-host (import ./hosts/${host-name}/host-meta.nix inputs);
 
       pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
     };
 
-    hosts = lib.pipe (builtins.readDir ./hosts) [
+    host-Gs = lib.pipe (builtins.readDir ./hosts) [
       builtins.attrNames
       (map build-G)
     ];
 
-    nixos-system = G: {
+    nixos-system = G: let
+      find-imports = find-host-imports G.host.name;
+    in {
       system = G.host.system;
 
       modules = [
@@ -71,7 +83,7 @@
         ./nixpkgs-conf
         # System base
         {
-          imports = G.findAutoImports "system";
+          imports = find-imports "system";
           system.stateVersion = "25.05";
         }
         # Users
@@ -85,7 +97,7 @@
 
           # Home Manager user config
           home-manager.users.max = {
-            imports = G.findAutoImports "home";
+            imports = find-imports "home";
             home.stateVersion = "25.05";
           };
 
@@ -100,7 +112,7 @@
       specialArgs.G = G // {kind = "system";};
     };
   in {
-    nixosConfigurations = lib.pipe hosts [
+    nixosConfigurations = lib.pipe host-Gs [
       (builtins.filter (G: G.host.isNixOS))
       (map (G: {
         ${G.host.name} = lib.nixosSystem (nixos-system G);
