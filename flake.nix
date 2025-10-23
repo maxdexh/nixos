@@ -13,6 +13,29 @@
   };
 
   outputs = inputs: let
+    HOST-INFOS = {
+      framework = {
+        modulePath = "./hosts/framework";
+        isNixOS = true;
+        system = "x86_64-linux";
+      };
+      desktop = {
+        modulePath = "./hosts/desktop";
+        isNixOS = true;
+        system = "x86_64-linux";
+      };
+    };
+
+    host-Gs = lib.pipe HOST-INFOS [
+      (lib.mapAttrsToList (name: info: info // {inherit name;}))
+      (map (host: {
+        inherit inputs;
+        inherit host;
+
+        pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
+      }))
+    ];
+
     lib = inputs.nixpkgs.lib;
 
     find-imports-in = relpath: let
@@ -25,61 +48,28 @@
       filter-kind = kind: let
         imports = builtins.filter (path: lib.strings.hasSuffix ".${kind}.nix" path || lib.strings.hasSuffix "/${kind}.nix" path) candidates;
       in
-        builtins.trace "Found ${toString (builtins.length imports)} auto-imports of kind '${kind}' in ./${relpath}" imports;
+        builtins.trace "Auto-importing ${toString (builtins.length imports)} of kind '${kind}' in ${relpath}" imports;
 
       mixed = filter-kind "mixed";
     in
       kind: mixed ++ (filter-kind kind);
 
     find-host-imports = let
-      find-host-agnostic = find-imports-in "shared";
+      find-host-agnostic = find-imports-in "./shared";
     in
-      host: let
-        find-host-specific = find-imports-in "hosts/${host}";
+      G: let
+        find-host-specific = find-imports-in G.host.modulePath;
       in
         kind: builtins.concatMap (find: find kind) [find-host-specific find-host-agnostic];
 
-    build-G = host-name: rec {
-      inherit inputs;
-
-      host = let
-        check-msg = cond: msg: lib.asserts.assertMsg cond "${host-name}: ${msg}";
-        expect = p: ex: got: check-msg (p got) "Expected ${ex}, got: ${got}";
-        expect-bool = expect builtins.isBool "bool";
-        check-host = host-config @ {
-          isLaptop,
-          isNixOS,
-          system,
-          nixosConfigLocation ? "",
-        }:
-          assert expect-bool isLaptop;
-          assert expect-bool isNixOS;
-          assert expect (it: inputs.nixpkgs.legacyPackages ? ${it}) "Nixpkgs system" system;
-          assert expect builtins.isString "string" nixosConfigLocation;
-            host-config
-            // {
-              name = host-name;
-              nixosConfigLocation = lib.removeSuffix "/" nixosConfigLocation;
-            };
-      in
-        check-host (import ./hosts/${host-name}/host-meta.nix inputs);
-
-      pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
-    };
-
-    host-Gs = lib.pipe (builtins.readDir ./hosts) [
-      builtins.attrNames
-      (map build-G)
-    ];
-
     nixos-system = G: let
-      find-imports = find-host-imports G.host.name;
+      find-imports = find-host-imports G;
     in {
       system = G.host.system;
 
       modules = [
         {networking.hostName = G.host.name;}
-        # Configuration for nixpkgs, such as overlays. Only import from system because useGlobalPkgs = true
+        # Configuration for nixpkgs, such as overlays. Only import from system since useGlobalPkgs = true
         ./nixpkgs-conf
         # System base
         {
@@ -104,12 +94,12 @@
           home-manager = {
             useGlobalPkgs = true;
             verbose = true;
-            extraSpecialArgs.G = G // {kind = "home";};
+            extraSpecialArgs.G = G // {context = "home";};
           };
         }
       ];
 
-      specialArgs.G = G // {kind = "system";};
+      specialArgs.G = G // {context = "system";};
     };
   in {
     nixosConfigurations = lib.pipe host-Gs [

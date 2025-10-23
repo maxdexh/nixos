@@ -2,7 +2,6 @@
   pkgs,
   lib,
   config,
-  G,
   ...
 }: {
   home.packages = with pkgs; [
@@ -45,7 +44,7 @@
           "clock"
         ];
       in
-        if G.host.isLaptop
+        if config.custom.host.laptop.enable
         then modules
         else lib.lists.remove "group/energy" modules;
 

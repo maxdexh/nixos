@@ -1,6 +1,7 @@
 {
   pkgs,
   G,
+  config,
   ...
 }: let
   shellint-no-bash = {
@@ -37,10 +38,6 @@ in {
     glow
     openvpn
   ];
-
-  systemd.user.sessionVariables = {
-    NIX_CONFIG_ROOT = G.host.nixosConfigLocation;
-  };
 
   # Make shell integrations explicit
   home.shell.enableShellIntegration = false;
