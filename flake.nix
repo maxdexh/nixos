@@ -67,7 +67,6 @@
 
       modules = [
         ./system-main.nix
-        ./global-overlays.nix
         {networking.hostName = G.host.name;}
         inputs.home-manager.nixosModules.home-manager
         {
