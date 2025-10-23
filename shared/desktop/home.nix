@@ -80,12 +80,23 @@
     };
     logout = {
       name = "Log out";
-      exec = "uwsm stop"; # FIXME: Make this work on KDE too
-      icon = "system-users";
+      exec = let
+        logout = pkgs.writeShellApplication {
+          name = "logout";
+          text = ''
+            if [ "$XDG_CURRENT_DESKTOP" = "KDE" ] || [ "$DESKTOP_SESSION" = "plasma" ]; then
+              exec qdbus org.kde.Shutdown /Shutdown logout
+            else
+              exec uwsm stop
+            fi
+          '';
+        };
+      in
+        lib.getExe logout;
+      icon = "system-log-out";
       comment = "Exit Desktop";
       settings = {Keywords = "logout";};
     };
-
     networkconfig = {
       name = "Network";
       exec = "plasmawindowed org.kde.plasma.networkmanagement";
