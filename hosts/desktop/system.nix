@@ -44,31 +44,4 @@
 
   hardware.cpu.amd.updateMicrocode = true;
   hardware.enableAllFirmware = true;
-
-  services.keyd = {
-    enable = true;
-    keyboards = {
-      default = {
-        ids = ["*"];
-        settings = {
-          main = {
-            z = "y";
-            y = "z";
-            capslock = "esc";
-          };
-          # Assumes AltGr key combining with ä on q, ö on p, ü on y.
-          altgr = {
-            a = "G-q";
-            o = "G-p";
-            u = "G-y";
-          };
-        };
-      };
-    };
-  };
-
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "altgr-intl";
-  };
 }

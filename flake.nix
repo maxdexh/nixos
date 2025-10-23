@@ -62,6 +62,12 @@
       in
         kind: builtins.concatMap (find: find kind) [find-host-specific find-host-agnostic];
 
+    G-context-extra = ctx: {
+      context = ctx;
+      pickCtx = it: it.${ctx};
+      mkIfCtxIs = other-ctx: lib.mkIf (ctx == other-ctx);
+    };
+
     nixos-system = G: let
       find-imports = find-host-imports G;
     in {
@@ -94,12 +100,12 @@
           home-manager = {
             useGlobalPkgs = true;
             verbose = true;
-            extraSpecialArgs.G = G // {context = "home";};
+            extraSpecialArgs.G = G // G-context-extra "home";
           };
         }
       ];
 
-      specialArgs.G = G // {context = "system";};
+      specialArgs.G = G // G-context-extra "system";
     };
   in {
     nixosConfigurations = lib.pipe host-Gs [
