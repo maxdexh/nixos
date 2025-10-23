@@ -66,10 +66,10 @@
       system = G.host.system;
 
       modules = [
-        inputs.home-manager.nixosModules.home-manager
         ./system-main.nix
         ./global-overlays.nix
         {networking.hostName = G.host.name;}
+        inputs.home-manager.nixosModules.home-manager
         {
           users.users.max = {
             isNormalUser = true;
@@ -78,7 +78,11 @@
           };
 
           # Home Manager user config
-          home-manager.users.max = import ./home-main.nix;
+          home-manager.users.max = {
+            imports = G.findAutoImports "home";
+
+            home.stateVersion = "25.05";
+          };
 
           home-manager = {
             useGlobalPkgs = true;
