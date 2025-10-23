@@ -20,21 +20,6 @@
 
   boot.kernelParams = ["nvidia_drm.fbdev=1" "nvidia-drm.modeset=1" "module_blacklist=i915"];
 
-  environment.systemPackages = with pkgs; [
-    libva-utils
-    vdpauinfo
-    vulkan-tools
-    vulkan-validation-layers
-    libvdpau-va-gl
-    egl-wayland
-    wgpu-utils
-    mesa
-    libglvnd
-    nvtopPackages.full
-    nvitop
-    libGL
-  ];
-
   hardware.nvidia = {
     forceFullCompositionPipeline = true;
     modesetting.enable = true;
