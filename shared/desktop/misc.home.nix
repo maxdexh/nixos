@@ -4,6 +4,8 @@
   lib,
   ...
 }: {
+  # HACK: Hotfix for cursor theme not working in steam.
+  # https://github.com/ValveSoftware/steam-for-linux/issues/11484#issuecomment-3437303820
   home.file.".local/share/icons/default" = {
     source = "${pkgs.kdePackages.breeze}/share/icons/breeze_cursors/";
     recursive = true;
