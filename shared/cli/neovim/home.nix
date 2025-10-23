@@ -10,7 +10,7 @@
   ];
 
   xdg.configFile."nvim".source =
-    config.lib.file.symlinkNixConfig ./nvim;
+    config.lib.file.mkNixConfigSymlink ./nvim;
 
   systemd.user.sessionVariables = {
     VISUAL = "nvim";

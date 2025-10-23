@@ -1,5 +1,5 @@
 {G, ...}: {
-  imports = G.findAutoImports "system.nix";
+  imports = G.findAutoImports "system";
 
   system.stateVersion = "25.05";
 

@@ -39,7 +39,7 @@ in {
   ];
 
   systemd.user.sessionVariables = {
-    NIX_CONFIG_ROOT = G.host.localConfigRoot;
+    NIX_CONFIG_ROOT = G.host.nixosConfigLocation;
   };
 
   # Make shell integrations explicit

@@ -26,27 +26,41 @@
           isLaptop,
           isNixOS,
           system,
-          localConfigRoot ? "",
+          nixosConfigLocation ? "",
         }:
           assert expect-bool isLaptop;
           assert expect-bool isNixOS;
           assert expect (it: inputs.nixpkgs.legacyPackages ? ${it}) "Nixpkgs system" system;
-          assert expect builtins.isString "string" localConfigRoot;
+          assert expect builtins.isString "string" nixosConfigLocation;
             host-config
             // {
               inherit name;
-              localConfigRoot = lib.removeSuffix "/" localConfigRoot;
+              nixosConfigLocation = lib.removeSuffix "/" nixosConfigLocation;
             };
       in
         check-host (import ./hosts/${name}/host-meta.nix inputs);
 
-      findAutoImports = suffix:
-        lib.pipe [./shared ./hosts/${name}] [
+      findAutoImports = let
+        import-candidates = lib.pipe [./shared ./hosts/${name}] [
           (builtins.concatMap lib.filesystem.listFilesRecursive)
           (map toString)
-          (builtins.filter (path: lib.strings.hasSuffix ".${suffix}" path || lib.strings.hasSuffix "/${suffix}" path))
-          (files: builtins.trace "Found ${toString (builtins.length files)} imports for '${suffix}'" files)
         ];
+        auto-imports-of-kind = kind: let
+          it = builtins.filter (path: lib.strings.hasSuffix ".${kind}.nix" path || lib.strings.hasSuffix "/${kind}.nix" path) import-candidates;
+        in
+          builtins.trace "Found ${toString (builtins.length it)} auto-imports of kind '${kind}'" it;
+
+        auto-imports-mixed = lib.pipe "mixed" [
+          auto-imports-of-kind
+          (map import)
+        ];
+        mixed-of-kind = kind:
+          lib.pipe auto-imports-mixed [
+            (builtins.filter (it: it ? ${kind}))
+            (builtins.map (it: it . ${kind}))
+          ];
+      in
+        kind: assert kind != "mixed"; (auto-imports-of-kind kind) ++ (mixed-of-kind kind);
 
       pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
     };

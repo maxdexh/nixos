@@ -5,7 +5,6 @@
   ];
 
   # TODO: udev rule to prevent the keyboard & touchpad from waking the device from sleep
-  # TODO: Try making the lid switch wake the device
   services.logind = {
     lidSwitch = "suspend-then-hibernate";
     lidSwitchExternalPower = "suspend";
@@ -25,26 +24,6 @@
     HibernateDelaySec=15m
     SuspendState=mem
   '';
-
-  boot.kernelParams = [
-    # Enables AMD's preferred CPU scaling driver
-    "amd_pstate=active"
-
-    # Adaptive brightness level (local dimming), power saving
-    "amdgpu.abmlevel=2"
-  ];
-
-  services.power-profiles-daemon.enable = true;
-  services.fwupd.enable = true;
-  hardware.cpu.amd.updateMicrocode = true;
-  hardware.enableAllFirmware = true;
-  services.thermald.enable = true;
-  services.auto-cpufreq.enable = false; # Not needed with ppd
-  services.upower.enable = true; # TODO: Remove
-  powerManagement = {
-    enable = true;
-    powertop.enable = true;
-  };
 
   services.keyd = {
     enable = true;

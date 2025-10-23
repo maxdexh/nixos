@@ -23,13 +23,13 @@
 
     settings = {
       "$terminal" = "kitty";
-      source = ["${config.lib.file.symlinkNixConfig ./hypr-conf}/*"];
+      source = ["${config.lib.file.mkNixConfigSymlink ./hypr-conf}/*"];
     };
   };
 
   programs.waybar = {
     enable = true;
-    style = config.lib.file.symlinkNixConfig ./waybar.css;
+    style = config.lib.file.mkNixConfigSymlink ./waybar.css;
     settings.mainBar = {
       modules-left = ["hyprland/workspaces"];
 
@@ -51,7 +51,7 @@
 
       # TODO: Get 'inspiration' from omarchy
       # TODO: Move things to swaync panel
-      include = [(toString (config.lib.file.symlinkNixConfig ./waybar.mainbar.jsonc))];
+      include = [(toString (config.lib.file.mkNixConfigSymlink ./waybar.mainbar.jsonc))];
     };
   };
 
@@ -81,13 +81,13 @@
 
   # Override home-manager's config file # NOTE: services.swaync.settings will not work.
   xdg.configFile."swaync/config.json" = lib.mkForce {
-    source = config.lib.file.symlinkNixConfig ./swaync.json;
+    source = config.lib.file.mkNixConfigSymlink ./swaync.json;
   };
 
   # TODO: Configure this
   # https://github.com/ErikReider/SwayNotificationCenter/discussions/183
   # TODO: Make this work together with hm's css by importing (like with hyprland.conf)
   xdg.configFile."swaync/style.css" = {
-    source = config.lib.file.symlinkNixConfig ./swaync.css;
+    source = config.lib.file.mkNixConfigSymlink ./swaync.css;
   };
 }
