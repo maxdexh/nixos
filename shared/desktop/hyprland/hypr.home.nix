@@ -14,11 +14,6 @@
     xorg.xrdb # For kde-style xwayland scaling
     killall
     playerctl
-
-    # These packages are required for kcmshell to work
-    kdePackages.kirigami-addons
-    kdePackages.kitemmodels
-    kdePackages.kdeclarative
   ];
 
   wayland.windowManager.hyprland = {
