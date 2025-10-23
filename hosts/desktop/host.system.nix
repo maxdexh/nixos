@@ -4,17 +4,21 @@
   G,
   ...
 }: {
-  imports = [
-    G.inputs.nixos-hardware.nixosModules.framework-13-7040-amd
+  imports = let
+    hardware = G.inputs.nixos-hardware.nixosModules;
+  in [
+    hardware.common-pc
+    hardware.common-pc-ssd
+    hardware.common-gpu-nvidia-nonprime
+    hardware.common-cpu-amd
+    hardware.common-cpu-amd-zenpower
     ./hardware-configuration.nix
   ];
 
-  boot.kernelParams = ["nvidia_drm.fbdev=1" "nvidia-drm.modeset=1" "module_blacklist=i915"];
+  # NOTE: `hardware.nvidia.enabled` is set based on this
+  services.xserver.videoDrivers = ["nvidia"];
 
-  hardware.opengl = {
-    enable = true;
-    driSupport32Bit = true;
-  };
+  boot.kernelParams = ["nvidia_drm.fbdev=1" "nvidia-drm.modeset=1" "module_blacklist=i915"];
 
   environment.systemPackages = with pkgs; [
     libva-utils
@@ -30,8 +34,6 @@
     nvitop
     libGL
   ];
-
-  services.xserver.videoDrivers = ["nvidia"];
 
   hardware.nvidia = {
     forceFullCompositionPipeline = true;
