@@ -4,6 +4,11 @@
   lib,
   ...
 }: {
+  home.file.".local/share/icons/default" = {
+    source = "${pkgs.kdePackages.breeze}/share/icons/breeze_cursors/";
+    recursive = true;
+  };
+
   systemd.user.sessionVariables = {
     # gtk.theme is dysfunctional, but this works nicely, except that it still has window decorations.
     GTK_THEME = "Breeze:dark"; # or: "Adwaita:dark"
