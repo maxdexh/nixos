@@ -41,7 +41,7 @@
         check-host (import ./hosts/${name}/host-meta.nix inputs);
 
       findAutoImports = suffix:
-        lib.pipe [./common ./hosts/${name}] [
+        lib.pipe [./shared ./hosts/${name}] [
           (builtins.concatMap lib.filesystem.listFilesRecursive)
           (map toString)
           (builtins.filter (path: lib.strings.hasSuffix ".${suffix}" path || lib.strings.hasSuffix "/${suffix}" path))
