@@ -4,7 +4,7 @@
   ...
 }: {
   home.packages = with pkgs; [rustup];
-  # Note that this is like home.sessionVariables (passed via .profile)
+  # NOTE: This is like home.sessionVariables (passed via .profile), which might not work outside of shells
   home.sessionPath = ["${config.xdg.dataHome}/cargo/bin"];
   systemd.user.sessionVariables = {
     CARGO_HOME = "${config.xdg.dataHome}/cargo";
