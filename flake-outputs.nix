@@ -1,7 +1,7 @@
 inputs: let
   CONTEXTS = {
-    HOME = "home";
-    SYSTEM = "system";
+    HOME = "hm";
+    SYSTEM = "os";
     MIXED = "mixed";
   };
 

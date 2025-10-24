@@ -24,7 +24,7 @@ in {
   };
 
   config = G.ctx.pick {
-    home.lib.file.mkNixConfigSymlink = p:
+    hm.lib.file.mkNixConfigSymlink = p:
       if cfg.nixConfigLocation == ""
       then p
       else let
@@ -37,15 +37,15 @@ in {
       in
         config.lib.file.mkOutOfStoreSymlink (cfg.nixConfigLocation + relpath);
 
-    home.wayland.windowManager.hyprland.settings.input = lib.mkIf isoLayout {
+    hm.wayland.windowManager.hyprland.settings.input = lib.mkIf isoLayout {
       kb_layout = "us";
       kb_variant = "altgr-intl";
     };
-    system.services.xserver.xkb = lib.mkIf isoLayout {
+    os.services.xserver.xkb = lib.mkIf isoLayout {
       layout = "us";
       variant = "altgr-intl";
     };
-    system.services.keyd = lib.mkIf isoRemap {
+    os.services.keyd = lib.mkIf isoRemap {
       enable = true;
       keyboards = {
         default = {
@@ -67,7 +67,7 @@ in {
       };
     };
 
-    system.environment.etc."libinput/local-overrides.quirks" = lib.mkIf isoRemapFix {
+    os.environment.etc."libinput/local-overrides.quirks" = lib.mkIf isoRemapFix {
       text = ''
         [Serial Keyboards]
         MatchUdevType=keyboard

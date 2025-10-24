@@ -5,8 +5,8 @@
   qt = {
     enable = true;
     platformTheme = G.ctx.pick {
-      home = {name = "kde6";};
-      system = "kde6";
+      hm = {name = "kde6";};
+      os = "kde6";
     };
   };
   # systemd.user.sessionVariables.QT_QPA_PLATFORMTHEME = "kde";
