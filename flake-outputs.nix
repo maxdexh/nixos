@@ -36,13 +36,11 @@ inputs: let
       ctx = {
         name = context;
         pick = attrs: attrs.${context};
-        isHome = context == CONTEXTS.HOME;
-        isSys = context == CONTEXTS.SYSTEM;
 
         mkPickMerge = attrs:
           lib.mkMerge [
-            (attrs-at-or-empty attrs context)
-            (attrs-at-or-empty attrs CONTEXTS.MIXED)
+            (attrs-at-or-empty context attrs)
+            (attrs-at-or-empty CONTEXTS.MIXED attrs)
           ];
       };
     };

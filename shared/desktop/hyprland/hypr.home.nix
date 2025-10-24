@@ -18,6 +18,7 @@
   wayland.windowManager.hyprland = {
     enable = true;
 
+    # FIXME: This should really be enabled, otherwise we cannot override things configured from nix
     sourceFirst = false;
 
     settings = {

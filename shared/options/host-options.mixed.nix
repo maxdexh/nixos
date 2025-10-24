@@ -24,54 +24,56 @@ in {
   };
 
   config = G.ctx.pick {
-    home = lib.optionalAttrs G.ctx.isHome {
-      lib.file.mkNixConfigSymlink = p:
-        if cfg.nixConfigLocation == ""
-        then p
-        else let
-          # Turn /nix/store/<hash>-<basename> into ${source-store}/actual/path/to/<basename>
-          # Could also be done without the builtin by traversing backwards using
-          # `+ "/.."` and using `baseNameOf` to get each path segment.
-          path = builtins.unsafeDiscardStringContext (toString p);
-          base = lib.strings.removeSuffix "/" "${G.inputs.self}";
-          relpath = assert lib.strings.hasPrefix base path; lib.strings.removePrefix base path;
-        in
-          config.lib.file.mkOutOfStoreSymlink (cfg.nixConfigLocation + relpath);
+    home.lib.file.mkNixConfigSymlink = p:
+      if cfg.nixConfigLocation == ""
+      then p
+      else let
+        # Turn /nix/store/<hash>-<basename> into ${source-store}/actual/path/to/<basename>
+        # Could also be done without the builtin by traversing backwards using
+        # `+ "/.."` and using `baseNameOf` to get each path segment.
+        path = builtins.unsafeDiscardStringContext (toString p);
+        base = lib.strings.removeSuffix "/" "${G.inputs.self}";
+        relpath = assert lib.strings.hasPrefix base path; lib.strings.removePrefix base path;
+      in
+        config.lib.file.mkOutOfStoreSymlink (cfg.nixConfigLocation + relpath);
+
+    home.wayland.windowManager.hyprland.settings.input = lib.mkIf isoLayout {
+      kb_layout = "us";
+      kb_variant = "altgr-intl";
     };
-    system = lib.optionalAttrs G.ctx.isSys {
-      services.xserver.xkb = lib.mkIf isoLayout {
-        layout = "us";
-        variant = "altgr-intl";
-      };
-      services.keyd = lib.mkIf isoRemap {
-        enable = true;
-        keyboards = {
-          default = {
-            ids = ["*"];
-            settings = {
-              main = {
-                z = "y";
-                y = "z";
-                capslock = "esc";
-              };
-              # Assumes AltGr key combining with ä on q, ö on p, ü on y.
-              altgr = {
-                a = "G-q";
-                o = "G-p";
-                u = "G-y";
-              };
+    system.services.xserver.xkb = lib.mkIf isoLayout {
+      layout = "us";
+      variant = "altgr-intl";
+    };
+    system.services.keyd = lib.mkIf isoRemap {
+      enable = true;
+      keyboards = {
+        default = {
+          ids = ["*"];
+          settings = {
+            main = {
+              z = "y";
+              y = "z";
+              capslock = "esc";
+            };
+            # Assumes AltGr key combining with ä on q, ö on p, ü on y.
+            altgr = {
+              a = "G-q";
+              o = "G-p";
+              u = "G-y";
             };
           };
         };
       };
-      environment.etc."libinput/local-overrides.quirks" = lib.mkIf isoRemapFix {
-        text = ''
-          [Serial Keyboards]
-          MatchUdevType=keyboard
-          MatchName=keyd virtual keyboard
-          AttrKeyboardIntegration=internal
-        '';
-      };
+    };
+
+    system.environment.etc."libinput/local-overrides.quirks" = lib.mkIf isoRemapFix {
+      text = ''
+        [Serial Keyboards]
+        MatchUdevType=keyboard
+        MatchName=keyd virtual keyboard
+        AttrKeyboardIntegration=internal
+      '';
     };
   };
 }
