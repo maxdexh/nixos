@@ -1,5 +1,19 @@
+-- TODO: https://github.com/nix-community/nixd
+
 vim.lsp.config("nil_ls", {
    cmd = { vim.fn.stdpath("data") .. "/mason/bin/nil" },
+   settings = {
+      ["nil"] = {
+         diagnostics = {
+            ignored = { "let_attrset" },
+         },
+         nix = {
+            flake = {
+               autoArchive = false,
+            },
+         },
+      },
+   },
 })
 
 return {
