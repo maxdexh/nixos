@@ -13,6 +13,12 @@
   };
 
   outputs = inputs: let
+    CONTEXTS = {
+      HOME = "home";
+      SYSTEM = "system";
+      MIXED = "mixed";
+    };
+
     HOST-INFOS = {
       framework = {
         modulePath = "./hosts/framework";
@@ -26,15 +32,34 @@
       };
     };
 
-    host-Gs = lib.pipe HOST-INFOS [
-      (lib.mapAttrsToList (name: info: info // {inherit name;}))
-      (map (host: {
+    PARTIAL-Gs =
+      lib.mapAttrsToList (name: info: {
         inherit inputs;
-        inherit host;
+        host = info // {inherit name;};
+        pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${info.system};
+      })
+      HOST-INFOS;
 
-        pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
-      }))
-    ];
+    attrs-at-or-empty = attr-name: attrs:
+      if attrs?${attr-name}
+      then attrs.${attr-name}
+      else {};
+    G-add-context = part-G: context:
+      part-G
+      // {
+        ctx = {
+          name = context;
+          pick = attrs: attrs.${context};
+          isHome = context == CONTEXTS.HOME;
+          isSys = context == CONTEXTS.SYSTEM;
+
+          mkPickMerge = attrs:
+            lib.mkMerge [
+              (attrs-at-or-empty attrs context)
+              (attrs-at-or-empty attrs CONTEXTS.MIXED)
+            ];
+        };
+      };
 
     lib = inputs.nixpkgs.lib;
 
@@ -62,24 +87,18 @@
       in
         kind: builtins.concatMap (find: find kind) [find-host-specific find-host-agnostic];
 
-    G-context-extra = ctx: {
-      context = ctx;
-      pickCtx = it: it.${ctx};
-      mkIfCtxIs = other-ctx: lib.mkIf (ctx == other-ctx);
-    };
-
-    nixos-system = G: let
-      find-imports = find-host-imports G;
+    nixos-system = part-G: let
+      find-imports = find-host-imports part-G;
     in {
-      system = G.host.system;
+      system = part-G.host.system;
 
       modules = [
-        {networking.hostName = G.host.name;}
+        {networking.hostName = part-G.host.name;}
         # Configuration for nixpkgs, such as overlays. Only import from system since useGlobalPkgs = true
         ./nixpkgs-conf
         # System base
         {
-          imports = find-imports "system";
+          imports = find-imports CONTEXTS.SYSTEM;
           system.stateVersion = "25.05";
         }
         # Users
@@ -93,22 +112,22 @@
 
           # Home Manager user config
           home-manager.users.max = {
-            imports = find-imports "home";
+            imports = find-imports CONTEXTS.HOME;
             home.stateVersion = "25.05";
           };
 
           home-manager = {
             useGlobalPkgs = true;
             verbose = true;
-            extraSpecialArgs.G = G // G-context-extra "home";
+            extraSpecialArgs.G = G-add-context part-G CONTEXTS.HOME;
           };
         }
       ];
 
-      specialArgs.G = G // G-context-extra "system";
+      specialArgs.G = G-add-context part-G CONTEXTS.SYSTEM;
     };
   in {
-    nixosConfigurations = lib.pipe host-Gs [
+    nixosConfigurations = lib.pipe PARTIAL-Gs [
       (builtins.filter (G: G.host.isNixOS))
       (map (G: {
         ${G.host.name} = lib.nixosSystem (nixos-system G);

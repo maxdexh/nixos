@@ -23,8 +23,8 @@ in {
     };
   };
 
-  config = G.pickCtx {
-    home = {
+  config = G.ctx.pick {
+    home = lib.optionalAttrs G.ctx.isHome {
       lib.file.mkNixConfigSymlink = p:
         if cfg.nixConfigLocation == ""
         then p
@@ -37,15 +37,8 @@ in {
           relpath = assert lib.strings.hasPrefix base path; lib.strings.removePrefix base path;
         in
           config.lib.file.mkOutOfStoreSymlink (cfg.nixConfigLocation + relpath);
-
-      wayland.windowManager.hyprland.settings = lib.mkIf isoLayout {
-        input = {
-          kb_layout = "us";
-          kb_variant = "altgr-intl";
-        };
-      };
     };
-    system = {
+    system = lib.optionalAttrs G.ctx.isSys {
       services.xserver.xkb = lib.mkIf isoLayout {
         layout = "us";
         variant = "altgr-intl";

@@ -4,7 +4,7 @@
   # If breeze cursors are grey you are using KDE 5 systemsettings!
   qt = {
     enable = true;
-    platformTheme = G.pickCtx {
+    platformTheme = G.ctx.pick {
       home = {name = "kde6";};
       system = "kde6";
     };
