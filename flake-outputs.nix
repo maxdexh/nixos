@@ -35,7 +35,11 @@ inputs: let
     // {
       ctx = {
         name = context;
-        pick = attrs: attrs.${context};
+        pick = attrs @ {
+          hm ? null,
+          os ? null,
+        }:
+          attrs.${context};
 
         mkPickMerge = attrs:
           lib.mkMerge [

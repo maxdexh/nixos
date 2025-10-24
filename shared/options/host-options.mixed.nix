@@ -14,7 +14,7 @@ in {
 
     usIsoLayout = {
       enable = lib.mkEnableOption "US ISO Keyboard Layout";
-      remaps = lib.mkEnableOption "Remap Umlaut";
+      remaps = lib.mkEnableOption "US ISO Keyboard Remaps";
     };
 
     nixConfigLocation = lib.mkOption {
