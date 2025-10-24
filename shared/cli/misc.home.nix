@@ -1,9 +1,4 @@
-{
-  pkgs,
-  G,
-  config,
-  ...
-}: let
+{pkgs, ...}: let
   shellint-no-bash = {
     enable = true;
     enableFishIntegration = true;
@@ -37,6 +32,8 @@ in {
 
     glow
     openvpn
+
+    nixfmt-rfc-style
   ];
 
   # Make shell integrations explicit
