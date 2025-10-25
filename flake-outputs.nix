@@ -97,6 +97,7 @@ inputs: let
           description = "Max";
           extraGroups = ["networkmanager" "wheel"];
         };
+        nix.settings.trusted-users = ["max"];
 
         # Home Manager user config
         home-manager.users.max = {
