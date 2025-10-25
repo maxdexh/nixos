@@ -26,10 +26,6 @@ inputs: let
     })
     HOST-INFOS;
 
-  attrs-at-or-empty = attr-name: attrs:
-    if attrs?${attr-name}
-    then attrs.${attr-name}
-    else {};
   G-add-context = part-G: context:
     part-G
     // {
@@ -43,8 +39,8 @@ inputs: let
 
         mkPickMerge = attrs:
           lib.mkMerge [
-            (attrs-at-or-empty context attrs)
-            (attrs-at-or-empty CONTEXTS.MIXED attrs)
+            (attrs.${context} or {})
+            (attrs.${CONTEXTS.MIXED} or {})
           ];
       };
     };
