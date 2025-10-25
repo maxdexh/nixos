@@ -22,7 +22,7 @@ inputs: let
     lib.mapAttrsToList (name: info: {
       inherit inputs;
       host = info // {inherit name;};
-      pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${info.system};
+      __pkgsUnstable = inputs.nixpkgs-unstable.legacyPackages.${info.system};
     })
     HOST-INFOS;
 
@@ -108,11 +108,13 @@ inputs: let
           useGlobalPkgs = true;
           verbose = true;
           extraSpecialArgs.G = G-add-context part-G CONTEXTS.HOME;
+          extraSpecialArgs.pkgs-unstable = part-G.__pkgsUnstable;
         };
       }
     ];
 
     specialArgs.G = G-add-context part-G CONTEXTS.SYSTEM;
+    specialArgs.pkgs-unstable = part-G.__pkgsUnstable;
   };
 in {
   nixosConfigurations = lib.pipe PARTIAL-Gs [

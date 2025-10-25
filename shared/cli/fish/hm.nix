@@ -29,7 +29,10 @@
 
         g = "git";
 
-        nrb = "sudo nixos-rebuild switch";
+        nrb = "nixos-rebuild";
+        nrbr = "nixos-rebuild repl";
+        nrbs = "sudo nixos-rebuild switch";
+        nrbd = "nixos-rebuild-diff";
       }
       // lib.pipe config.programs.git.aliases [
         (lib.concatMapAttrs (alias: command: {
@@ -74,7 +77,7 @@
       }
     ];
   };
-  
+
   xdg.configFile."fish/themes/fish-old.theme".source =
     config.lib.file.mkNixConfigSymlink ./fish-old.theme;
 }

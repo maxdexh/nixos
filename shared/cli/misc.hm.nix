@@ -25,15 +25,11 @@ in {
     nvme-cli
     smartmontools
 
-    nix-search-cli
-
     pdfgrep
     pdftk
 
     glow
     openvpn
-
-    nixfmt-rfc-style
   ];
 
   # Make shell integrations explicit
