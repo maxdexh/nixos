@@ -8,13 +8,9 @@
     nix-search-cli
 
     nh
-    manix
-    nix-diff
-    nix-du
     nix-tree
-    pkgs-unstable.dix
+    pkgs-unstable.dix # unavailable in nixpkgs
     statix
-    nix-health
     (pkgs.helpers.writeFishApplication {
       name = "nixos-rebuild-diff";
       text =
