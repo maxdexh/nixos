@@ -18,6 +18,7 @@ lib.mkIf host.fullDesktop {
     # gui apps
     obs-studio
     gimp
+    krita
     vscode
     brave
     thunderbird
