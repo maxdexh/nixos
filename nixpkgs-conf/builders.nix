@@ -13,15 +13,17 @@
           destination = "/bin/${name}";
           meta.mainProgram = name;
 
-          text = ''
-            #!${final.lib.getExe final.fish}
+          text =
+            # fish
+            ''
+              #!${final.lib.getExe final.fish}
 
-            set --prepend PATH (string split ':' -- "${
-              final.lib.makeBinPath runtimeInputs
-            }")
+              set --prepend PATH (string split ':' -- "${
+                final.lib.makeBinPath runtimeInputs
+              }")
 
-            ${text}
-          '';
+              ${text}
+            '';
         };
     })
   ];

@@ -4,8 +4,10 @@
   ...
 }: {
   home.packages = with pkgs; [
-    nixfmt-rfc-style
     nix-search-cli
+
+    nixfmt-rfc-style
+    nixd
 
     nh
     nix-tree
@@ -13,6 +15,7 @@
     statix
     (pkgs.helpers.writeFishApplication {
       name = "nixos-rebuild-diff";
+      runtimeInputs = [pkgs-unstable.dix];
       text =
         # fish
         ''

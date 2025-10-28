@@ -18,6 +18,14 @@ vim.lsp.config("nil_ls", {
 
 return {
    {
+      "neovim/nvim-lspconfig",
+      opts = {
+         servers = {
+            nil_ls = {},
+         },
+      },
+   },
+   {
       "mason.nvim",
       opts = {
          ensure_installed = { "nil", "alejandra" }, -- NOTE: This might require installing a rust toolchain first
