@@ -1,8 +1,10 @@
 {
-  config,
   pkgs,
+  lib,
+  host,
   ...
-}: {
+}:
+lib.mkIf host.fullDesktop {
   # Misc applications
   home.packages = with pkgs; [
     # disk utils
@@ -23,13 +25,4 @@
     discord
     zathura
   ];
-
-  # Keep home directory clean (in case we use these through nix-shell or nix-env)
-  systemd.user.sessionVariables = {
-    BOGOFILTER_DIR = "${config.xdg.dataHome}/bogofilter";
-    DOTNET_CLI_HOME = "${config.xdg.dataHome}/dotnet";
-    GRADLE_USER_HOME = "${config.xdg.dataHome}/gradle";
-    MATHEMATICA_USERBASE = "${config.xdg.configHome}/mathematica";
-    ZDOTDIR = "${config.xdg.configHome}/zsh";
-  };
 }

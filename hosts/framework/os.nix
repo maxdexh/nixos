@@ -1,7 +1,17 @@
-{inputs, ...}: {
+{
+  inputs,
+  pkgs,
+  ...
+}: {
   imports = [
     inputs.nixos-hardware.nixosModules.framework-13-7040-amd
     ./hardware-configuration.nix
+  ];
+
+  environment.systemPackages = with pkgs; [
+    powertop
+    nvme-cli
+    smartmontools
   ];
 
   # TODO: udev rule to prevent the keyboard & touchpad from waking the device from sleep

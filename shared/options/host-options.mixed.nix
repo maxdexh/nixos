@@ -18,6 +18,9 @@ in {
       remaps = lib.mkEnableOption "US ISO Keyboard Remaps";
     };
 
+    fullDesktop = lib.mkEnableOption "Whether a full desktop environment is available";
+    termux = lib.mkEnableOption "Whether the host is termux/nix-on-droid";
+
     nixConfigLocation = lib.mkOption {
       type = lib.types.nullOr lib.types.path;
       default = null;
@@ -26,6 +29,9 @@ in {
 
   config = lib.mkMerge [
     {
+      custom.host.termux = lib.mkDefault false;
+      custom.host.fullDesktop = lib.mkDefault (!config.custom.host.termux);
+
       lib.custom.mkNixConfigSymlink = p:
         if cfg.nixConfigLocation == null
         then p

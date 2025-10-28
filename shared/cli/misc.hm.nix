@@ -21,15 +21,10 @@ in {
     zip
     unzip
 
-    powertop
-    nvme-cli
-    smartmontools
-
     pdfgrep
     pdftk
 
     glow
-    openvpn
   ];
 
   # Make shell integrations explicit
@@ -106,6 +101,7 @@ in {
   home.file."Repos/.ignore".text = ''
     .venv/
     .idea/
+    .vscode
   '';
 
   # programs.nix-index = enable-shellint;

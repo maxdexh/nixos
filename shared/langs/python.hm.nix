@@ -10,7 +10,7 @@
     settings = {python-preference = "only-managed";};
   };
 
-  systemd.user.sessionVariables = {
+  custom.sessionVars = {
     PYTHON_HISTORY = "${config.xdg.stateHome}/python_history";
   };
 }

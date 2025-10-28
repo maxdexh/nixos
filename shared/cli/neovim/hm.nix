@@ -11,13 +11,13 @@
   xdg.configFile."nvim".source =
     config.lib.custom.mkNixConfigSymlink ./nvim;
 
-  systemd.user.sessionVariables = {
+  custom.sessionVars = {
     VISUAL = "nvim";
     EDITOR = "nvim";
     MANPAGER = "nvim +Man!";
     NVIM_NIX_CONFIG_ROOT = config.custom.host.nixConfigLocation;
     NVIM_NIX_HOST_NAME = host.name;
-    NVIM_NIX_IS_NIXOS = toString (host.isNixOS);
-    NVIM_NIX_HM_STANDALONE = toString (host.isHmStandalone);
+    NVIM_NIX_IS_NIXOS = toString (host.nixOS);
+    NVIM_NIX_HM_STANDALONE = toString (host.standaloneHm);
   };
 }

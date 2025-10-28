@@ -1,19 +1,19 @@
 {
-  config,
   pkgs,
   lib,
+  host,
   ...
 }: {
   xdg.enable = true;
 
   # HACK: Hotfix for cursor theme not working in steam.
   # https://github.com/ValveSoftware/steam-for-linux/issues/11484#issuecomment-3437303820
-  home.file.".local/share/icons/default" = {
+  home.file.".local/share/icons/default" = lib.mkIf host.fullDesktop {
     source = "${pkgs.kdePackages.breeze}/share/icons/breeze_cursors/";
     recursive = true;
   };
 
-  systemd.user.sessionVariables = {
+  custom.sessionVars = lib.mkIf host.fullDesktop {
     # gtk.theme is dysfunctional, but this works nicely, except that it still has window decorations.
     GTK_THEME = "Breeze:dark"; # or: "Adwaita:dark"
 
@@ -35,15 +35,10 @@
       lib.getExe askpass;
 
     TERMINAL = "kitty";
-
-    GTK2_RC_FILES = config.gtk.gtk2.configLocation;
-    XCOMPOSECACHE = "${config.xdg.cacheHome}/X11/xcompose";
   };
 
-  gtk.gtk2.configLocation = "${config.xdg.configHome}/gtkrc-2.0";
-
   # TODO: Configure more default apps
-  xdg.mimeApps = {
+  xdg.mimeApps = lib.mkIf host.fullDesktop {
     enable = true;
     defaultApplications = {
       "application/pdf" = "firefox.desktop";

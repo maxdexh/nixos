@@ -9,13 +9,12 @@ inputs: let
   hosts = lib.mapAttrsToList (
     name: {
       moduleDirs ? [./hosts/${name}],
-      noNixOS ? false,
       system ? "x86_64-linux",
-      isHmStandalone ? noNixOS,
+      nixOS ? false,
+      standaloneHm ? false,
     }: {
-      inherit system isHmStandalone name;
-      moduleDirs = moduleDirs ++ [./shared];
-      isNixOS = !noNixOS;
+      inherit system name nixOS standaloneHm;
+      moduleDirs = assert standaloneHm || nixOS; moduleDirs ++ [./shared];
     }
   ) (import ./hosts.nix);
 
@@ -50,7 +49,7 @@ inputs: let
   host_auto_imports = host: kind: builtins.concatLists (crossLists find_auto_imports [host.moduleDirs [kind "mixed"]]);
 
   nixos-system = host: {
-    system = assert host.isNixOS; host.system;
+    system = assert host.nixOS; host.system;
 
     modules =
       [
@@ -70,7 +69,7 @@ inputs: let
           nix.settings.trusted-users = ["max"];
         }
       ]
-      ++ lib.optionals host.isHmStandalone [
+      ++ lib.optionals host.standaloneHm [
         {
           # Home Manager user config
           home-manager.users.max = {
@@ -91,7 +90,7 @@ inputs: let
   };
 
   hm-system = host: {
-    pkgs = assert host.isHmStandalone; inputs.nixpkgs.legacyPackages.${host.system};
+    pkgs = assert host.standaloneHm; inputs.nixpkgs.legacyPackages.${host.system};
     modules = [
       {
         imports = host_auto_imports host mod_kinds.HOME;
@@ -108,6 +107,6 @@ inputs: let
       lib.attrsets.mergeAttrsList
     ];
 in {
-  nixosConfigurations = build-configs "isNixOS" lib.nixosSystem nixos-system;
-  homeConfigurations = build-configs "isHmStandalone" inputs.home-manager.lib.homeManagerConfiguration hm-system;
+  nixosConfigurations = build-configs "nixOS" lib.nixosSystem nixos-system;
+  homeConfigurations = build-configs "standaloneHm" inputs.home-manager.lib.homeManagerConfiguration hm-system;
 }
