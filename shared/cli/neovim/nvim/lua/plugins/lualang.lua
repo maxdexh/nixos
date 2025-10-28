@@ -25,6 +25,7 @@ end
 -- https://github.com/EmmyLuaLs/emmylua-analyzer-rust/tree/main/docs
 vim.lsp.config("emmylua_ls", {
    cmd = { vim.fn.stdpath("data") .. "/mason/bin/emmylua_ls" },
+   filetypes = { "lua" },
    ---@param bufnr integer
    ---@param on_dir fun(root_dir?:string)
    root_dir = function(bufnr, on_dir)

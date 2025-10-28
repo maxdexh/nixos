@@ -1,20 +1,47 @@
 -- TODO: https://github.com/nix-community/nixd
 
--- vim.lsp.config("nil_ls", {
---    cmd = { vim.fn.stdpath("data") .. "/mason/bin/nil" },
---    settings = {
---       ["nil"] = {
---          diagnostics = {
---             ignored = { "let_attrset" },
---          },
---          nix = {
---             flake = {
---                autoArchive = false,
---             },
---          },
---       },
---    },
--- })
+vim.lsp.config("nil_ls", {
+   cmd = { vim.fn.stdpath("data") .. "/mason/bin/nil" },
+   filetypes = { "nix" },
+   settings = {
+      ["nil"] = {
+         diagnostics = {
+            ignored = { "let_attrset" },
+         },
+         nix = {
+            flake = {
+               autoArchive = false,
+            },
+         },
+      },
+   },
+   on_init = function(client)
+      -- disable all capabilities except the ones not provided by nixd
+      do
+         local cap = client.capabilities or {}
+         local td = cap.textDocument or {}
+         client.capabilities = {
+            -- nixd doesn't have semantic highlighting
+            workspace = {
+               semanticTokens = cap.workspace.semanticTokens,
+            },
+            textDocument = {
+               documentHighlight = td.documentHighlight,
+               semanticTokens = td.semanticTokens,
+            },
+         }
+      end
+      do
+         local cap = client.server_capabilities or {}
+         client.server_capabilities = {
+            semanticTokensProvider = cap.semanticTokensProvider,
+            documentHighlightProvider = cap.documentHighlightProvider,
+            textDocumentSync = cap.textDocumentSync,
+         }
+      end
+   end,
+})
+vim.lsp.enable("nil_ls")
 
 local config_name = vim.fn.expand("$NVIM_NIX_HOST_NAME")
 local hm_is_standalone = vim.fn.expand("$NVIM_NIX_HM_STANDALONE")
@@ -38,6 +65,7 @@ end
 
 vim.lsp.config("nixd", {
    cmd = { "nixd" },
+   filetypes = { "nix" },
    settings = {
       nixd = {
          formatting = { command = {} },
@@ -45,14 +73,14 @@ vim.lsp.config("nixd", {
       },
    },
 })
+vim.lsp.enable("nixd")
 
 return {
    {
       "neovim/nvim-lspconfig",
       opts = {
          servers = {
-            -- FIXME: https://www.google.com/search?q=nvim%20set%20lsp%20capabilities
-            -- nil_ls = {},
+            nil_ls = {},
             nixd = {},
          },
       },

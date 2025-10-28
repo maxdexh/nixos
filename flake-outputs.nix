@@ -1,55 +1,39 @@
 inputs: let
-  CONTEXTS = {
+  mod_kinds = {
     HOME = "hm";
     SYSTEM = "os";
-    MIXED = "mixed";
   };
-
-  HOST-INFOS = {
-    framework = {
-      # FIXME: use path objects
-      modulePath = "./hosts/framework";
-    };
-    desktop = {
-      modulePath = "./hosts/desktop";
-    };
-  };
-
-  PARTIAL-Gs = lib.mapAttrsToList (name: {
-    modulePath,
-    noNixOS ? false,
-    system ? "x86_64-linux",
-    isHmStandalone ? noNixOS,
-  }:
-    assert lib.assertMsg (noNixOS -> isHmStandalone) name; {
-      inherit inputs;
-      host = {
-        inherit modulePath system isHmStandalone name;
-        isNixOS = !noNixOS;
-      };
-    })
-  HOST-INFOS;
-
-  G-add-context = part-G: context:
-    part-G
-    // {
-      ctx = {
-        name = context;
-        pick = attrs @ {
-          hm ? null,
-          os ? null,
-        }:
-          attrs.${context};
-
-        mkPickMerge = attrs:
-          lib.mkMerge [
-            (attrs.${context} or {})
-            (attrs.${CONTEXTS.MIXED} or {})
-          ];
-      };
-    };
+  mixed_mod = "mixed";
 
   lib = inputs.nixpkgs.lib;
+
+  hosts = lib.mapAttrsToList (
+    name: {
+      modulePath ? "./hosts/${name}",
+      noNixOS ? false,
+      system ? "x86_64-linux",
+      isHmStandalone ? noNixOS,
+    }: {
+      inherit modulePath system isHmStandalone name;
+      isNixOS = !noNixOS;
+    }
+  ) (import ./hosts/hosts.nix);
+
+  build-special-args = host: mod_kind: {
+    inherit host inputs;
+    pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
+    ctx = {
+      name = mod_kind;
+      pick = attrs @ {
+        hm ? null,
+        os ? null,
+      }:
+        attrs.${mod_kind};
+
+      os.mod = lib.attrsets.optionalAttrs (mod_kind == mod_kinds.SYSTEM);
+      hm.mod = lib.attrsets.optionalAttrs (mod_kind == mod_kinds.HOME);
+    };
+  };
 
   find-imports-in = relpath: let
     basepath = ./${relpath};
@@ -63,40 +47,30 @@ inputs: let
     in
       builtins.trace "Auto-importing ${toString (builtins.length imports)} of kind '${kind}' in ${relpath}" imports;
 
-    mixed = filter-kind "mixed";
+    mixed = filter-kind mixed_mod;
   in
     kind: mixed ++ (filter-kind kind);
 
   find-host-imports = let
     find-host-agnostic = find-imports-in "./shared";
   in
-    G: let
-      find-host-specific = find-imports-in G.host.modulePath;
+    host: let
+      find-host-specific = find-imports-in host.modulePath;
     in
       kind: builtins.concatMap (find: find kind) [find-host-specific find-host-agnostic];
 
-  get-special-args = part-G: let
-    pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${part-G.host.system};
-    G-add-context-partial = G-add-context part-G;
-  in
-    context: {
-      inherit pkgs-unstable;
-      G = G-add-context-partial context;
-    };
-
-  nixos-system = part-G: let
-    find-imports = find-host-imports part-G;
-    get-special-args-partial = get-special-args part-G;
+  nixos-system = host: let
+    find-imports = find-host-imports host;
   in {
-    system = part-G.host.system;
+    system = host.system;
 
     modules = [
-      {networking.hostName = part-G.host.name;}
+      {networking.hostName = host.name;}
       # Configuration for nixpkgs, such as overlays. Only import from system since useGlobalPkgs = true
       ./nixpkgs-conf
       # System base
       {
-        imports = find-imports CONTEXTS.SYSTEM;
+        imports = find-imports mod_kinds.SYSTEM;
         system.stateVersion = "25.05";
       }
       # Users
@@ -110,26 +84,26 @@ inputs: let
 
         # Home Manager user config
         home-manager.users.max = {
-          imports = find-imports CONTEXTS.HOME;
+          imports = find-imports mod_kinds.HOME;
           home.stateVersion = "25.05";
         };
 
         home-manager = {
           useGlobalPkgs = true;
           verbose = true;
-          extraSpecialArgs = get-special-args-partial CONTEXTS.HOME;
+          extraSpecialArgs = build-special-args host mod_kinds.HOME;
         };
       }
       inputs.home-manager.nixosModules.home-manager
     ];
 
-    specialArgs = get-special-args-partial CONTEXTS.SYSTEM;
+    specialArgs = build-special-args host mod_kinds.SYSTEM;
   };
 in {
-  nixosConfigurations = lib.pipe PARTIAL-Gs [
-    (builtins.filter (G: G.host.isNixOS))
-    (map (G: {
-      ${G.host.name} = lib.nixosSystem (nixos-system G);
+  nixosConfigurations = lib.pipe hosts [
+    (builtins.filter (host: host.isNixOS))
+    (map (host: {
+      ${host.name} = lib.nixosSystem (nixos-system host);
     }))
     lib.attrsets.mergeAttrsList
   ];

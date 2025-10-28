@@ -1,13 +1,13 @@
 {
   lib,
-  G,
+  inputs,
+  ctx,
   config,
   ...
 }: let
   cfg = config.custom.host;
-  isoLayout = cfg.usIsoLayout.enable;
-  isoRemap = isoLayout && cfg.usIsoLayout.remaps;
-  isoRemapFix = isoRemap && cfg.laptop.enable;
+  iso_layout = cfg.usIsoLayout.enable;
+  iso_remap = iso_layout && cfg.usIsoLayout.remaps;
 in {
   options.custom.host = {
     laptop.enable = lib.mkEnableOption "laptop";
@@ -23,36 +23,43 @@ in {
     };
   };
 
-  config = G.ctx.pick {
-    hm.lib.file.mkNixConfigSymlink = p:
-      if cfg.nixConfigLocation == ""
-      then p
-      else let
-        # Turn /nix/store/<hash>-<basename> into ${source-store}/actual/path/to/<basename>
-        # Could also be done without the builtin by traversing backwards using
-        # `+ "/.."` and using `baseNameOf` to get each path segment.
-        path = builtins.unsafeDiscardStringContext (toString p);
-        base = lib.strings.removeSuffix "/" "${G.inputs.self}";
-        relpath = assert lib.strings.hasPrefix base path; lib.strings.removePrefix base path;
-      in
-        config.lib.file.mkOutOfStoreSymlink (cfg.nixConfigLocation + relpath);
-
-    hm.wayland.windowManager.hyprland.settings.input = lib.mkIf isoLayout {
-      kb_layout = "us";
-      kb_variant = "altgr-intl";
-    };
-    os.nix.nixPath = [
-      "nixpkgs=${G.inputs.nixpkgs}"
-      "nixos-config=${config.custom.host.nixConfigLocation}/configuration.nix"
-    ];
-    os.services.xserver.xkb = lib.mkIf isoLayout {
-      layout = "us";
-      variant = "altgr-intl";
-    };
-    os.services.keyd = lib.mkIf isoRemap {
-      enable = true;
-      keyboards = {
-        default = {
+  config = lib.mkMerge [
+    {
+      lib.file.mkNixConfigSymlink = p:
+        if cfg.nixConfigLocation == null
+        then p
+        else let
+          # Turn /nix/store/<hash>-<basename> into ${source-store}/actual/path/to/<basename>
+          # Could also be done without the builtin by traversing backwards using
+          # `+ "/.."` and using `baseNameOf` to get each path segment.
+          path = builtins.unsafeDiscardStringContext (toString p);
+          base = lib.strings.removeSuffix "/" "${inputs.self}";
+          relpath = assert lib.strings.hasPrefix base path; lib.strings.removePrefix base path;
+        in
+          config.lib.file.mkOutOfStoreSymlink (cfg.nixConfigLocation + relpath);
+    }
+    (ctx.os.mod {
+      nix.nixPath = [
+        "nixpkgs=${inputs.nixpkgs}"
+        "nixos-config=${config.custom.host.nixConfigLocation}/configuration.nix"
+      ];
+    })
+    (ctx.hm.mod {
+      wayland.windowManager.hyprland.settings.input = lib.mkIf iso_layout {
+        kb_layout = "us";
+        kb_variant = "altgr-intl";
+      };
+    })
+    (ctx.os.mod {
+      services.xserver.xkb = lib.mkIf iso_layout {
+        layout = "us";
+        variant = "altgr-intl";
+      };
+    })
+    (ctx.os.mod {
+      services.keyd = lib.mkIf iso_remap {
+        enable = true;
+        keyboards.default = {
           ids = ["*"];
           settings = {
             main = {
@@ -69,15 +76,16 @@ in {
           };
         };
       };
-    };
-
-    os.environment.etc."libinput/local-overrides.quirks" = lib.mkIf isoRemapFix {
-      text = ''
-        [Serial Keyboards]
-        MatchUdevType=keyboard
-        MatchName=keyd virtual keyboard
-        AttrKeyboardIntegration=internal
-      '';
-    };
-  };
+    })
+    (ctx.os.mod {
+      environment.etc."libinput/local-overrides.quirks" = lib.mkIf (iso_remap && cfg.laptop.enable) {
+        text = ''
+          [Serial Keyboards]
+          MatchUdevType=keyboard
+          MatchName=keyd virtual keyboard
+          AttrKeyboardIntegration=internal
+        '';
+      };
+    })
+  ];
 }

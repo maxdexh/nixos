@@ -1,10 +1,10 @@
 {
   config,
-  G,
+  inputs,
   ...
 }: {
   imports = let
-    hardware = G.inputs.nixos-hardware.nixosModules;
+    hardware = inputs.nixos-hardware.nixosModules;
   in [
     hardware.common-pc
     hardware.common-pc-ssd

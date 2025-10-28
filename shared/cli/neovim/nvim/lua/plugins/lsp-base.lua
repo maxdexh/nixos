@@ -19,6 +19,7 @@ return {
       opts = {
          -- by default, mason-lspconfig automatically enables servers installed via mason,
          -- which is non-declared state, leading to lsps getting enabled for seemingly no reason
+         -- FIXME: This doesn't prevent that from happening...
          automatic_enable = false,
       },
    },
