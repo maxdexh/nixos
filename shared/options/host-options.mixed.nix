@@ -3,6 +3,7 @@
   inputs,
   ctx,
   config,
+  configPathToRel,
   ...
 }: let
   cfg = config.custom.host;
@@ -25,30 +26,30 @@ in {
 
   config = lib.mkMerge [
     {
-      lib.file.mkNixConfigSymlink = p:
+      lib.custom.mkNixConfigSymlink = p:
         if cfg.nixConfigLocation == null
         then p
-        else config.lib.file.mkOutOfStoreSymlink "${cfg.nixConfigLocation}/${config.lib.file.configPathToRel p}";
+        else config.lib.file.mkOutOfStoreSymlink "${cfg.nixConfigLocation}/${configPathToRel p}";
     }
-    (ctx.os.mod {
+    (ctx.os.set {
       nix.nixPath = [
         "nixpkgs=${inputs.nixpkgs}"
         "nixos-config=${config.custom.host.nixConfigLocation}/configuration.nix"
       ];
     })
-    (ctx.hm.mod {
+    (ctx.hm.set {
       wayland.windowManager.hyprland.settings.input = lib.mkIf iso_layout {
         kb_layout = "us";
         kb_variant = "altgr-intl";
       };
     })
-    (ctx.os.mod {
+    (ctx.os.set {
       services.xserver.xkb = lib.mkIf iso_layout {
         layout = "us";
         variant = "altgr-intl";
       };
     })
-    (ctx.os.mod {
+    (ctx.os.set {
       services.keyd = lib.mkIf iso_remap {
         enable = true;
         keyboards.default = {
@@ -69,7 +70,7 @@ in {
         };
       };
     })
-    (ctx.os.mod {
+    (ctx.os.set {
       environment.etc."libinput/local-overrides.quirks" = lib.mkIf (iso_remap && cfg.laptop.enable) {
         text = ''
           [Serial Keyboards]

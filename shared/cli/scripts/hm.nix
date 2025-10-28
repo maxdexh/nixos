@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   home.packages = with pkgs; [
     (writeShellScriptBin "start" ''
       eval "$@" &>/dev/null &
@@ -7,7 +11,7 @@
     (writeShellScriptBin "list-fonts" ''
       fc-list | sed 's/.*:\s*\([^:]*\):.*/\1/' | tr ',' '\n' | sed 's/^[ \t]*//;s/[ \t]*$//' | sort | uniq
     '')
-    (pkgs.helpers.writeFishApplication {
+    (config.lib.custom.writeFishApplication {
       name = "find-mimes";
       text =
         # fish
@@ -21,7 +25,7 @@
           end | string sub -s 3 --end=-4 | sort | uniq
         '';
     })
-    (pkgs.helpers.writeFishApplication {
+    (config.lib.custom.writeFishApplication {
       name = "find-unsynced";
       text = builtins.readFile ./find-unsynced.fish;
       runtimeInputs = [pkgs.fd];

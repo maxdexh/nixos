@@ -1,6 +1,7 @@
 {
   pkgs,
   pkgs-unstable,
+  config,
   ...
 }: {
   home.packages = with pkgs; [
@@ -13,7 +14,7 @@
     nix-tree
     pkgs-unstable.dix # unavailable in nixpkgs
     statix
-    (pkgs.helpers.writeFishApplication {
+    (config.lib.custom.writeFishApplication {
       name = "nixos-rebuild-diff";
       runtimeInputs = [pkgs-unstable.dix];
       text =
@@ -30,7 +31,6 @@
 
     # TODO:
     # https://github.com/thiagokokada/nix-alien
-    # https://github.com/faukah/dix
     # https://github.com/nix-community/nix-index
     # https://github.com/nix-community/haumea
     # https://github.com/jpetrucciani/pog

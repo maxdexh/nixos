@@ -32,15 +32,8 @@ inputs: let
     inherit host inputs configPathToRel;
     pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
     ctx = {
-      name = mod_kind;
-      pick = attrs @ {
-        hm ? null,
-        os ? null,
-      }:
-        attrs.${mod_kind};
-
-      os.mod = lib.attrsets.optionalAttrs (mod_kind == mod_kinds.SYSTEM);
-      hm.mod = lib.attrsets.optionalAttrs (mod_kind == mod_kinds.HOME);
+      os.set = lib.attrsets.optionalAttrs (mod_kind == mod_kinds.SYSTEM);
+      hm.set = lib.attrsets.optionalAttrs (mod_kind == mod_kinds.HOME);
     };
   };
 
@@ -53,54 +46,68 @@ inputs: let
       (imports: builtins.trace "Auto-importing ${toString (builtins.length imports)} of kind '${kind}' in ${configPathToRel basepath}" imports)
     ];
 
-  mixed_extra = {lib.file = {inherit configPathToRel;};};
   crossLists = f: lib.foldl (fs: args: builtins.concatMap (f: map f args) fs) [f];
-  host_auto_imports = host: kind: builtins.concatLists (crossLists find_auto_imports [host.moduleDirs [kind "mixed"]]) ++ [mixed_extra];
+  host_auto_imports = host: kind: builtins.concatLists (crossLists find_auto_imports [host.moduleDirs [kind "mixed"]]);
 
   nixos-system = host: {
-    system = host.system;
+    system = assert host.isNixOS; host.system;
 
-    modules = [
-      {networking.hostName = host.name;}
-      # Configuration for nixpkgs, such as overlays. Only import from system since useGlobalPkgs = true
-      ./nixpkgs-conf
-      # System base
-      {
-        imports = host_auto_imports host mod_kinds.SYSTEM;
-        system.stateVersion = "25.05";
-      }
-      # Users
-      {
-        users.users.max = {
-          isNormalUser = true;
-          description = "Max";
-          extraGroups = ["networkmanager" "wheel"];
-        };
-        nix.settings.trusted-users = ["max"];
+    modules =
+      [
+        {networking.hostName = host.name;}
+        # System base
+        {
+          imports = host_auto_imports host mod_kinds.SYSTEM;
+          system.stateVersion = "25.05";
+        }
+        # Users
+        {
+          users.users.max = {
+            isNormalUser = true;
+            description = "Max";
+            extraGroups = ["networkmanager" "wheel"];
+          };
+          nix.settings.trusted-users = ["max"];
+        }
+      ]
+      ++ lib.optionals host.isHmStandalone [
+        {
+          # Home Manager user config
+          home-manager.users.max = {
+            imports = host_auto_imports host mod_kinds.HOME;
+            home.stateVersion = "25.05";
+          };
 
-        # Home Manager user config
-        home-manager.users.max = {
-          imports = host_auto_imports host mod_kinds.HOME;
-          home.stateVersion = "25.05";
-        };
-
-        home-manager = {
-          useGlobalPkgs = true;
-          verbose = true;
-          extraSpecialArgs = build_special_args host mod_kinds.HOME;
-        };
-      }
-      inputs.home-manager.nixosModules.home-manager
-    ];
+          home-manager = {
+            useGlobalPkgs = true;
+            verbose = true;
+            extraSpecialArgs = build_special_args host mod_kinds.HOME;
+          };
+        }
+        inputs.home-manager.nixosModules.home-manager
+      ];
 
     specialArgs = build_special_args host mod_kinds.SYSTEM;
   };
+
+  hm-system = host: {
+    pkgs = assert host.isHmStandalone; inputs.nixpkgs.legacyPackages.${host.system};
+    modules = [
+      {
+        imports = host_auto_imports host mod_kinds.HOME;
+        home.stateVersion = "25.05";
+      }
+    ];
+    specialArgs = build_special_args host mod_kinds.HOME;
+  };
+
+  build-configs = filter: mkSystem: systemSpec:
+    lib.pipe hosts [
+      (builtins.filter (host: host.${filter}))
+      (map (host: {${host.name} = mkSystem (systemSpec host);}))
+      lib.attrsets.mergeAttrsList
+    ];
 in {
-  nixosConfigurations = lib.pipe hosts [
-    (builtins.filter (host: host.isNixOS))
-    (map (host: {
-      ${host.name} = lib.nixosSystem (nixos-system host);
-    }))
-    lib.attrsets.mergeAttrsList
-  ];
+  nixosConfigurations = build-configs "isNixOS" lib.nixosSystem nixos-system;
+  homeConfigurations = build-configs "isHmStandalone" inputs.home-manager.lib.homeManagerConfiguration hm-system;
 }

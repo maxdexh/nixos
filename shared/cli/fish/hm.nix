@@ -79,5 +79,5 @@
   };
 
   xdg.configFile."fish/themes/fish-old.theme".source =
-    config.lib.file.mkNixConfigSymlink ./fish-old.theme;
+    config.lib.custom.mkNixConfigSymlink ./fish-old.theme;
 }
