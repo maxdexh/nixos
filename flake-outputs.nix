@@ -7,23 +7,28 @@ inputs: let
 
   HOST-INFOS = {
     framework = {
+      # FIXME: use path objects
       modulePath = "./hosts/framework";
-      isNixOS = true;
-      system = "x86_64-linux";
     };
     desktop = {
       modulePath = "./hosts/desktop";
-      isNixOS = true;
-      system = "x86_64-linux";
     };
   };
 
-  PARTIAL-Gs =
-    lib.mapAttrsToList (name: info: {
+  PARTIAL-Gs = lib.mapAttrsToList (name: {
+    modulePath,
+    noNixOS ? false,
+    system ? "x86_64-linux",
+    isHmStandalone ? noNixOS,
+  }:
+    assert lib.assertMsg (noNixOS -> isHmStandalone) name; {
       inherit inputs;
-      host = info // {inherit name;};
+      host = {
+        inherit modulePath system isHmStandalone name;
+        isNixOS = !noNixOS;
+      };
     })
-    HOST-INFOS;
+  HOST-INFOS;
 
   G-add-context = part-G: context:
     part-G

@@ -14,4 +14,12 @@ return {
          },
       },
    },
+   {
+      "mason-org/mason-lspconfig.nvim",
+      opts = {
+         -- by default, mason-lspconfig automatically enables servers installed via mason,
+         -- which is non-declared state, leading to lsps getting enabled for seemingly no reason
+         automatic_enable = false,
+      },
+   },
 }
