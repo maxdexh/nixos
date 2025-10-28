@@ -3,24 +3,33 @@ inputs: let
     HOME = "hm";
     SYSTEM = "os";
   };
-  mixed_mod = "mixed";
 
   lib = inputs.nixpkgs.lib;
 
   hosts = lib.mapAttrsToList (
     name: {
-      modulePath ? "./hosts/${name}",
+      moduleDirs ? [./hosts/${name}],
       noNixOS ? false,
       system ? "x86_64-linux",
       isHmStandalone ? noNixOS,
     }: {
-      inherit modulePath system isHmStandalone name;
+      inherit system isHmStandalone name;
+      moduleDirs = moduleDirs ++ [./shared];
       isNixOS = !noNixOS;
     }
-  ) (import ./hosts/hosts.nix);
+  ) (import ./hosts.nix);
 
-  build-special-args = host: mod_kind: {
-    inherit host inputs;
+  configPathToRel = lib.flip lib.pipe [
+    toString
+    # Turn /nix/store/<hash>-<basename> into ${source-store}/actual/path/to/<basename>
+    # Could also be done without the builtin by traversing backwards using
+    # `+ "/.."` and using `baseNameOf` to get each path segment.
+    builtins.unsafeDiscardStringContext
+    (abs: assert lib.hasPrefix "${inputs.self}/" abs; lib.removePrefix "${inputs.self}/" abs)
+  ];
+
+  build_special_args = host: mod_kind: {
+    inherit host inputs configPathToRel;
     pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
     ctx = {
       name = mod_kind;
@@ -35,33 +44,20 @@ inputs: let
     };
   };
 
-  find-imports-in = relpath: let
-    basepath = ./${relpath};
-    candidates = lib.pipe basepath [
+  find_auto_imports = basepath: kind:
+    lib.pipe basepath [
       lib.filesystem.listFilesRecursive
       (map toString)
-      (builtins.filter (lib.strings.hasSuffix ".nix"))
+      (builtins.filter (lib.strings.hasSuffix "${kind}.nix"))
+      (builtins.filter (path: lib.strings.hasSuffix ".${kind}.nix" path || lib.strings.hasSuffix "/${kind}.nix" path))
+      (imports: builtins.trace "Auto-importing ${toString (builtins.length imports)} of kind '${kind}' in ${configPathToRel basepath}" imports)
     ];
-    filter-kind = kind: let
-      imports = builtins.filter (path: lib.strings.hasSuffix ".${kind}.nix" path || lib.strings.hasSuffix "/${kind}.nix" path) candidates;
-    in
-      builtins.trace "Auto-importing ${toString (builtins.length imports)} of kind '${kind}' in ${relpath}" imports;
 
-    mixed = filter-kind mixed_mod;
-  in
-    kind: mixed ++ (filter-kind kind);
+  mixed_extra = {lib.file = {inherit configPathToRel;};};
+  crossLists = f: lib.foldl (fs: args: builtins.concatMap (f: map f args) fs) [f];
+  host_auto_imports = host: kind: builtins.concatLists (crossLists find_auto_imports [host.moduleDirs [kind "mixed"]]) ++ [mixed_extra];
 
-  find-host-imports = let
-    find-host-agnostic = find-imports-in "./shared";
-  in
-    host: let
-      find-host-specific = find-imports-in host.modulePath;
-    in
-      kind: builtins.concatMap (find: find kind) [find-host-specific find-host-agnostic];
-
-  nixos-system = host: let
-    find-imports = find-host-imports host;
-  in {
+  nixos-system = host: {
     system = host.system;
 
     modules = [
@@ -70,7 +66,7 @@ inputs: let
       ./nixpkgs-conf
       # System base
       {
-        imports = find-imports mod_kinds.SYSTEM;
+        imports = host_auto_imports host mod_kinds.SYSTEM;
         system.stateVersion = "25.05";
       }
       # Users
@@ -84,20 +80,20 @@ inputs: let
 
         # Home Manager user config
         home-manager.users.max = {
-          imports = find-imports mod_kinds.HOME;
+          imports = host_auto_imports host mod_kinds.HOME;
           home.stateVersion = "25.05";
         };
 
         home-manager = {
           useGlobalPkgs = true;
           verbose = true;
-          extraSpecialArgs = build-special-args host mod_kinds.HOME;
+          extraSpecialArgs = build_special_args host mod_kinds.HOME;
         };
       }
       inputs.home-manager.nixosModules.home-manager
     ];
 
-    specialArgs = build-special-args host mod_kinds.SYSTEM;
+    specialArgs = build_special_args host mod_kinds.SYSTEM;
   };
 in {
   nixosConfigurations = lib.pipe hosts [
