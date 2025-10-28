@@ -24,7 +24,6 @@ inputs: let
       host = info // {inherit name;};
     })
     HOST-INFOS;
-  get-pkgs-unstable = G: inputs.nixpkgs-unstable.legacyPackages.${G.host.system};
 
   G-add-context = part-G: context:
     part-G
@@ -71,8 +70,18 @@ inputs: let
     in
       kind: builtins.concatMap (find: find kind) [find-host-specific find-host-agnostic];
 
+  get-special-args = part-G: let
+    pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${part-G.host.system};
+    G-add-context-partial = G-add-context part-G;
+  in
+    context: {
+      inherit pkgs-unstable;
+      G = G-add-context-partial context;
+    };
+
   nixos-system = part-G: let
     find-imports = find-host-imports part-G;
+    get-special-args-partial = get-special-args part-G;
   in {
     system = part-G.host.system;
 
@@ -86,7 +95,6 @@ inputs: let
         system.stateVersion = "25.05";
       }
       # Users
-      inputs.home-manager.nixosModules.home-manager
       {
         users.users.max = {
           isNormalUser = true;
@@ -104,14 +112,13 @@ inputs: let
         home-manager = {
           useGlobalPkgs = true;
           verbose = true;
-          extraSpecialArgs.G = G-add-context part-G CONTEXTS.HOME;
-          extraSpecialArgs.pkgs-unstable = get-pkgs-unstable part-G;
+          extraSpecialArgs = get-special-args-partial CONTEXTS.HOME;
         };
       }
+      inputs.home-manager.nixosModules.home-manager
     ];
 
-    specialArgs.G = G-add-context part-G CONTEXTS.SYSTEM;
-    specialArgs.pkgs-unstable = get-pkgs-unstable part-G;
+    specialArgs = get-special-args-partial CONTEXTS.SYSTEM;
   };
 in {
   nixosConfigurations = lib.pipe PARTIAL-Gs [

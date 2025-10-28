@@ -41,6 +41,10 @@ in {
       kb_layout = "us";
       kb_variant = "altgr-intl";
     };
+    os.nix.nixPath = [
+      "nixpkgs=${G.inputs.nixpkgs}"
+      "nixos-config=${config.custom.host.nixConfigLocation}/configuration.nix"
+    ];
     os.services.xserver.xkb = lib.mkIf isoLayout {
       layout = "us";
       variant = "altgr-intl";

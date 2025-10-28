@@ -21,14 +21,16 @@ return {
       "neovim/nvim-lspconfig",
       opts = {
          servers = {
-            nil_ls = {},
+            nil_ls = {}, -- FIXME: deduplicate symbols
+            nixd = {},
          },
       },
    },
    {
       "mason.nvim",
       opts = {
-         ensure_installed = { "nil", "alejandra" }, -- NOTE: This might require installing a rust toolchain first
+         -- NOTE: Requires installing a rust toolchain first on initial system setup
+         ensure_installed = { "nil", "alejandra" },
       },
    },
    {
