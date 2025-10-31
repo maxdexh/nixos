@@ -10,11 +10,11 @@ inputs: let
     name: {
       moduleDirs ? [./hosts/${name}],
       system ? "x86_64-linux",
+      termux ? false,
       nixOS ? false,
-      standaloneHm ? false,
     }: {
-      inherit system name nixOS standaloneHm;
-      moduleDirs = assert standaloneHm || nixOS; moduleDirs ++ [./shared];
+      inherit system name nixOS termux;
+      moduleDirs = assert termux || nixOS; moduleDirs ++ [./shared];
     }
   ) (import ./hosts.nix);
 
@@ -51,53 +51,73 @@ inputs: let
   nixos-system = host: {
     system = assert host.nixOS; host.system;
 
-    modules =
-      [
-        {networking.hostName = host.name;}
-        # System base
-        {
-          imports = host_auto_imports host mod_kinds.SYSTEM;
-          system.stateVersion = "25.05";
-        }
-        # Users
-        {
-          users.users.max = {
-            isNormalUser = true;
-            description = "Max";
-            extraGroups = ["networkmanager" "wheel"];
-          };
-          nix.settings.trusted-users = ["max"];
-        }
-      ]
-      ++ lib.optionals (!host.standaloneHm) [
-        {
-          # Home Manager user config
-          home-manager.users.max = {
-            imports = host_auto_imports host mod_kinds.HOME;
-            home.stateVersion = "25.05";
-          };
+    modules = [
+      {networking.hostName = host.name;}
+      # System base
+      {
+        imports = host_auto_imports host mod_kinds.SYSTEM;
+        system.stateVersion = "25.05";
+      }
+      # Users
+      {
+        users.users.max = {
+          isNormalUser = true;
+          description = "Max";
+          extraGroups = ["networkmanager" "wheel"];
+        };
+        nix.settings.trusted-users = ["max"];
+      }
+      {
+        # Home Manager user config
+        home-manager.users.max = {
+          imports = host_auto_imports host mod_kinds.HOME;
+          home.stateVersion = "25.05";
+        };
 
-          home-manager = {
-            useGlobalPkgs = true;
-            verbose = true;
-            extraSpecialArgs = build_special_args host mod_kinds.HOME;
-          };
-        }
-        inputs.home-manager.nixosModules.home-manager
-      ];
+        home-manager = {
+          useGlobalPkgs = true;
+          verbose = true;
+          extraSpecialArgs = build_special_args host mod_kinds.HOME;
+        };
+      }
+      inputs.home-manager.nixosModules.home-manager
+    ];
 
     specialArgs = build_special_args host mod_kinds.SYSTEM;
   };
 
-  hm-system = host: {
-    pkgs = assert host.standaloneHm; inputs.nixpkgs.legacyPackages.${host.system};
+  termux-system = host: {
+    pkgs = inputs.nixpkgs.legacyPackages.${host.system};
     modules = [
       {
-        imports = host_auto_imports host mod_kinds.HOME;
-        home.stateVersion = "25.05";
+        # Backup etc files instead of failing to activate generation if a file already exists in /etc
+        environment.etcBackupExtension = ".bak";
+
+        # Read the changelog before changing this value
+        system.stateVersion = "24.05";
+
+        # Set up nix for flakes
+        nix.extraOptions = ''
+          experimental-features = nix-command flakes
+        '';
+
+        # Set your time zone
+        #time.timeZone = "Europe/Berlin";
+
+        # Configure home-manager
+        home-manager = {
+          backupFileExtension = "hm-bak";
+          useGlobalPkgs = true;
+
+          config = {
+            # Read the changelog before changing this value
+            home.stateVersion = "24.05";
+
+            imports = host_auto_imports host mod_kinds.HOME;
+          };
+        };
       }
     ];
-    specialArgs = build_special_args host mod_kinds.HOME;
   };
 
   build-configs = filter: mkSystem: systemSpec:
@@ -108,5 +128,5 @@ inputs: let
     ];
 in {
   nixosConfigurations = build-configs "nixOS" lib.nixosSystem nixos-system;
-  homeConfigurations = build-configs "standaloneHm" inputs.home-manager.lib.homeManagerConfiguration hm-system;
+  nixOnDroidConfigurations = build-configs "termux" inputs.nix-on-droid.lib.nixOnDroidConfiguration termux-system;
 }

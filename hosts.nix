@@ -6,7 +6,7 @@
     nixOS = true;
   };
   phone = {
-    standaloneHm = true;
+    termux = true;
     system = "aarch64-linux";
   };
 }

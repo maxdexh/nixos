@@ -44,18 +44,15 @@ vim.lsp.config("nil_ls", {
 vim.lsp.enable("nil_ls")
 
 local config_name = vim.fn.expand("$NVIM_NIX_HOST_NAME")
-local hm_is_standalone = vim.fn.expand("$NVIM_NIX_HM_STANDALONE")
 local is_nixos = vim.fn.expand("$NVIM_NIX_IS_NIXOS")
 
 local nix_options = {
    ["home-manager"] = {
-      expr = hm_is_standalone == "true"
-            and ("(builtins.getFlake (builtins.toString ./.)).homeConfigurations." .. config_name .. ".options")
-         or (
-            "(builtins.getFlake (builtins.toString ./.)).nixosConfigurations."
-            .. config_name
-            .. ".options.home-manager.users.type.getSubOptions []"
-         ),
+      expr = (
+         "(builtins.getFlake (builtins.toString ./.)).nixosConfigurations."
+         .. config_name
+         .. ".options.home-manager.users.type.getSubOptions []"
+      ),
    },
 }
 if is_nixos == "true" then

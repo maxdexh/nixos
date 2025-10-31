@@ -18,6 +18,5 @@
     NVIM_NIX_CONFIG_ROOT = config.custom.host.nixConfigLocation;
     NVIM_NIX_HOST_NAME = host.name;
     NVIM_NIX_IS_NIXOS = toString (host.nixOS);
-    NVIM_NIX_HM_STANDALONE = toString (host.standaloneHm);
   };
 }
