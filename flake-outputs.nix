@@ -108,6 +108,7 @@ inputs: let
         home-manager = {
           backupFileExtension = "hm-bak";
           useGlobalPkgs = true;
+          extraSpecialArgs = build_special_args host mod_kinds.HOME;
 
           config = {...}: {
             # Read the changelog before changing this value
