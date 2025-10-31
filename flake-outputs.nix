@@ -87,29 +87,6 @@ inputs: let
     specialArgs = build_special_args host mod_kinds.SYSTEM;
   };
 
-  termux-system = host: {
-    pkgs = inputs.nixpkgs.legacyPackages.${host.system};
-    modules = [
-      ({pkgs, ...}: {
-        # Backup etc files instead of failing to activate generation if a file already exists in /etc
-        environment.etcBackupExtension = ".bak";
-
-        environment.packages = with pkgs; [git];
-
-        # Read the changelog before changing this value
-        system.stateVersion = "24.05";
-
-        # Set up nix for flakes
-        nix.extraOptions = ''
-          experimental-features = nix-command flakes
-        '';
-
-        # Set your time zone
-        #time.timeZone = "Europe/Berlin";
-      })
-    ];
-  };
-
   build-configs = filter: mkSystem: systemSpec:
     lib.pipe hosts [
       (builtins.filter filter)
@@ -118,15 +95,9 @@ inputs: let
     ];
 in {
   nixosConfigurations = build-configs (host: host.nixOS) lib.nixosSystem nixos-system;
-  nixOnDroidConfigurations = build-configs (host: host.termux) inputs.nix-on-droid.lib.nixOnDroidConfiguration termux-system;
-  homeConfigurations = build-configs (host: host.termux) inputs.home-manager.lib.homeManagerConfiguration (host: {
-    pkgs = inputs.nixpkgs.legacyPackages.${host.system};
-    modules = [
-      {
-        imports = host_auto_imports host mod_kinds.HOME;
-        home.stateVersion = "25.05";
-      }
-    ];
-    specialArgs = build_special_args host mod_kinds.HOME;
-  });
+
+  nixOnDroidConfigurations.default = inputs.nix-on-droid.lib.nixOnDroidConfiguration {
+    pkgs = import inputs.nixpkgs {system = "aarch64-linux";};
+    modules = [./nix-on-droid.nix];
+  };
 }
