@@ -70,6 +70,7 @@ inputs: let
       {
         # Home Manager user config
         home-manager.users.max = {
+          # FIXME: Use sharedModules for this instead
           imports = host_auto_imports host mod_kinds.HOME;
           home.stateVersion = "25.05";
         };
@@ -114,7 +115,7 @@ inputs: let
             # Read the changelog before changing this value
             home.stateVersion = "24.05";
 
-            imports = host_auto_imports host mod_kinds.HOME;
+            # imports = host_auto_imports host mod_kinds.HOME;
           };
         };
       })
