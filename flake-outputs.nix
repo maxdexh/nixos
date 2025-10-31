@@ -105,11 +105,11 @@ inputs: let
         #time.timeZone = "Europe/Berlin";
 
         # Configure home-manager
-        home-manager = {...}: {
+        home-manager = {
           backupFileExtension = "hm-bak";
           useGlobalPkgs = true;
 
-          config = {
+          config = {...}: {
             # Read the changelog before changing this value
             home.stateVersion = "24.05";
 
