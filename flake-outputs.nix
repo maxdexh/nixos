@@ -90,9 +90,11 @@ inputs: let
   termux-system = host: {
     pkgs = inputs.nixpkgs.legacyPackages.${host.system};
     modules = [
-      ({...}: {
+      ({pkgs, ...}: {
         # Backup etc files instead of failing to activate generation if a file already exists in /etc
         environment.etcBackupExtension = ".bak";
+
+        environment.packages = with pkgs; [git];
 
         # Read the changelog before changing this value
         system.stateVersion = "24.05";
