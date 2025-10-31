@@ -1,10 +1,10 @@
 {
   pkgs,
   lib,
-  host,
+  config,
   ...
 }:
-lib.mkIf host.fullDesktop {
+lib.mkIf config.custom.host.fullDesktop {
   # Misc applications
   home.packages = with pkgs; [
     # disk utils
@@ -19,6 +19,8 @@ lib.mkIf host.fullDesktop {
     obs-studio
     gimp
     krita
+    libreoffice-qt6
+    xournalpp
     vscode
     brave
     thunderbird

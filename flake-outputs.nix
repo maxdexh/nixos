@@ -69,7 +69,7 @@ inputs: let
           nix.settings.trusted-users = ["max"];
         }
       ]
-      ++ lib.optionals host.standaloneHm [
+      ++ lib.optionals (!host.standaloneHm) [
         {
           # Home Manager user config
           home-manager.users.max = {

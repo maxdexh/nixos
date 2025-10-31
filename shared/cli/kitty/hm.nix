@@ -1,10 +1,10 @@
 {
   pkgs,
   lib,
-  host,
+  config,
   ...
 }:
-lib.mkIf host.fullDesktop {
+lib.mkIf config.custom.host.fullDesktop {
   programs.kitty = {
     enable = true;
     enableGitIntegration = true;

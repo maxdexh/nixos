@@ -1,10 +1,10 @@
 {
   pkgs,
-  host,
+  config,
   lib,
   ...
 }:
-lib.mkIf host.fullDesktop {
+lib.mkIf config.custom.host.fullDesktop {
   home.packages = with pkgs; [
     # These packages are required for the kcmshell desktop entries to work in hyprland
     kdePackages.kirigami-addons

@@ -1,6 +1,5 @@
 {
   lib,
-  host,
   config,
   ...
 }: {
@@ -16,6 +15,6 @@
   };
 
   # Use systemd on normal hosts, the shell on termux
-  config.systemd.sessionVariables = lib.mkIf (!host.termux) config.custom.sessionVars;
-  config.home.sessionVariables = lib.mkIf host.termux config.custom.sessionVars;
+  config.systemd.user.sessionVariables = lib.mkIf (!config.custom.host.termux) config.custom.sessionVars;
+  config.home.sessionVariables = lib.mkIf config.custom.host.termux config.custom.sessionVars;
 }
