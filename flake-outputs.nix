@@ -89,7 +89,7 @@ inputs: let
   termux-system = host: {
     pkgs = inputs.nixpkgs.legacyPackages.${host.system};
     modules = [
-      {
+      ({...}: {
         # Backup etc files instead of failing to activate generation if a file already exists in /etc
         environment.etcBackupExtension = ".bak";
 
@@ -105,7 +105,7 @@ inputs: let
         #time.timeZone = "Europe/Berlin";
 
         # Configure home-manager
-        home-manager = {
+        home-manager = {...}: {
           backupFileExtension = "hm-bak";
           useGlobalPkgs = true;
 
@@ -116,7 +116,7 @@ inputs: let
             imports = host_auto_imports host mod_kinds.HOME;
           };
         };
-      }
+      })
     ];
   };
 
