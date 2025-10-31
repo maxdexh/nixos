@@ -104,31 +104,27 @@ inputs: let
 
         # Set your time zone
         #time.timeZone = "Europe/Berlin";
-
-        # Configure home-manager
-        home-manager = {
-          backupFileExtension = "hm-bak";
-          useGlobalPkgs = true;
-          extraSpecialArgs = build_special_args host mod_kinds.HOME;
-
-          config = {...}: {
-            # Read the changelog before changing this value
-            home.stateVersion = "24.05";
-
-            # imports = host_auto_imports host mod_kinds.HOME;
-          };
-        };
       })
     ];
   };
 
   build-configs = filter: mkSystem: systemSpec:
     lib.pipe hosts [
-      (builtins.filter (host: host.${filter}))
+      (builtins.filter filter)
       (map (host: {${host.name} = mkSystem (systemSpec host);}))
       lib.attrsets.mergeAttrsList
     ];
 in {
-  nixosConfigurations = build-configs "nixOS" lib.nixosSystem nixos-system;
-  nixOnDroidConfigurations = build-configs "termux" inputs.nix-on-droid.lib.nixOnDroidConfiguration termux-system;
+  nixosConfigurations = build-configs (host: host.nixOS) lib.nixosSystem nixos-system;
+  nixOnDroidConfigurations = build-configs (host: host.termux) inputs.nix-on-droid.lib.nixOnDroidConfiguration termux-system;
+  homeConfigurations = build-configs (host: host.termux) inputs.home-manager.lib.homeManagerConfiguration (host: {
+    pkgs = inputs.nixpkgs.legacyPackages.${host.system};
+    modules = [
+      {
+        imports = host_auto_imports host mod_kinds.HOME;
+        home.stateVersion = "25.05";
+      }
+    ];
+    specialArgs = build_special_args host mod_kinds.HOME;
+  });
 }
