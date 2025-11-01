@@ -11,10 +11,6 @@ lib.mkIf config.custom.host.fullDesktop {
     baobab
     gparted
 
-    # games
-    prismlauncher
-    # lunar-client
-
     # gui apps
     obs-studio
     gimp
