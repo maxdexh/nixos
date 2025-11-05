@@ -22,10 +22,15 @@ lib.mkIf config.custom.host.fullDesktop {
     # FIXME: This should really be enabled, otherwise we cannot override things configured from nix
     sourceFirst = false;
 
-    settings = {
-      "$terminal" = "kitty";
-      source = ["${config.lib.custom.mkNixConfigSymlink ./hypr-conf}/*"];
-    };
+    settings = lib.mkMerge [
+      {
+        "$terminal" = "kitty";
+        source = ["${config.lib.custom.mkNixConfigSymlink ./hypr-conf}/*"];
+      }
+      (lib.mkIf (!config.custom.host.laptop.enable) {
+        exec-once = "uwsm app -- discord";
+      })
+    ];
   };
 
   programs.waybar = {
