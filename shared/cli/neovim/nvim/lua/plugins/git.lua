@@ -6,6 +6,7 @@ return {
    },
    {
       -- for log/graph
+      -- TODO: Binds
       "NeogitOrg/neogit",
       opts = {
          graph_style = "kitty",
@@ -14,6 +15,7 @@ return {
    {
       "lewis6991/gitsigns.nvim",
       init = function()
+         -- TODO: Bind hunk staging, etc.
          libs.keymap.set_many({
             {
                "<leader>gd",
