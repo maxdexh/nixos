@@ -19,6 +19,7 @@ inputs: let
   ) (import ./hosts.nix);
 
   configPathToRel = lib.flip lib.pipe [
+    (path: assert builtins.isPath path; path)
     toString
     # Turn /nix/store/<hash>-<basename> into ${source-store}/actual/path/to/<basename>
     # Could also be done without the builtin by traversing backwards using
@@ -40,9 +41,8 @@ inputs: let
     lib.pipe basepath [
       lib.filesystem.listFilesRecursive
       (map toString)
-      (builtins.filter (lib.strings.hasSuffix "${kind}.nix"))
-      (builtins.filter (path: lib.strings.hasSuffix ".${kind}.nix" path || lib.strings.hasSuffix "/${kind}.nix" path))
-      (imports: builtins.trace "Auto-importing ${toString (builtins.length imports)} of kind '${kind}' in ${configPathToRel basepath}" imports)
+      (builtins.filter (path: lib.hasSuffix ".${kind}.nix" path || lib.hasSuffix "/${kind}.nix" path))
+      (imports: builtins.trace "Importing ${toString (builtins.length imports)} ${kind} files from ${configPathToRel basepath}" imports)
     ];
 
   crossLists = f: lib.foldl (fs: args: builtins.concatMap (f: map f args) fs) [f];
@@ -70,7 +70,6 @@ inputs: let
       {
         # Home Manager user config
         home-manager.users.max = {
-          # FIXME: Use sharedModules for this instead
           imports = host_auto_imports host mod_kinds.HOME;
           home.stateVersion = "25.05";
         };
