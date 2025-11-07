@@ -12,6 +12,7 @@ inputs: let
       system ? "x86_64-linux",
       termux ? false,
       nixOS ? false,
+      # TODO: Add back host option for standalone home-manager
     }: {
       inherit system name nixOS termux;
       moduleDirs = assert termux || nixOS; moduleDirs ++ [./shared];
@@ -37,7 +38,7 @@ inputs: let
     };
   };
 
-  find_auto_imports = basepath: kind:
+  findAutoImports = basepath: kind:
     lib.pipe basepath [
       lib.filesystem.listFilesRecursive
       (map toString)
@@ -45,17 +46,19 @@ inputs: let
       (imports: builtins.trace "Importing ${toString (builtins.length imports)} ${kind} files from ${configPathToRel basepath}" imports)
     ];
 
-  crossLists = f: lib.foldl (fs: args: builtins.concatMap (f: map f args) fs) [f];
-  host_auto_imports = host: kind: builtins.concatLists (crossLists find_auto_imports [host.moduleDirs [kind "mixed"]]);
+  crossLists = f: lib.foldl (fs: args: builtins.concatMap (f: map f args) fs) [f]; # Copy of the deprecated lib.crossLists
+  findHostAutoImports = host: kind: builtins.concatLists (crossLists findAutoImports [host.moduleDirs [kind "mixed"]]);
 
-  nixos-system = host: {
+  nixosSystem = host: {
     system = assert host.nixOS; host.system;
 
     modules = [
+      # Also sets the default name of the flake that is selected by nixos-rebuild, i.e.
+      # `--flake .#name` only needs to be used once
       {networking.hostName = host.name;}
       # System base
       {
-        imports = host_auto_imports host mod_kinds.SYSTEM;
+        imports = findHostAutoImports host mod_kinds.SYSTEM;
         system.stateVersion = "25.05";
       }
       # Users
@@ -67,10 +70,13 @@ inputs: let
         };
         nix.settings.trusted-users = ["max"];
       }
+
+      # home-manager as a nixos module
+      inputs.home-manager.nixosModules.home-manager
       {
         # Home Manager user config
         home-manager.users.max = {
-          imports = host_auto_imports host mod_kinds.HOME;
+          imports = findHostAutoImports host mod_kinds.HOME;
           home.stateVersion = "25.05";
         };
 
@@ -80,20 +86,19 @@ inputs: let
           extraSpecialArgs = build_special_args host mod_kinds.HOME;
         };
       }
-      inputs.home-manager.nixosModules.home-manager
     ];
 
     specialArgs = build_special_args host mod_kinds.SYSTEM;
   };
 
-  build-configs = filter: mkSystem: systemSpec:
+  buildConfig = filter: mkSystem: systemSpec:
     lib.pipe hosts [
       (builtins.filter filter)
       (map (host: {${host.name} = mkSystem (systemSpec host);}))
       lib.attrsets.mergeAttrsList
     ];
 in {
-  nixosConfigurations = build-configs (host: host.nixOS) lib.nixosSystem nixos-system;
+  nixosConfigurations = buildConfig (host: host.nixOS) lib.nixosSystem nixosSystem;
 
   nixOnDroidConfigurations.default = inputs.nix-on-droid.lib.nixOnDroidConfiguration {
     pkgs = import inputs.nixpkgs {system = "aarch64-linux";};
