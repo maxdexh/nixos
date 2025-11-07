@@ -25,6 +25,8 @@ in {
     pdftk
 
     glow
+
+    btop
   ];
 
   # Make shell integrations explicit
