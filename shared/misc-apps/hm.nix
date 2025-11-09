@@ -3,8 +3,7 @@
   lib,
   config,
   ...
-}:
-lib.mkIf config.custom.host.fullDesktop {
+}: lib.mkIf config.custom.host.fullDesktop {
   # Misc applications
   home.packages = with pkgs; [
     # disk utils

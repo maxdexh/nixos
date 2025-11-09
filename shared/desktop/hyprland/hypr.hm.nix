@@ -3,8 +3,7 @@
   lib,
   config,
   ...
-}:
-lib.mkIf config.custom.host.fullDesktop {
+}: lib.mkIf config.custom.host.fullDesktop {
   home.packages = with pkgs; [
     waybar
     hyprshot

@@ -31,10 +31,9 @@ in {
     {
       custom.host.fullDesktop = lib.mkDefault (!host.termux);
 
-      lib.custom.mkNixConfigSymlink = p:
-        if cfg.nixConfigLocation == null
-        then p
-        else config.lib.file.mkOutOfStoreSymlink "${cfg.nixConfigLocation}/${configPathToRel p}";
+      lib.custom.mkNixConfigSymlink = p: if cfg.nixConfigLocation == null
+      then p
+      else config.lib.file.mkOutOfStoreSymlink "${cfg.nixConfigLocation}/${configPathToRel p}";
     }
     (ctx.os.set {
       nix.nixPath = [

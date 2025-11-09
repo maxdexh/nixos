@@ -6,18 +6,16 @@ inputs: let
 
   lib = inputs.nixpkgs.lib;
 
-  hosts = lib.mapAttrsToList (
-    name: {
-      moduleDirs ? [./hosts/${name}],
-      system ? "x86_64-linux",
-      termux ? false,
-      nixOS ? false,
-      # TODO: Add back host option for standalone home-manager
-    }: {
-      inherit system name nixOS termux;
-      moduleDirs = assert termux || nixOS; moduleDirs ++ [./shared];
-    }
-  ) (import ./hosts.nix);
+  hosts = lib.mapAttrsToList (name: {
+    moduleDirs ? [./hosts/${name}],
+    system ? "x86_64-linux",
+    termux ? false,
+    nixOS ? false,
+    # TODO: Add back host option for standalone home-manager
+  }: {
+    inherit system name nixOS termux;
+    moduleDirs = assert termux || nixOS; moduleDirs ++ [./shared];
+  }) (import ./hosts.nix);
 
   configPathToRel = lib.flip lib.pipe [
     (path: assert builtins.isPath path; path)
@@ -38,13 +36,12 @@ inputs: let
     };
   };
 
-  findAutoImports = basepath: kind:
-    lib.pipe basepath [
-      lib.filesystem.listFilesRecursive
-      (map toString)
-      (builtins.filter (path: lib.hasSuffix ".${kind}.nix" path || lib.hasSuffix "/${kind}.nix" path))
-      (imports: builtins.trace "Importing ${toString (builtins.length imports)} ${kind} files from ${configPathToRel basepath}" imports)
-    ];
+  findAutoImports = basepath: kind: lib.pipe basepath [
+    lib.filesystem.listFilesRecursive
+    (map toString)
+    (builtins.filter (path: lib.hasSuffix ".${kind}.nix" path || lib.hasSuffix "/${kind}.nix" path))
+    (imports: builtins.trace "Importing ${toString (builtins.length imports)} ${kind} files from ${configPathToRel basepath}" imports)
+  ];
 
   crossLists = f: lib.foldl (fs: args: builtins.concatMap (f: map f args) fs) [f]; # Copy of the deprecated lib.crossLists
   findHostAutoImports = host: kind: builtins.concatLists (crossLists findAutoImports [host.moduleDirs [kind "mixed"]]);
@@ -91,12 +88,11 @@ inputs: let
     specialArgs = build_special_args host mod_kinds.SYSTEM;
   };
 
-  buildConfig = filter: mkSystem: systemSpec:
-    lib.pipe hosts [
-      (builtins.filter filter)
-      (map (host: {${host.name} = mkSystem (systemSpec host);}))
-      lib.attrsets.mergeAttrsList
-    ];
+  buildConfig = filter: mkSystem: systemSpec: lib.pipe hosts [
+    (builtins.filter filter)
+    (map (host: {${host.name} = mkSystem (systemSpec host);}))
+    lib.attrsets.mergeAttrsList
+  ];
 in {
   nixosConfigurations = buildConfig (host: host.nixOS) lib.nixosSystem nixosSystem;
 
