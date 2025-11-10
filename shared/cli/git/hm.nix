@@ -15,8 +15,8 @@
 
       ca = "!git add -A && git commit";
       ce = "${ca} --amend --no-edit";
-      nca = "${ca} && sudo nixos-rebuild switch";
-      nce = "${ce} && sudo nixos-rebuild switch";
+      nca = "${ca} && nixos-rebuild switch --use-remote-sudo";
+      nce = "${ce} && nixos-rebuild switch --use-remote-sudo";
     };
     extraConfig = {
       safe.directory = "/etc/nixos/";

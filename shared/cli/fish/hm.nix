@@ -31,7 +31,7 @@
 
         nrb = "nixos-rebuild";
         nrbr = "nixos-rebuild repl";
-        nrbs = "sudo nixos-rebuild switch";
+        nrbs = "nixos-rebuild switch --use-remote-sudo";
         nrbd = "nixos-rebuild-diff";
       }
       // lib.pipe config.programs.git.aliases [
