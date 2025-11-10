@@ -13,17 +13,15 @@
     '')
     (config.lib.custom.writeFishApplication {
       name = "find-mimes";
-      text =
-        # fish
-        ''
-          set -l xdg_dirs (string split ':' -- $XDG_DATA_DIRS)
-          set -l mime_dirs (command ls -d -- $xdg_dirs/mime 2>/dev/null)
-          for mime_dir in $mime_dirs
-            pushd $mime_dir
-            find . -name '*.xml'
-            popd
-          end | string sub -s 3 --end=-4 | sort | uniq
-        '';
+      text = /* fish */ ''
+        set -l xdg_dirs (string split ':' -- $XDG_DATA_DIRS)
+        set -l mime_dirs (command ls -d -- $xdg_dirs/mime 2>/dev/null)
+        for mime_dir in $mime_dirs
+          pushd $mime_dir
+          find . -name '*.xml'
+          popd
+        end | string sub -s 3 --end=-4 | sort | uniq
+      '';
     })
     (config.lib.custom.writeFishApplication {
       name = "find-unsynced";
