@@ -113,24 +113,6 @@ return {
          indent = { enable = true, disable = { "python", "css", "rust" } },
       },
    },
-   {
-      "HiPhish/rainbow-delimiters.nvim",
-      submodules = false,
-      priority = 1999,
-      init = function()
-         vim.g.rainbow_delimiters = {
-            highlight = {
-               "RainbowDelimiterYellow",
-               "RainbowDelimiterRed",
-               "RainbowDelimiterBlue",
-            },
-            query = {
-               [""] = "rainbow-delimiters",
-               lua = "rainbow-blocks",
-            },
-         }
-      end,
-   },
 
    { "LazyVim/LazyVim", opts = { colorscheme = "vscode" } },
    {
