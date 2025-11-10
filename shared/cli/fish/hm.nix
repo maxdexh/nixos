@@ -34,15 +34,16 @@
         nrbs = "nixos-rebuild switch --use-remote-sudo";
         nrbd = "nixos-rebuild-diff";
       }
-      // lib.pipe config.programs.git.aliases [
-        (lib.concatMapAttrs (alias: command: {
+      // (
+        lib.concatMapAttrs (alias: command: {
           "g${alias}" = "git ${
             if lib.hasPrefix "!" command
             then alias
             else command
           }";
-        }))
-      ];
+        })
+        config.programs.git.aliases
+      );
 
     functions = {
       fish_prompt = ''

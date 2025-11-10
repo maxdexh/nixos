@@ -4,12 +4,16 @@
     userName = "Max Dexheimer";
     userEmail = "maxdexh03@gmail.com";
     aliases = rec {
+      # TODO: Use multi-word shell aliases (via expand function) for these instead
       s = "status";
       p = "push";
       c = "commit";
       d = "diff";
       a = "add";
       l = "log";
+      rs = "reset";
+      rt = "restore";
+      ro = "remote";
 
       whyy = "!echo 'test'";
 
