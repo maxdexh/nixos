@@ -1,5 +1,5 @@
 inputs: let
-  _ovl.alejandra = final: prev: {
+  overlays = final: prev: {
     # https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/al/alejandra/package.nix
     # https://nixos.org/manual/nixpkgs/stable/#compiling-rust-applications-with-cargo
     alejandra = prev.rustPlatform.buildRustPackage {
@@ -18,12 +18,11 @@ inputs: let
       cargoHash = "sha256-IX4xp8llB7USpS/SSQ9L8+17hQk5nkXFP8NgFKVLqKU=";
 
       meta = {
-        license = lib.licenses.unlicense;
+        license = prev.lib.licenses.unlicense;
         mainProgram = "alejandra";
       };
     };
   };
-  overlays = builtins.attrValues _ovl;
 
   mod_kinds = {
     HOME = "hm";
@@ -83,7 +82,7 @@ inputs: let
       {
         imports = findHostAutoImports host mod_kinds.SYSTEM;
         system.stateVersion = "25.05";
-        nixpkgs.overlays = overlays;
+        nixpkgs.overlays = [overlays];
       }
       # Users
       {
