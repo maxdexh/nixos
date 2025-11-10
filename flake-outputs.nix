@@ -1,4 +1,30 @@
 inputs: let
+  _ovl.alejandra = final: prev: {
+    # https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/al/alejandra/package.nix
+    # https://nixos.org/manual/nixpkgs/stable/#compiling-rust-applications-with-cargo
+    alejandra = prev.rustPlatform.buildRustPackage {
+      pname = "alejandra";
+      version = "4.0.0";
+
+      # FIXME: Precompile into github release
+      src = builtins.fetchGit {
+        url = "https://github.com/maxdexh/alejandra";
+        rev = "d5541ac1be0d665ac121517d33ceec1396a7c22d";
+      };
+
+      # FIXME: Remove after adjusting tests
+      doCheck = false;
+
+      cargoHash = "sha256-IX4xp8llB7USpS/SSQ9L8+17hQk5nkXFP8NgFKVLqKU=";
+
+      meta = {
+        license = lib.licenses.unlicense;
+        mainProgram = "alejandra";
+      };
+    };
+  };
+  overlays = builtins.attrValues _ovl;
+
   mod_kinds = {
     HOME = "hm";
     SYSTEM = "os";
@@ -57,6 +83,7 @@ inputs: let
       {
         imports = findHostAutoImports host mod_kinds.SYSTEM;
         system.stateVersion = "25.05";
+        nixpkgs.overlays = overlays;
       }
       # Users
       {
@@ -78,7 +105,7 @@ inputs: let
         };
 
         home-manager = {
-          useGlobalPkgs = true;
+          useGlobalPkgs = true; # Also inherits overlays
           verbose = true;
           extraSpecialArgs = build_special_args host mod_kinds.HOME;
         };

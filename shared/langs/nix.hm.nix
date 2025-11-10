@@ -1,37 +1,11 @@
 {
   pkgs,
   pkgs-unstable,
-  lib,
   config,
   ...
-}:
-# https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/al/alejandra/package.nix
-# FIXME: Throw this into an overlay
-# TODO: Precompile into a github release
-let alejandra_fork = pkgs.rustPlatform.buildRustPackage rec {
-  pname = "alejandra";
-  version = "4.0.0";
-
-  src = pkgs.fetchFromGitHub {
-    owner = "maxdexh";
-    repo = "alejandra";
-    rev = version;
-    hash = "sha256-Oi1n2ncF4/AWeY6X55o2FddIRICokbciqFYK64XorYk=";
-  };
-
-  cargoHash = "sha256-IX4xp8llB7USpS/SSQ9L8+17hQk5nkXFP8NgFKVLqKU=";
-
-  meta = {
-    license = lib.licenses.unlicense;
-    mainProgram = "alejandra";
-  };
-}; 
-  
-
-in
-{
+}: {
   home.packages = with pkgs; [
-    alejandra_fork
+    alejandra
 
     nix-search-cli
 
