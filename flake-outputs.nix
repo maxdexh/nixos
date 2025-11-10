@@ -30,17 +30,23 @@ inputs: let
   };
 
   lib = inputs.nixpkgs.lib;
+  cross_lists = f: lib.foldl (fs: args: builtins.concatMap (f: map f args) fs) [f]; # Copy of the deprecated lib.crossLists
 
   hosts = lib.mapAttrsToList (name: {
     moduleDirs ? [./hosts/${name}],
     system ? "x86_64-linux",
-    termux ? false,
     nixOS ? false,
-    # TODO: Add back host option for standalone home-manager
+    hmStandalone ? false,
+    termux ? false, # NOTE: unimplemented
+    usersDir ? (assert !termux; name: "/home/${name}"),
   }: {
-    inherit system name nixOS termux;
-    moduleDirs = assert termux || nixOS; moduleDirs ++ [./shared];
+    inherit system name nixOS hmStandalone termux usersDir;
+    moduleDirs = assert hmStandalone || nixOS; assert !termux; moduleDirs ++ [./shared];
   }) (import ./hosts.nix);
+
+  users = lib.mapAttrsToList (name: {}: {
+    inherit name;
+  }) (import ./users.nix);
 
   configPathToRel = lib.flip lib.pipe [
     (path: assert builtins.isPath path; path)
@@ -56,74 +62,87 @@ inputs: let
     inherit host inputs configPathToRel;
     pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
     ctx = {
-      os.set = lib.attrsets.optionalAttrs (mod_kind == mod_kinds.SYSTEM);
-      hm.set = lib.attrsets.optionalAttrs (mod_kind == mod_kinds.HOME);
+      os.set = lib.optionalAttrs (mod_kind == mod_kinds.SYSTEM);
+      hm.set = lib.optionalAttrs (mod_kind == mod_kinds.HOME);
     };
   };
 
-  findAutoImports = basepath: kind: lib.pipe basepath [
+  find_auto_imports = basepath: kind: lib.pipe basepath [
     lib.filesystem.listFilesRecursive
     (map toString)
     (builtins.filter (path: lib.hasSuffix ".${kind}.nix" path || lib.hasSuffix "/${kind}.nix" path))
     (imports: builtins.trace "Importing ${toString (builtins.length imports)} ${kind} files from ${configPathToRel basepath}" imports)
   ];
 
-  crossLists = f: lib.foldl (fs: args: builtins.concatMap (f: map f args) fs) [f]; # Copy of the deprecated lib.crossLists
-  findHostAutoImports = host: kind: builtins.concatLists (crossLists findAutoImports [host.moduleDirs [kind "mixed"]]);
+  find_host_auto_imports = host: kind: builtins.concatLists (cross_lists find_auto_imports [host.moduleDirs [kind "mixed"]]);
 
-  nixosSystem = host: {
-    system = assert host.nixOS; host.system;
+  nixos_system = host: lib.nixosSystem {
+    system = host.system;
 
-    modules = [
-      # Also sets the default name of the flake that is selected by nixos-rebuild, i.e.
-      # `--flake .#name` only needs to be used once
-      {networking.hostName = host.name;}
-      # System base
-      {
-        imports = findHostAutoImports host mod_kinds.SYSTEM;
+    modules = let
+      mk_user_sets = mk_val: lib.pipe users [
+        (builtins.filter (user: true))
+        (map (user: {${user.name} = mk_val user;}))
+        lib.attrsets.mergeAttrsList
+      ];
+
+      base = {
+        networking.hostName = host.name; # see see config.system.name
+        imports = find_host_auto_imports host mod_kinds.SYSTEM;
         system.stateVersion = "25.05";
         nixpkgs.overlays = [overlays];
-      }
-      # Users
-      {
-        users.users.max = {
+        users.users = mk_user_sets (_: {
           isNormalUser = true;
           description = "Max";
           extraGroups = ["networkmanager" "wheel"];
-        };
-        nix.settings.trusted-users = ["max"];
-      }
+        });
+        nix.settings.trusted-users = builtins.attrNames (mk_user_sets (_: null));
+      };
 
-      # home-manager as a nixos module
-      inputs.home-manager.nixosModules.home-manager
-      {
+      hmModule = {
         # Home Manager user config
-        home-manager.users.max = {
-          imports = findHostAutoImports host mod_kinds.HOME;
+        home-manager.users = mk_user_sets (_: {
+          imports = find_host_auto_imports host mod_kinds.HOME;
           home.stateVersion = "25.05";
-        };
+        });
 
         home-manager = {
           useGlobalPkgs = true; # Also inherits overlays
           verbose = true;
           extraSpecialArgs = build_special_args host mod_kinds.HOME;
         };
-      }
-    ];
+      };
+    in
+      [base] ++ lib.optionals (!host.hmStandalone) [inputs.home-manager.nixosModules.home-manager hmModule];
 
     specialArgs = build_special_args host mod_kinds.SYSTEM;
   };
 
-  buildConfig = filter: mkSystem: systemSpec: lib.pipe hosts [
-    (builtins.filter filter)
-    (map (host: {${host.name} = mkSystem (systemSpec host);}))
+  standalone_hm = host: user: inputs.home-manager.lib.homeManagerConfiguration {
+    pkgs = inputs.nixpkgs.legacyPackages.${host.system};
+    extraSpecialArgs = build_special_args host mod_kinds.HOME;
+    modules = [
+      ({pkgs, ...}: {home.packages = [pkgs.home-manager];}) # NOTE: Bootstrap via nix shell
+      {
+        imports = find_host_auto_imports host mod_kinds.HOME;
+        home.stateVersion = "25.05";
+        nixpkgs.overlays = [overlays];
+        home.username = user.name;
+        home.home_directory = host.usersDir user.name;
+      }
+    ];
+  };
+in {
+  nixosConfigurations = lib.pipe hosts [
+    (builtins.filter (host: host.nixOS))
+    (map (host: {${host.name} = nixos_system host;}))
     lib.attrsets.mergeAttrsList
   ];
-in {
-  nixosConfigurations = buildConfig (host: host.nixOS) lib.nixosSystem nixosSystem;
 
-  nixOnDroidConfigurations.default = inputs.nix-on-droid.lib.nixOnDroidConfiguration {
-    pkgs = import inputs.nixpkgs {system = "aarch64-linux";};
-    modules = [./nix-on-droid.nix];
-  };
+  homeConfigurations = lib.attrsets.mergeAttrsList (cross_lists (host: user: {
+      "${user.name}@${host.name}" = standalone_hm host user;
+    }) [
+      (builtins.filter (host: host.hmStandalone) hosts)
+      (builtins.filter (user: true) users)
+    ]);
 }
