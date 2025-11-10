@@ -1,4 +1,4 @@
-{...}: {
+{config, ...}: {
   programs.git = {
     enable = true;
     userName = "Max Dexheimer";
@@ -26,5 +26,5 @@
   };
 
   # Configure ssh keys
-  home.file.".ssh/config".source = ./ssh-config;
+  home.file.".ssh/config".source = config.lib.custom.mkNixConfigSymlink ./ssh-config;
 }
