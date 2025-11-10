@@ -19,16 +19,14 @@
     (config.lib.custom.writeFishApplication {
       name = "nixos-rebuild-diff";
       runtimeInputs = [pkgs-unstable.dix];
-      text =
-        # fish
-        ''
-          set -l tmpdir "$(mktemp -d)"
-          cd $tmpdir
-          nixos-rebuild build $argv
-          dix /run/current-system ./result
-          rm $tmpdir/result
-          rmdir $tmpdir
-        '';
+      text = /* fish */ ''
+        set -l tmpdir "$(mktemp -d)"
+        cd $tmpdir
+        nixos-rebuild build $argv
+        dix /run/current-system ./result
+        rm $tmpdir/result
+        rmdir $tmpdir
+      '';
     })
 
     # TODO:

@@ -9,7 +9,7 @@ inputs: let
       # FIXME: Precompile into github release
       src = builtins.fetchGit {
         url = "https://github.com/maxdexh/alejandra";
-        rev = "d5541ac1be0d665ac121517d33ceec1396a7c22d";
+        rev = "a5ca19c749397302cba8245b0229d4efebfd3c35";
       };
 
       # FIXME: Remove after adjusting tests

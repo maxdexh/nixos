@@ -41,6 +41,8 @@ libs.misc.dbg_err(function()
    })
 end)
 
+-- TODO: Add keybind like <leader>ft that uses the basename of the current buffer
+
 -- TODO: Use "Telescope ..." commands instead of telescope.builtin for telescope
 -- FIXME: Consider switching from telescope to something that can be optionally opened as a persistent buffer/split
 -- TODO: Optionally open definitions, implementations, references, diagnostics as a persistent split (using vim.lsp or trouble)
