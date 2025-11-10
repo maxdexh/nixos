@@ -53,9 +53,6 @@
   # Install firefox.
   programs.firefox.enable = true;
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
   security.polkit.enable = true;
 
   # enable bluetooth

@@ -91,6 +91,7 @@ inputs: let
         imports = find_host_auto_imports host mod_kinds.SYSTEM;
         system.stateVersion = "25.05";
         nixpkgs.overlays = [overlays];
+        nixpkgs.config.allowUnfree = true;
         users.users = mk_user_sets (_: {
           isNormalUser = true;
           description = "Max";
@@ -107,7 +108,7 @@ inputs: let
         });
 
         home-manager = {
-          useGlobalPkgs = true; # Also inherits overlays
+          useGlobalPkgs = true; # Also inherits nixpkgs configs
           verbose = true;
           extraSpecialArgs = build_special_args host mod_kinds.HOME;
         };
@@ -127,8 +128,9 @@ inputs: let
         imports = find_host_auto_imports host mod_kinds.HOME;
         home.stateVersion = "25.05";
         nixpkgs.overlays = [overlays];
+        nixpkgs.config.allowUnfree = true;
         home.username = user.name;
-        home.home_directory = host.usersDir user.name;
+        home.homeDirectory = host.usersDir user.name;
       }
     ];
   };
