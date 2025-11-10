@@ -6,6 +6,9 @@
 }: lib.mkIf config.custom.host.fullDesktop {
   # Misc applications
   home.packages = with pkgs; [
+    vlc
+    losslesscut-bin
+
     # disk utils
     baobab
     gparted
