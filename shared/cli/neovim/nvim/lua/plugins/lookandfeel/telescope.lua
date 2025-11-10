@@ -41,8 +41,4 @@ return {
          return keys
       end,
    },
-   {
-      "nvim-neo-tree/neo-tree.nvim",
-      enabled = false,
-   },
 }
