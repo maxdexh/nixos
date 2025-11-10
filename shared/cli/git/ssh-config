@@ -10,3 +10,9 @@ Host gitlab.com
   IdentitiesOnly true
   User git
 
+Host gitlab.kit.edu
+  Hostname gitlab.kit.edu
+  IdentityFile ~/.ssh/glab
+  IdentitiesOnly true
+  User git
+

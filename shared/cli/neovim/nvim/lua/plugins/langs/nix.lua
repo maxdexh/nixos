@@ -60,6 +60,7 @@ if is_nixos == "true" then
       { expr = "(builtins.getFlake (builtins.toString ./.)).nixosConfigurations." .. config_name .. ".options" }
 end
 
+-- NOTE: Installed via nix
 vim.lsp.config("nixd", {
    cmd = { "nixd" },
    filetypes = { "nix" },
@@ -85,8 +86,7 @@ return {
    {
       "mason.nvim",
       opts = {
-         -- NOTE: Requires installing a rust toolchain first on initial system setup
-         ensure_installed = { "nil", "alejandra" },
+         ensure_installed = { "nil" },
       },
    },
    {
