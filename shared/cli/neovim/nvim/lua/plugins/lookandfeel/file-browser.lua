@@ -34,12 +34,12 @@ return {
             {
                "<leader>fE",
                libs.keymap.cmd("Oil"),
-               desc = "File Browser (nonfloat)",
+               desc = "Oil buffer",
             },
             {
                "<leader>fe",
                libs.keymap.cmd("Oil --float"),
-               desc = "File Browser (current buffer dir)",
+               desc = "Oil float",
             },
          })
          return keys

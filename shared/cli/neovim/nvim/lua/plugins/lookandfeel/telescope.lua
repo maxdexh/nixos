@@ -34,7 +34,7 @@ return {
             },
             {
                "<leader>fF",
-               LazyVim.pick("files"), -- TODO: How does lazyvim find root dir?
+               LazyVim.pick("files"), -- TODO: Reimplement using LazyVim.root()
                desc = "Find Files (Root Dir)",
             },
          })

@@ -1,7 +1,8 @@
 local M = {}
 
----@alias Util.log.Level "error" | "warn" | "info" | "debug" | "trace" | "off"
 ---@class (partial) PluginLspOpts2: PluginLspOpts
+
+---@alias Util.log.Level "error" | "warn" | "info" | "debug" | "trace" | "off"
 
 ---@generic T
 ---@param level Util.log.Level
