@@ -67,6 +67,7 @@ inputs: let
     };
   };
 
+  # TODO: Use auto-import comments and file extension .auto.nix
   find_auto_imports = basepath: kind: lib.pipe basepath [
     lib.filesystem.listFilesRecursive
     (map toString)
@@ -119,20 +120,22 @@ inputs: let
     specialArgs = build_special_args host mod_kinds.SYSTEM;
   };
 
-  standalone_hm = host: user: inputs.home-manager.lib.homeManagerConfiguration {
-    pkgs = inputs.nixpkgs.legacyPackages.${host.system};
-    extraSpecialArgs = build_special_args host mod_kinds.HOME;
-    modules = [
-      ({pkgs, ...}: {home.packages = [pkgs.home-manager];}) # NOTE: Bootstrap via nix shell
-      {
-        imports = find_host_auto_imports host mod_kinds.HOME;
-        home.stateVersion = "25.05";
-        nixpkgs.overlays = [overlays];
-        nixpkgs.config.allowUnfree = true;
-        home.username = user.name;
-        home.homeDirectory = host.usersDir user.name;
-      }
-    ];
+  standalone_hm_config = host: user: {
+    "${user.name}@${host.name}" = inputs.home-manager.lib.homeManagerConfiguration {
+      pkgs = inputs.nixpkgs.legacyPackages.${host.system};
+      extraSpecialArgs = build_special_args host mod_kinds.HOME;
+      modules = [
+        ({pkgs, ...}: {home.packages = [pkgs.home-manager];}) # NOTE: Bootstrap via nix shell
+        {
+          imports = find_host_auto_imports host mod_kinds.HOME;
+          home.stateVersion = "25.05";
+          nixpkgs.overlays = [overlays];
+          nixpkgs.config.allowUnfree = true;
+          home.username = user.name;
+          home.homeDirectory = host.usersDir user.name;
+        }
+      ];
+    };
   };
 in {
   nixosConfigurations = lib.pipe hosts [
@@ -141,10 +144,8 @@ in {
     lib.attrsets.mergeAttrsList
   ];
 
-  homeConfigurations = lib.attrsets.mergeAttrsList (cross_lists (host: user: {
-      "${user.name}@${host.name}" = standalone_hm host user;
-    }) [
-      (builtins.filter (host: host.hmStandalone) hosts)
-      (builtins.filter (user: true) users)
-    ]);
+  homeConfigurations = lib.pipe [hosts users] [
+    (cross_lists standalone_hm_config)
+    lib.attrsets.mergeAttrsList
+  ];
 }
