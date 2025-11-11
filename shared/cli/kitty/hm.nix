@@ -7,7 +7,7 @@
   programs.kitty = {
     enable = true;
     enableGitIntegration = true;
-    extraConfig = builtins.readFile ./kitty.conf;
+    extraConfig = "include ${config.lib.custom.mkNixConfigSymlink ./kitty.conf}";
   };
 
   home.packages = with pkgs; [tdf];
