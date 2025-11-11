@@ -1,6 +1,7 @@
 -- https://github.com/LazyVim/starter/blob/main/lua/config/lazy.lua
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+---@diagnostic disable-next-line: undefined-field, deprecated
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
    local lazyrepo = "https://github.com/folke/lazy.nvim.git"
    local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
@@ -16,7 +17,9 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup({
+---@type LazyConfig
+---@diagnostic disable-next-line: missing-fields
+local conf = {
    spec = {
       -- add LazyVim and import its plugins
       { "LazyVim/LazyVim", import = "lazyvim.plugins" },
@@ -52,4 +55,5 @@ require("lazy").setup({
          },
       },
    },
-})
+}
+require("lazy").setup(conf)
