@@ -18,12 +18,12 @@ local M = {}
 
 ---@param opts Util.keymap.KeyOpts
 local function keymap_set(opts)
-   local action = misc.pop_key(opts, 2)
-   local binding = misc.pop_key(opts, 1)
-   local mode = misc.pop_key(opts, "mode") or "n"
-   local setter = misc.pop_key(opts, "setter") or vim.keymap.set
-
    misc.dbg_err(function()
+      local action = misc.pop_key(opts, 2)
+      local binding = misc.pop_key(opts, 1)
+      local mode = misc.pop_key(opts, "mode") or "n"
+      local setter = misc.pop_key(opts, "setter") or vim.keymap.set
+
       setter(mode, binding, action, opts)
    end)
 end
@@ -69,9 +69,11 @@ end
 
 ---@param keymaps Util.keymap.KeyOpts[]|Util.keymap.KeyMapsAndSharedOpts
 function M.set_many(keymaps)
-   for _, opts in ipairs(keymap_normalize_shared(keymaps)) do
-      keymap_set(opts)
-   end
+   misc.dbg_err(function()
+      for _, opts in ipairs(keymap_normalize_shared(keymaps)) do
+         keymap_set(opts)
+      end
+   end)
 end
 
 ---@param cmd string

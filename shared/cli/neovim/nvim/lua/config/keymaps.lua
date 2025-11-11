@@ -40,6 +40,41 @@ libs.misc.dbg_err(function()
       { "[w", jump(-1, "WARN"), desc = "Prev Warning" },
    })
 end)
+libs.misc.dbg_err(function()
+   ---@param tab boolean
+   ---@param path string
+   local function spawn_term(tab, path)
+      if path:len() == 0 then
+         path = LazyVim.root()
+      end
+      path = vim.fn.resolve(vim.fs.abspath(vim.fn.expand(path)))
+      if vim.fn.isdirectory(path) == 0 then
+         path = vim.fs.dirname(path)
+      end
+      local socket = vim.env["KITTY_LISTEN_ON"]
+      if not socket then
+         error("KITTY_LISTEN_ON was unset")
+      end
+      vim.system({
+         "kitten",
+         "@",
+         "--to",
+         socket,
+         "launch",
+         "--cwd",
+         path,
+         "--type",
+         tab and "tab" or "os-window",
+      })
+   end
+
+   vim.api.nvim_create_user_command("Term", function(args)
+      spawn_term(false, args.args)
+   end, { nargs = "*" })
+   vim.api.nvim_create_user_command("Termtab", function(args)
+      spawn_term(true, args.args)
+   end, { nargs = "*" })
+end)
 
 -- TODO: Add keybind like <leader>ft that uses the basename of the current buffer
 
