@@ -19,10 +19,10 @@ inputs: let
       pname = "alejandra";
       version = "4.0.0";
 
-      # FIXME: Precompile into github release
+      # FIXME: Precompile into github release, or use flakes
       src = builtins.fetchGit {
         url = "https://github.com/maxdexh/alejandra";
-        rev = "f8191bf6742d2dccdd73ea204d77111302fc0da8";
+        rev = "dcdc1e10450694d76fc83cb00ca4c9ba9cd0ba5d";
       };
 
       doCheck = false;
