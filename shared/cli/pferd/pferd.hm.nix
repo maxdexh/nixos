@@ -1,5 +1,9 @@
-{pkgs, ...}: {
-  xdg.configFile."PFERD".source = ./PFERD;
+{
+  pkgs-unstable,
+  config,
+  ...
+}: {
+  xdg.configFile."PFERD/pferd.cfg".source = config.lib.custom.mkNixConfigSymlink ./pferd.cfg;
 
-  home.packages = with pkgs; [pferd];
+  home.packages = [pkgs-unstable.pferd];
 }

@@ -25,7 +25,6 @@ inputs: let
         rev = "f8191bf6742d2dccdd73ea204d77111302fc0da8";
       };
 
-      # FIXME: Remove after adjusting tests
       doCheck = false;
 
       cargoHash = "sha256-IX4xp8llB7USpS/SSQ9L8+17hQk5nkXFP8NgFKVLqKU=";
