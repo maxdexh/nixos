@@ -1,4 +1,17 @@
 inputs: let
+  _hosts = {
+    framework = {
+      nixOS = true;
+      hmStandalone = true;
+    };
+    homepc = {
+      nixOS = true;
+    };
+  };
+  _users = {
+    max = {};
+  };
+
   overlays = final: prev: {
     # https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/al/alejandra/package.nix
     # https://nixos.org/manual/nixpkgs/stable/#compiling-rust-applications-with-cargo
@@ -9,7 +22,7 @@ inputs: let
       # FIXME: Precompile into github release
       src = builtins.fetchGit {
         url = "https://github.com/maxdexh/alejandra";
-        rev = "a5ca19c749397302cba8245b0229d4efebfd3c35";
+        rev = "f8191bf6742d2dccdd73ea204d77111302fc0da8";
       };
 
       # FIXME: Remove after adjusting tests
@@ -42,11 +55,11 @@ inputs: let
   }: {
     inherit system name nixOS hmStandalone termux usersDir;
     moduleDirs = assert hmStandalone || nixOS; assert !termux; moduleDirs ++ [./shared];
-  }) (import ./hosts.nix);
+  }) _hosts;
 
   users = lib.mapAttrsToList (name: {}: {
     inherit name;
-  }) (import ./users.nix);
+  }) _users;
 
   configPathToRel = lib.flip lib.pipe [
     (path: assert builtins.isPath path; path)

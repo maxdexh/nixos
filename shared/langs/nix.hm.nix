@@ -2,6 +2,8 @@
   pkgs,
   pkgs-unstable,
   config,
+  lib,
+  host,
   ...
 }: {
   home.packages = with pkgs; [
@@ -34,5 +36,23 @@
     # https://github.com/nix-community/nix-index
     # https://github.com/nix-community/haumea
     # https://github.com/jpetrucciani/pog
+  ];
+
+  custom.sessionVars = {
+    NH_FLAKE = config.custom.host.nixConfigLocation;
+  };
+
+  programs.fish.shellAbbrs = lib.mkMerge [
+    {
+      hm = "home-manager";
+      # hmr = "home-manager repl"; # FIXME: get nh home repl to work or write one yourself
+      hms = "home-manager switch";
+    }
+    (lib.mkIf host.nixOS {
+      os = "nixos-rebuild";
+      osr = "nixos-rebuild repl";
+      oss = "nixos-rebuild switch --use-remote-sudo";
+      osd = "nixos-rebuild-diff"; # TODO: Write one for hm too
+    })
   ];
 }

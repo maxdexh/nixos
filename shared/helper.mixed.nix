@@ -8,6 +8,8 @@
     name,
     text,
     runtimeInputs ? [],
+    inheritPath ? true,
+    # TODO: runtimeEnv
   }: pkgs.writeTextFile {
     inherit name;
     executable = true;
@@ -17,7 +19,11 @@
     text = /* fish */ ''
       #!${lib.getExe pkgs.fish}
 
-      set --prepend PATH (string split ':' -- "${
+      set ${
+        if inheritPath
+        then "--prepend"
+        else ""
+      } PATH (string split ':' -- "${
         lib.makeBinPath runtimeInputs
       }")
 

@@ -28,11 +28,6 @@
         rm = "trash";
 
         g = "git";
-
-        nrb = "nixos-rebuild";
-        nrbr = "nixos-rebuild repl";
-        nrbs = "nixos-rebuild switch --use-remote-sudo";
-        nrbd = "nixos-rebuild-diff";
       }
       // (
         lib.concatMapAttrs (alias: command: {
