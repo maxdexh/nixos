@@ -6,6 +6,22 @@ return {
       enabled = false,
    },
    {
+      "folke/snacks.nvim",
+      keys = function(_, keys)
+         local setter = libs.keymap.lazy_spec_setter(keys)
+         libs.keymap.set_many({
+            setter = setter,
+            {
+               "<leader>ft",
+               function()
+                  require("snacks").picker.explorer()
+               end,
+               desc = "File tree",
+            },
+         })
+      end,
+   },
+   {
       "stevearc/oil.nvim",
       ---@type oil.SetupOpts
       opts = {

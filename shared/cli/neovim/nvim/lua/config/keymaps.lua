@@ -78,13 +78,12 @@ end)
 
 -- TODO: Add keybind like <leader>ft that uses the basename of the current buffer
 
--- TODO: Use "Telescope ..." commands instead of telescope.builtin for telescope
--- FIXME: Consider switching from telescope to something that can be optionally opened as a persistent buffer/split
 -- TODO: Optionally open definitions, implementations, references, diagnostics as a persistent split (using vim.lsp or trouble)
 -- NOTE: <C-w>j (or h,k,l) to switch between splits
 local function set_lsp_keybinds(buf)
-   local get_tscope = libs.misc.store_lazily(function()
-      return require("telescope.builtin")
+   -- TODO: Use snacks.picker.diagnostics
+   local get_snacks = libs.misc.store_lazily(function()
+      return require("snacks")
    end)
    libs.keymap.set_many({
       buffer = buf,
@@ -92,7 +91,7 @@ local function set_lsp_keybinds(buf)
          "gd",
          function()
             -- TODO: optionally vim.lsp.buf.definition() / Trouble lsp_definitions
-            get_tscope().lsp_definitions()
+            get_snacks().picker.lsp_definitions()
          end,
          desc = "Goto Definition",
       },
@@ -100,7 +99,7 @@ local function set_lsp_keybinds(buf)
          "gi",
          function()
             -- TODO: vim.lsp.buf.implementation() / Trouble
-            get_tscope().lsp_implementations()
+            get_snacks().picker.lsp_implementations()
          end,
          desc = "View Implementations",
       },
@@ -108,7 +107,7 @@ local function set_lsp_keybinds(buf)
          "gr",
          function()
             -- TODO: vim.lsp.buf.references() / Trouble
-            get_tscope().lsp_references()
+            get_snacks().picker.lsp_references()
          end,
          desc = "View References",
       },
@@ -125,7 +124,7 @@ local function set_lsp_keybinds(buf)
          "<leader>xx",
          function()
             -- vim.cmd("Trouble diagnostics toggle")
-            get_tscope().diagnostics({ severity_limit = "warn" })
+            get_snacks().picker.diagnostics({ severity_limit = "warn" })
          end,
          desc = "Diagnostics",
       },
@@ -133,7 +132,7 @@ local function set_lsp_keybinds(buf)
          "<leader>xX",
          function()
             -- vim.cmd("Trouble diagnostics toggle filter.buf=0")
-            get_tscope().diagnostics({ bufnr = 0, severity_limit = "warn" })
+            get_snacks().picker.diagnostics({ bufnr = 0, severity_limit = "warn" })
          end,
          desc = "Diagnostics (Current buffer)",
       },
