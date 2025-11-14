@@ -50,12 +50,12 @@ return {
             {
                "<leader>fE",
                libs.keymap.cmd("Oil"),
-               desc = "Oil buffer",
+               desc = "Oil (Buffer)",
             },
             {
                "<leader>fe",
                libs.keymap.cmd("Oil --float"),
-               desc = "Oil float",
+               desc = "Oil (Float)",
             },
          })
          return keys

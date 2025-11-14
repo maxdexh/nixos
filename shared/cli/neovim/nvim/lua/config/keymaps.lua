@@ -81,17 +81,14 @@ end)
 -- TODO: Optionally open definitions, implementations, references, diagnostics as a persistent split (using vim.lsp or trouble)
 -- NOTE: <C-w>j (or h,k,l) to switch between splits
 local function set_lsp_keybinds(buf)
-   -- TODO: Use snacks.picker.diagnostics
-   local get_snacks = libs.misc.store_lazily(function()
-      return require("snacks")
-   end)
+   -- TODO: Snacks picker as a buffer?
    libs.keymap.set_many({
       buffer = buf,
       {
          "gd",
          function()
             -- TODO: optionally vim.lsp.buf.definition() / Trouble lsp_definitions
-            get_snacks().picker.lsp_definitions()
+            Snacks.picker.lsp_definitions()
          end,
          desc = "Goto Definition",
       },
@@ -99,7 +96,7 @@ local function set_lsp_keybinds(buf)
          "gi",
          function()
             -- TODO: vim.lsp.buf.implementation() / Trouble
-            get_snacks().picker.lsp_implementations()
+            Snacks.picker.lsp_implementations()
          end,
          desc = "View Implementations",
       },
@@ -123,16 +120,14 @@ local function set_lsp_keybinds(buf)
       {
          "<leader>xx",
          function()
-            -- vim.cmd("Trouble diagnostics toggle")
-            get_snacks().picker.diagnostics({ severity_limit = "warn" })
+            Snacks.picker.diagnostics()
          end,
          desc = "Diagnostics",
       },
       {
          "<leader>xX",
          function()
-            -- vim.cmd("Trouble diagnostics toggle filter.buf=0")
-            get_snacks().picker.diagnostics({ bufnr = 0, severity_limit = "warn" })
+            Snacks.picker.diagnostics_buffer()
          end,
          desc = "Diagnostics (Current buffer)",
       },

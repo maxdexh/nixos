@@ -10,10 +10,35 @@ return {
             {
                "<leader>sx",
                function()
-                  require("snacks").picker.resume()
+                  Snacks.picker.resume()
                end,
-               desc = "File tree",
+               desc = "Resume Picker",
             },
+            { "<leader>fP", LazyVim.pick("pickers"), desc = "Find Pickers" },
+            -- Swapped root and non-root from lazyvim
+            { "<leader>ff", LazyVim.pick("smart", { root = false }), desc = "Find Files (cwd)" },
+            { "<leader>fF", LazyVim.pick("smart", { root = true }), desc = "Find Files (Root Dir)" },
+            { "<leader>sw", LazyVim.pick("grep_visual", { root = false }), mode = "x", desc = "Selection (cwd)" },
+            { "<leader>sW", LazyVim.pick("grep_visual", { root = true }), mode = "x", desc = "Selection (Root Dir)" },
+            { "<leader>sg", LazyVim.pick("grep", { root = false }), desc = "Grep (cwd)" },
+            { "<leader>sG", LazyVim.pick("grep", { root = true }), desc = "Selection (Root Dir)" },
+
+            -- Provided by lazyvim
+            -- <leader>sp (plugin specs)
+            -- <leader>ss (lsp symbols)
+            -- <leader>sS (lsp workspace symbols)
+            -- <leader>sb (buffer lines)
+            -- <leader>sC (commands)
+            -- <leader>su (undotree)
+            -- <leader>sT (todos)
+            -- <leader>sM (man pages)
+            -- <leader>sH (highlights)
+            -- <leader>si (emojis)
+            -- <leader>sj (jumps)
+            -- <ledaer>sh (help pages)
+            -- <leader>sn (noice messages)
+            --
+            -- TODO: <leader>sp but global plugin file search
          })
       end,
    },
