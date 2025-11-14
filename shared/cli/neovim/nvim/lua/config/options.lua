@@ -16,4 +16,5 @@ vim.g.lazyvim_picker = "snacks"
 vim.g.snacks_animate = false
 vim.g.c_syntax_for_h = true
 vim.o.clipboard = "" --[[@as any]]
+vim.opt.cursorline = false
 -- vim.g.lazyvim_rust_diagnostics = "bacon-ls"

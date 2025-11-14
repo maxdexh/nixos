@@ -113,7 +113,6 @@ return {
          indent = { enable = true, disable = { "python", "css", "rust" } },
       },
    },
-
    { "LazyVim/LazyVim", opts = { colorscheme = "vscode" } },
    {
       "Mofiqul/vscode.nvim",
@@ -125,7 +124,6 @@ return {
          terminal_colors = true,
       },
       init = function()
-         vim.opt.cursorline = false
          libs.misc.add_auto_hl_overrides(overrides)
 
          -- Transparency fixes (Find using colorpicker and searching in :hi)
@@ -142,8 +140,6 @@ return {
       end,
    },
    { "tokyonight.nvim", enabled = false },
-   { "catpuccin", enabled = false },
-
    {
       "nvim-treesitter/nvim-treesitter",
       opts = {
