@@ -79,7 +79,6 @@ inputs: let
     };
   };
 
-  # TODO: Use auto-import comments and file extension .auto.nix
   find_auto_imports = basepath: kind: lib.pipe basepath [
     lib.filesystem.listFilesRecursive
     (map toString)

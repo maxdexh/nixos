@@ -1,11 +1,15 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  ctx,
+  ...
+}: let
   shellint-no-bash = {
     enable = true;
     enableFishIntegration = true;
   };
 
   shellint = {enableBashIntegration = true;} // shellint-no-bash;
-in {
+in ctx.hm.set {
   home.packages = with pkgs; [
     gh
     glab

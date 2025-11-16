@@ -2,8 +2,9 @@
   config,
   lib,
   pkgs,
+  ctx,
   ...
-}: {
+}: ctx.hm.set {
   programs.fish = {
     enable = true;
     interactiveShellInit = ''

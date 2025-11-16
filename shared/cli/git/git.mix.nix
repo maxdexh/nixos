@@ -1,4 +1,8 @@
-{config, ...}: {
+{
+  config,
+  ctx,
+  ...
+}: ctx.hm.set {
   programs.git = {
     enable = true;
     userName = "Max Dexheimer";
