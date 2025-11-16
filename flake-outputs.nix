@@ -87,7 +87,7 @@ inputs: let
     (imports: builtins.trace "Importing ${toString (builtins.length imports)} ${kind} files from ${configPathToRel basepath}" imports)
   ];
 
-  find_host_auto_imports = host: kind: builtins.concatLists (cross_lists find_auto_imports [host.moduleDirs [kind "mixed"]]);
+  find_host_auto_imports = host: kind: builtins.concatLists (cross_lists find_auto_imports [host.moduleDirs [kind "mix"]]);
 
   nixos_system = host: lib.nixosSystem {
     system = host.system;
