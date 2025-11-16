@@ -2,7 +2,6 @@ inputs: let
   _hosts = {
     fw13 = {
       nixOS = true;
-      hmStandalone = true;
     };
     homepc = {
       nixOS = true;
@@ -86,7 +85,7 @@ inputs: let
     (imports: builtins.trace "Importing ${toString (builtins.length imports)} ${kind} files from ${configPathToRel basepath}" imports)
   ];
 
-  find_host_auto_imports = host: kind: builtins.concatLists (cross_lists find_auto_imports [host.moduleDirs [kind "mix"]]);
+  find_host_auto_imports = host: kind: builtins.concatLists (cross_lists find_auto_imports [host.moduleDirs [kind "i"]]);
 
   nixos_system = host: lib.nixosSystem {
     system = host.system;

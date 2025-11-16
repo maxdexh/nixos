@@ -1,8 +1,9 @@
 {
   config,
   inputs,
+  ctx,
   ...
-}: {
+}: ctx.os.set {
   imports = let
     hardware = inputs.nixos-hardware.nixosModules;
   in [

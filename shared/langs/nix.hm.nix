@@ -51,7 +51,7 @@
     (lib.mkIf host.nixOS {
       os = "nixos-rebuild";
       osr = "nixos-rebuild repl";
-      oss = "nixos-rebuild switch --use-remote-sudo";
+      oss = "sudo nixos-rebuild switch";
       osd = "nixos-rebuild-diff"; # TODO: Write one for hm too
     })
   ];

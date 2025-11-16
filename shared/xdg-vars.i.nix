@@ -1,4 +1,8 @@
-{config, ...}: {
+{
+  config,
+  ctx,
+  ...
+}: ctx.hm.set {
   custom.sessionVars = {
     BOGOFILTER_DIR = "${config.xdg.dataHome}/bogofilter";
     DOTNET_CLI_HOME = "${config.xdg.dataHome}/dotnet";

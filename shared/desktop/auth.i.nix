@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  ctx,
+  ...
+}: ctx.os.set {
   environment.systemPackages = with pkgs; [
     # TODO: home-manager services.hyprpolkitagent?
     hyprpolkitagent
