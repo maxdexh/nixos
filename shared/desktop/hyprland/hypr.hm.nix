@@ -18,12 +18,13 @@
   wayland.windowManager.hyprland = {
     enable = true;
 
-    # FIXME: This should really be enabled, otherwise we cannot override things configured from nix
+    # Put the `source =` declarations at the end of the generated hyprland.conf,
+    # such that we can pass variables from the nix config
     sourceFirst = false;
 
     settings = lib.mkMerge [
       {
-        "$terminal" = "kitty";
+        "$isLaptop" = toString config.custom.host.laptop.enable;
         source = ["${config.lib.custom.mkNixConfigSymlink ./hypr-conf}/*"];
       }
       (lib.mkIf (!config.custom.host.laptop.enable) {
