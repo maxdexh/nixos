@@ -2,14 +2,15 @@
   config,
   pkgs,
   host,
+  ctx,
   ...
-}: {
+}: ctx.hm.set {
   home.packages = with pkgs; [
     tree-sitter
   ];
 
   xdg.configFile."nvim".source =
-    config.lib.custom.mkNixConfigSymlink ./nvim;
+    config.lib.custom.mkNixConfigSymlink ./.;
 
   custom.sessionVars = {
     VISUAL = "nvim";

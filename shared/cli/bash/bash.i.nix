@@ -1,4 +1,4 @@
-{
+{ctx, ...}: ctx.hm.set {
   programs.bash = {
     enable = true;
     bashrcExtra = builtins.readFile ./bashrc-extra;
