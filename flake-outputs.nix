@@ -1,6 +1,6 @@
 inputs: let
   _hosts = {
-    framework = {
+    fw13 = {
       nixOS = true;
       hmStandalone = true;
     };
