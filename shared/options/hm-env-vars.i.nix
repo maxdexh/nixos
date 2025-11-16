@@ -2,8 +2,9 @@
   lib,
   config,
   host,
+  ctx,
   ...
-}: {
+}: ctx.hm.set {
   options.custom.sessionVars = lib.mkOption {
     default = {};
     type = with lib.types;

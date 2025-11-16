@@ -1,8 +1,9 @@
 {
   pkgs,
   config,
+  ctx,
   ...
-}: {
+}: ctx.hm.set {
   home.packages = with pkgs; [
     (writeShellScriptBin "start" ''
       eval "$@" &>/dev/null &

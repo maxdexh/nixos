@@ -1,8 +1,9 @@
 {
   config,
   pkgs,
+  ctx,
   ...
-}: {
+}: ctx.hm.set {
   home.packages = with pkgs; [python3 mypy];
 
   programs.uv = {

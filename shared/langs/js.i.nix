@@ -1,10 +1,9 @@
 {
   config,
   pkgs,
+  ctx,
   ...
-}:
-# Mason uses npm :/
-{
+}: ctx.hm.set {
   home.packages = with pkgs; [nodejs pnpm];
 
   custom.sessionVars = {

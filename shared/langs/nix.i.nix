@@ -4,8 +4,9 @@
   config,
   lib,
   host,
+  ctx,
   ...
-}: {
+}: ctx.hm.set {
   home.packages = with pkgs; [
     alejandra
 
