@@ -78,16 +78,18 @@ inputs: let
     };
   };
 
-  find_auto_imports = basepath: kind: lib.pipe basepath [
+  find_auto_imports = basepath: lib.pipe basepath [
     lib.filesystem.listFilesRecursive
     (map toString)
-    (builtins.filter (path: lib.hasSuffix ".${kind}.nix" path || lib.hasSuffix "/${kind}.nix" path))
-    (imports: builtins.trace "Importing ${toString (builtins.length imports)} ${kind} files from ${configPathToRel basepath}" imports)
+    (builtins.filter (path: lib.hasSuffix ".i.nix" path))
+    (imports: builtins.trace "Importing ${toString (builtins.length imports)} files from ${configPathToRel basepath}" imports)
   ];
 
-  find_host_auto_imports = host: kind: builtins.concatLists (cross_lists find_auto_imports [host.moduleDirs [kind "i"]]);
+  find_host_auto_imports = host: builtins.concatMap find_auto_imports host.moduleDirs;
 
-  nixos_system = host: lib.nixosSystem {
+  nixos_system = host: let
+    auto_imports = find_host_auto_imports host;
+  in lib.nixosSystem {
     system = host.system;
 
     modules = let
@@ -99,7 +101,7 @@ inputs: let
 
       base = {
         networking.hostName = host.name; # see see config.system.name
-        imports = find_host_auto_imports host mod_kinds.SYSTEM;
+        imports = auto_imports;
         system.stateVersion = "25.05";
         nixpkgs.overlays = [overlays];
         nixpkgs.config.allowUnfree = true;
@@ -114,7 +116,7 @@ inputs: let
       hmModule = {
         # Home Manager user config
         home-manager.users = mk_user_sets (_: {
-          imports = find_host_auto_imports host mod_kinds.HOME;
+          imports = auto_imports;
           home.stateVersion = "25.05";
         });
 
@@ -137,7 +139,7 @@ inputs: let
       modules = [
         ({pkgs, ...}: {home.packages = [pkgs.home-manager];}) # NOTE: Bootstrap via nix shell
         {
-          imports = find_host_auto_imports host mod_kinds.HOME;
+          imports = find_host_auto_imports host;
           home.stateVersion = "25.05";
           nixpkgs.overlays = [overlays];
           nixpkgs.config.allowUnfree = true;
