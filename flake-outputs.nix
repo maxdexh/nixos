@@ -45,13 +45,15 @@ inputs: let
 
   hosts = lib.mapAttrsToList (name: {
     moduleDirs ? [./hosts/${name}],
+    # FIXME: Configure this via options instead
+    hyprHostConf ? ./hosts/${name}/hyprland.conf,
     system ? "x86_64-linux",
     nixOS ? false,
     hmStandalone ? false,
     termux ? false, # NOTE: unimplemented
     usersDir ? (assert !termux; name: "/home/${name}"),
   }: {
-    inherit system name nixOS hmStandalone termux usersDir;
+    inherit system name nixOS hmStandalone termux usersDir hyprHostConf;
     moduleDirs = assert hmStandalone || nixOS; assert !termux; moduleDirs ++ [./shared];
   }) _hosts;
 

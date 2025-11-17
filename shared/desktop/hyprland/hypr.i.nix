@@ -3,6 +3,7 @@
   lib,
   config,
   ctx,
+  host,
   ...
 }:
 lib.flip lib.pipe [
@@ -43,11 +44,11 @@ lib.flip lib.pipe [
 
       settings = lib.mkMerge [
         {
-          source = ["${config.lib.custom.mkNixConfigSymlink ./hypr-conf}/*"];
+          source = [
+            "${config.lib.custom.mkNixConfigSymlink ./hypr-conf}/*"
+            "${config.lib.custom.mkNixConfigSymlink host.hyprHostConf}"
+          ];
         }
-        (lib.mkIf (!config.custom.host.laptop.enable) {
-          exec-once = "uwsm app -- discord";
-        })
       ];
     };
 
@@ -73,8 +74,6 @@ lib.flip lib.pipe [
           then modules
           else lib.lists.remove "group/energy" modules;
 
-        # TODO: Get 'inspiration' from omarchy
-        # TODO: Move things to swaync panel
         include = [(toString (config.lib.custom.mkNixConfigSymlink ./waybar.mainbar.jsonc))];
       };
     };
