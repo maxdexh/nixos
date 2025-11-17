@@ -31,6 +31,7 @@
         rmdir $tmpdir
       '';
     })
+    (pkgs.writeShellScriptBin "nix-cfg-repl" (builtins.readFile ./repl.bash))
 
     # TODO:
     # https://github.com/thiagokokada/nix-alien
@@ -40,13 +41,13 @@
   ];
 
   custom.sessionVars = {
-    NH_FLAKE = config.custom.host.nixConfigLocation;
+    NIX_CONFIG_LOCATION = config.custom.host.nixConfigLocation;
   };
 
   programs.fish.shellAbbrs = lib.mkMerge [
     {
       hm = "home-manager";
-      # hmr = "home-manager repl"; # FIXME: get nh home repl to work or write one yourself
+      hmr = "nix-cfg-repl hm";
       hms = "home-manager switch";
     }
     (lib.mkIf host.nixOS {

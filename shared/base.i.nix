@@ -6,6 +6,7 @@
   ...
 }: lib.mkMerge [
   (ctx.hm.set {
+    home.packages = [pkgs.home-manager];
     xdg.configFile."home-manager".source =
       config.lib.file.mkOutOfStoreSymlink config.custom.host.nixConfigLocation;
   })

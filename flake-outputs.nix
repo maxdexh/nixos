@@ -139,7 +139,6 @@ inputs: let
       pkgs = inputs.nixpkgs.legacyPackages.${host.system};
       extraSpecialArgs = build_special_args host mod_kinds.HOME;
       modules = [
-        ({pkgs, ...}: {home.packages = [pkgs.home-manager];}) # NOTE: Bootstrap via nix shell
         {
           imports = find_host_auto_imports host;
           home.stateVersion = "25.05";
