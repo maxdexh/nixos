@@ -33,6 +33,9 @@
       gnome-system-monitor
       discord
       zathura
+
+      lunar-client
+      prismlauncher
     ]);
   })
 ]
