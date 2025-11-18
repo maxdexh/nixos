@@ -92,13 +92,18 @@ else
 fi
 
 exec nix repl --expr "
-  let flake = builtins.getFlake ''$flakePath'';
-      configuration = flake.$flakeAttr;
-      motd = ''Loading $flakeAttr in $flake'';
-      scope = ($argsBase) // {
-        inherit (configuration) config options pkgs;
-        lib = configuration.lib or configuration.pkgs.lib;
-        inherit flake;
-      };
-  in builtins.seq scope builtins.trace motd scope
+  let
+    flake = builtins.getFlake ''$flakePath'';
+    configuration = flake.$flakeAttr;
+    motd = ''Loading $flakeAttr in $flake'';
+    scope = ($argsBase) // {
+      inherit (configuration) config options pkgs;
+      lib = configuration.lib or configuration.pkgs.lib;
+      inherit flake;
+    };
+  in
+    builtins.seq scope
+    builtins.seq scope.config
+    builtins.trace motd
+    scope
 "

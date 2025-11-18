@@ -24,6 +24,23 @@
     _users = {
       max = {};
     };
+    hosts = lib.mapAttrsToList (name: {
+      moduleDirs ? [./hosts/${name}],
+      # FIXME: Configure this via options instead
+      hyprHostConf ? ./hosts/${name}/hyprland.conf,
+      system ? "x86_64-linux",
+      nixOS ? false,
+      hmStandalone ? false,
+      termux ? false, # NOTE: unimplemented
+      usersDir ? (assert !termux; name: "/home/${name}"),
+    }: {
+      inherit system name nixOS hmStandalone termux usersDir hyprHostConf;
+      moduleDirs = assert hmStandalone || nixOS; assert !termux; moduleDirs ++ [./shared];
+    }) _hosts;
+
+    users = lib.mapAttrsToList (name: {}: {
+      inherit name;
+    }) _users;
 
     overlays = final: prev: {
       # https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/al/alejandra/package.nix
@@ -49,6 +66,17 @@
       };
     };
 
+    sys_pkgs = lib.pipe hosts [
+      (builtins.groupBy (host: host.system))
+      (builtins.mapAttrs (system: _: builtins.trace "Importing nixpkgs for ${system}" import inputs.nixpkgs {
+        inherit system;
+        overlays = [overlays];
+        config = {
+          allowUnfree = true;
+        };
+      }))
+    ];
+
     mod_kinds = {
       HOME = "hm";
       SYSTEM = "os";
@@ -56,24 +84,6 @@
 
     lib = inputs.nixpkgs.lib;
     cross_lists = f: lib.foldl (fs: args: builtins.concatMap (f: map f args) fs) [f]; # Copy of the deprecated lib.crossLists
-
-    hosts = lib.mapAttrsToList (name: {
-      moduleDirs ? [./hosts/${name}],
-      # FIXME: Configure this via options instead
-      hyprHostConf ? ./hosts/${name}/hyprland.conf,
-      system ? "x86_64-linux",
-      nixOS ? false,
-      hmStandalone ? false,
-      termux ? false, # NOTE: unimplemented
-      usersDir ? (assert !termux; name: "/home/${name}"),
-    }: {
-      inherit system name nixOS hmStandalone termux usersDir hyprHostConf;
-      moduleDirs = assert hmStandalone || nixOS; assert !termux; moduleDirs ++ [./shared];
-    }) _hosts;
-
-    users = lib.mapAttrsToList (name: {}: {
-      inherit name;
-    }) _users;
 
     configPathToRel = lib.flip lib.pipe [
       (path: assert builtins.isPath path; path)
@@ -106,7 +116,7 @@
     nixos_system = host: let
       auto_imports = find_host_auto_imports host;
     in lib.nixosSystem {
-      system = host.system;
+      pkgs = sys_pkgs.${host.system};
 
       modules = let
         mk_user_sets = mk_val: lib.pipe users [
@@ -119,8 +129,6 @@
           networking.hostName = host.name; # see see config.system.name
           imports = auto_imports;
           system.stateVersion = "25.05";
-          nixpkgs.overlays = [overlays];
-          nixpkgs.config.allowUnfree = true;
           users.users = mk_user_sets (_: {
             isNormalUser = true;
             description = "Max";
@@ -148,31 +156,31 @@
       specialArgs = build_special_args host mod_kinds.SYSTEM;
     };
 
-    standalone_hm_config = host: user: {
-      "${user.name}@${host.name}" = inputs.home-manager.lib.homeManagerConfiguration {
-        pkgs = inputs.nixpkgs.legacyPackages.${host.system};
-        extraSpecialArgs = build_special_args host mod_kinds.HOME;
-        modules = [
-          {
-            imports = find_host_auto_imports host;
-            home.stateVersion = "25.05";
-            nixpkgs.overlays = [overlays];
-            nixpkgs.config.allowUnfree = true;
-            home.username = user.name;
-            home.homeDirectory = host.usersDir user.name;
-          }
-        ];
-      };
+    standalone_hm_config = host: user: inputs.home-manager.lib.homeManagerConfiguration {
+      pkgs = sys_pkgs.${host.system};
+      extraSpecialArgs = build_special_args host mod_kinds.HOME;
+      modules = [
+        {
+          imports = find_host_auto_imports host;
+          home.stateVersion = "25.05";
+          home.username = user.name;
+          home.homeDirectory = host.usersDir user.name;
+        }
+      ];
     };
   in {
     nixosConfigurations = lib.pipe hosts [
       (builtins.filter (host: host.nixOS))
-      (map (host: {${host.name} = nixos_system host;}))
+      (map (host: {
+        ${host.name} = nixos_system host;
+      }))
       lib.attrsets.mergeAttrsList
     ];
 
     homeConfigurations = lib.pipe [hosts users] [
-      (cross_lists standalone_hm_config)
+      (cross_lists (host: user: {
+        "${user.name}@${host.name}" = standalone_hm_config host user;
+      }))
       lib.attrsets.mergeAttrsList
     ];
   };
