@@ -78,29 +78,7 @@ lib.flip lib.pipe [
       };
     };
 
-    services.swaync = {
-      enable = true;
-      package = let
-        base = pkgs.swaynotificationcenter;
-        mainExe = lib.getExe base;
-        mainExeName = builtins.baseNameOf mainExe;
-
-        # Patch swaync to do nothing under KDE
-        # https://discourse.nixos.org/t/tip-how-to-enable-dunst-for-only-select-des-with-nix/65630
-        patched = pkgs.writeShellScriptBin mainExeName ''
-          if [ "$XDG_CURRENT_DESKTOP" = "KDE" ] || [ "$DESKTOP_SESSION" = "plasma" ]; then
-            echo "SwayNC: Not starting because session is KDE Plasma."
-            exit 0
-          fi
-          exec ${mainExe} "$@"
-        '';
-      in
-        pkgs.symlinkJoin {
-          name = "swaync-kde-patch";
-          paths = [patched base]; # NOTE: patched shadows base
-          meta = base.meta;
-        };
-    };
+    services.swaync.enable = true;
 
     # Override home-manager's config file # NOTE: services.swaync.settings will not work.
     xdg.configFile."swaync/config.json" = lib.mkForce {
