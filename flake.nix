@@ -42,11 +42,20 @@
       inherit name;
     }) _users;
 
+    find_auto_imports = typ: basepath: let
+      imports = lib.pipe basepath [
+        lib.filesystem.listFilesRecursive
+        (builtins.filter (path: lib.hasSuffix ".${typ}.nix" (toString path)))
+      ];
+      count = builtins.length imports;
+    in
+      builtins.trace "Importing ${toString count} files of ${configPathToRel basepath}/**.${typ}.nix" imports;
+
     sys_pkgs = lib.pipe hosts [
       (builtins.groupBy (host: host.system))
       (builtins.mapAttrs (system: _: builtins.trace "Importing nixpkgs for ${system}" import inputs.nixpkgs {
         inherit system;
-        overlays = [(import ./overlays.nix)];
+        overlays = map import (find_auto_imports "o" ./overlays);
         config = {
           allowUnfree = true;
         };
@@ -80,14 +89,7 @@
       };
     };
 
-    find_auto_imports = basepath: lib.pipe basepath [
-      lib.filesystem.listFilesRecursive
-      (map toString)
-      (builtins.filter (path: lib.hasSuffix ".i.nix" path))
-      (imports: builtins.trace "Importing ${toString (builtins.length imports)} files from ${configPathToRel basepath}" imports)
-    ];
-
-    find_host_auto_imports = host: builtins.concatMap find_auto_imports host.moduleDirs;
+    find_host_auto_imports = host: builtins.concatMap (find_auto_imports "i") host.moduleDirs;
 
     nixos_system = host: let
       auto_imports = find_host_auto_imports host;
