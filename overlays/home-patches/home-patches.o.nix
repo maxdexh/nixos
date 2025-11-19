@@ -1,10 +1,10 @@
 # Patch programs to use $XDG_DATA_HOME/firefox as the home directory
 # NOTE: This also applies to its subprocesses (e.g. file pickers)
-# TODO: Symlink download directories
 final: prev: let
-  patch_home_wrap_program_run = data_dir: prev.lib.escapeShellArg /* bash */ ''
+  bash_set_home = data_dir: /* bash */ ''
     if [[ -n "$XDG_DATA_HOME" ]]; then
-      export HOME="$XDG_DATA_HOME/"${prev.lib.escapeShellArg data_dir}
+      ${prev.lib.toShellVar "dataDir" data_dir}
+      export HOME="$XDG_DATA_HOME/$dataDir"
     fi
   '';
 
@@ -22,7 +22,7 @@ final: prev: let
       #     HOME DIR PATCH     #
       ##########################
       for f in $out/bin/*; do
-        wrapProgram "$f" --run ${patch_home_wrap_program_run name}
+        wrapProgram "$f" --run ${prev.lib.escapeShellArg (bash_set_home name)}
       done
       ##########################
       #   END HOME DIR PATCH   #
