@@ -19,7 +19,7 @@ final: prev: let
     if [[ -n "\$XDG_DATA_HOME" ]]; then
       export HOME="\$XDG_DATA_HOME/${name}"
     fi
-    exec "$f" "$@"
+    exec "$f" $@
     EOF
       chmod +x "$fOut"
     done
@@ -59,7 +59,7 @@ in {
         echo "SwayNC: Not starting because session is KDE Plasma."
         exit 0
       fi
-      exec ${mainExe} "$@"
+      exec ${mainExe} $@
     '';
   in prev.symlinkJoin {
     inherit (base) name meta;
@@ -68,4 +68,34 @@ in {
 
   lunar-client = patch_home {name = "lunar-client";};
   thunderbird = patch_home {name = "thunderbird";};
+
+  # Patch firefox to use $XDG_DATA_HOME/firefox as the home directory
+  # NOTE: This also applies to its subprocesses (e.g. file pickers) and to the default Downloads directory
+  firefox = prev.firefox.overrideAttrs (attrs: {
+    buildCommand = /* bash */ ''
+      ${attrs.buildCommand}
+
+
+      ######################
+      #                    #
+      #   HOME DIR PATCH   #
+      #                    #
+      ######################
+
+      mv "$out/bin/firefox" "$out/bin/.firefox-real"
+      cat <<EOF >"$out/bin/firefox"
+      if [[ -n "\$XDG_DATA_HOME" ]]; then
+        export HOME="\$XDG_DATA_HOME/firefox"
+      fi
+      exec "$out/bin/.firefox-real" $@
+      EOF
+      chmod +x "$out/bin/firefox"
+
+      ##########################
+      #                        #
+      #   END HOME DIR PATCH   #
+      #                        #
+      ##########################
+    '';
+  });
 }
