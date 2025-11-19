@@ -83,6 +83,7 @@ in ctx.hm.set {
   # nix run github:b3nj5m1n/xdg-ninja
   home.file.".ignore".text = ''
     /.cache
+    /.config
     /.local/share
     /.local/state
     /.lunarclient
@@ -95,19 +96,10 @@ in ctx.hm.set {
     /.pki
     /Games
   '';
-  xdg.configFile.".ignore".text = ''
-    /discord
-    /BraveSoftware
-    /Code
-    /lunarclient
-    /libreoffice
-    /obs-studio
-    /GIMP
-  '';
   home.file."Repos/.ignore".text = ''
     .venv/
     .idea/
-    .vscode
+    .vscode/
   '';
 
   # programs.nix-index = enable-shellint;
