@@ -30,6 +30,7 @@
       hyprHostConf ? ./hosts/${name}/hyprland.conf,
       system ? "x86_64-linux",
       nixOS ? false,
+      # TODO: Remove
       hmStandalone ? false,
       termux ? false, # NOTE: unimplemented
       usersDir ? (assert !termux; name: "/home/${name}"),
