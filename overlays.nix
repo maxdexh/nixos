@@ -4,9 +4,7 @@ final: prev: let
   patch_home = {
     name,
     pkg ? prev.${name},
-  }: prev.runCommand name {
-    buildInputs = [prev.makeWrapper];
-  } ''
+  }: prev.runCommand name {} ''
     mkdir $out
     # Link every top-level folder the package
     ln -s ${pkg}/* $out
