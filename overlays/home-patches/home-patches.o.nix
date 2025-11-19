@@ -4,8 +4,7 @@
 final: prev: let
   patch_home_wrap_program_run = data_dir: prev.lib.escapeShellArg /* bash */ ''
     if [[ -n "$XDG_DATA_HOME" ]]; then
-      local ${prev.lib.toShellVar "dataDir" data_dir}
-      export HOME="$XDG_DATA_HOME/$dataDir"
+      export HOME="$XDG_DATA_HOME/"${prev.lib.escapeShellArg data_dir}
     fi
   '';
 
