@@ -3,6 +3,8 @@
 -- Add any additional keymaps here
 local libs = require("util.libs")
 
+-- TODO: Single key/combo that maps to "+, e.g. <C-=>
+
 libs.misc.dbg_err(function()
    libs.keymap.set_many({
       { "<C-c>", '"+y', desc = "Copy Selection", mode = "v" },
@@ -80,6 +82,7 @@ end)
 
 -- TODO: Optionally open definitions, implementations, references, diagnostics as a persistent split (using vim.lsp or trouble)
 -- NOTE: <C-w>j (or h,k,l) to switch between splits
+-- FIXME: Move to pickers.lua
 local function set_lsp_keybinds(buf)
    -- TODO: Snacks picker as a buffer?
    libs.keymap.set_many({

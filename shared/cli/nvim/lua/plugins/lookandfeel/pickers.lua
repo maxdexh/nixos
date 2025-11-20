@@ -23,7 +23,7 @@ return {
             { "<leader>sg", LazyVim.pick("grep", { root = false }), desc = "Grep (cwd)" },
             { "<leader>sG", LazyVim.pick("grep", { root = true }), desc = "Selection (Root Dir)" },
 
-            -- Provided by lazyvim
+            -- Useful picker binds from lazyvim
             -- <leader>sp (plugin specs)
             -- <leader>ss (lsp symbols)
             -- <leader>sS (lsp workspace symbols)
@@ -37,6 +37,11 @@ return {
             -- <leader>sj (jumps)
             -- <ledaer>sh (help pages)
             -- <leader>sn (noice messages)
+            -- <leader>sq (quickfix list)
+            -- <leader>s/ ('/' search history)
+            -- <leader>gl (git log, capital for cwd)
+            -- <leader>gs (git status, +diff in previews)
+            -- <leader>gS (git stash)
             --
             -- TODO: <leader>sp but global plugin file search
          })

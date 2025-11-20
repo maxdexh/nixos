@@ -14,7 +14,7 @@ return {
             {
                "<leader>ft",
                function()
-                  require("snacks").picker.explorer()
+                  Snacks.picker.explorer()
                end,
                desc = "File tree",
             },
