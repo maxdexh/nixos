@@ -7,11 +7,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.lsp.config("jdtls", {
-   settings = {
-      java = {
-         format = {},
-      },
-   },
+   root_markers = { "pom.xml" },
 })
 
 return {
