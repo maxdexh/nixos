@@ -7,6 +7,7 @@ return {
             bashls = {},
             jsonls = {},
             yamlls = {},
+            lemminx = {},
          },
          -- FIXME: This doesn't belong here
          inlay_hints = {
