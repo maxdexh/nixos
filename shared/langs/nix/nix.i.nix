@@ -33,6 +33,8 @@
     })
     (pkgs.writeShellScriptBin "nix-cfg-repl" (builtins.readFile ./repl.bash))
 
+    # TODO: nix devenv, use flake-compat for large repos
+
     # TODO:
     # https://github.com/thiagokokada/nix-alien
     # https://github.com/nix-community/nix-index
