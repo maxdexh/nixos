@@ -7,6 +7,12 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.lsp.config("jdtls", {
+   settings = {
+      java = {
+         eclipse = { downloadSources = true },
+         maven = { downloadSources = true },
+      },
+   },
    root_markers = { "pom.xml" },
    -- https://www.reddit.com/r/neovim/comments/1jbzqp5/comment/mi4ox6v/
    handlers = {
@@ -26,14 +32,9 @@ vim.lsp.config("jdtls", {
 
 return {
    {
-      "nvim-java/nvim-java",
+      -- NOTE: this has stuff to make downloadSources work, it didn't with nvim-java
+      "mfussenegger/nvim-jdtls",
       lazy = true,
-      event = "BufRead java",
-      opts = {},
-   },
-   {
-      "folke/neoconf.nvim",
-      lazy = false,
-      opts = {},
+      event = { "BufReadPre *.java", "BufNewFile *.java" },
    },
 }
