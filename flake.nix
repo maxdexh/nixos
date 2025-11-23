@@ -96,41 +96,8 @@
       };
     };
 
-    find_host_auto_imports = host: host.modulePaths
-    ++ [
-      ./shared/base.nix
-      ./shared/cli/bash/bash.nix
-      ./shared/cli/distrobox.nix
-      ./shared/cli/fish/fish.nix
-      ./shared/cli/git/git.nix
-      ./shared/cli/kitty/kitty.nix
-      ./shared/cli/misc-cli.nix
-      ./shared/cli/nvim/nvim.nix
-      ./shared/cli/pferd/pferd.nix
-      ./shared/cli/scripts/scripts.nix
-      ./shared/desktop/auth.nix
-      ./shared/desktop/hyprland/hypr.nix
-      ./shared/desktop/kde.nix
-      ./shared/desktop/misc.nix
-      ./shared/desktop/qt.nix
-      ./shared/desktop/shortcuts.nix
-      ./shared/helper.nix
-      ./shared/langs/cpp.nix
-      ./shared/langs/js.nix
-      ./shared/langs/lean.nix
-      ./shared/langs/nix/nix.nix
-      ./shared/langs/python.nix
-      ./shared/langs/rust.nix
-      ./shared/langs/tex.nix
-      ./shared/misc-apps.nix
-      ./shared/nixld.nix
-      ./shared/options/hm-env-vars.nix
-      ./shared/options/host-options.nix
-      ./shared/xdg-vars.nix
-    ];
-
     nixos_system = host: let
-      auto_imports = find_host_auto_imports host;
+      auto_imports = host.modulePaths;
     in lib.nixosSystem {
       pkgs = packagesBySystem.${host.system};
 
@@ -177,7 +144,7 @@
       extraSpecialArgs = build_special_args host mod_kinds.HOME;
       modules = [
         {
-          imports = find_host_auto_imports host;
+          imports = host.modulePaths;
           home.stateVersion = "25.05";
           home.username = user.name;
           home.homeDirectory = host.usersDir user.name;
