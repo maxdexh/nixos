@@ -4,17 +4,6 @@
   ctx,
   ...
 }: ctx.os.set {
-  imports = let
-    hardware = inputs.nixos-hardware.nixosModules;
-  in [
-    hardware.common-pc
-    hardware.common-pc-ssd
-    hardware.common-gpu-nvidia-nonprime
-    hardware.common-cpu-amd
-    hardware.common-cpu-amd-zenpower
-    ./hardware-configuration.nix
-  ];
-
   # NOTE: `hardware.nvidia.enabled` is set based on this
   services.xserver.videoDrivers = ["nvidia"];
 

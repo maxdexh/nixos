@@ -1,14 +1,8 @@
 {
-  inputs,
   pkgs,
   ctx,
   ...
 }: ctx.os.set {
-  imports = [
-    inputs.nixos-hardware.nixosModules.framework-13-7040-amd
-    ./hardware-configuration.nix
-  ];
-
   environment.systemPackages = with pkgs; [
     powertop
     nvme-cli

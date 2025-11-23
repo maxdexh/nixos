@@ -27,7 +27,7 @@
       max = {};
     };
     hosts = lib.mapAttrsToList (name: {
-      moduleDirs ? [./hosts/${name}],
+      modulePaths ? [./hosts/${name}],
       # FIXME: Configure this via options instead
       hyprHostConf ? ./hosts/${name}/hyprland.conf,
       system ? "x86_64-linux",
@@ -38,7 +38,7 @@
       usersDir ? (assert !termux; name: "/home/${name}"),
     }: {
       inherit system name nixOS hmStandalone termux usersDir hyprHostConf;
-      moduleDirs = assert hmStandalone || nixOS; assert !termux; moduleDirs ++ [./shared];
+      modulePaths = assert hmStandalone || nixOS; assert !termux; modulePaths ++ [./shared];
     }) _hosts;
 
     users = lib.mapAttrsToList (name: {}: {
@@ -49,7 +49,7 @@
       imports = lib.pipe basepath [
         lib.filesystem.listFilesRecursive
         (builtins.filter (path: lib.hasSuffix ".${typ}.nix" (toString path)))
-        (x: builtins.trace x x)
+        (map (x: builtins.trace x x))
       ];
       count = builtins.length imports;
     in
@@ -89,12 +89,45 @@
       inherit host inputs configPathToRel;
       pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
       ctx = {
+        kind = mod_kind;
         os.set = lib.optionalAttrs (mod_kind == mod_kinds.SYSTEM);
+        os.list = lib.optionals (mod_kind == mod_kinds.SYSTEM);
         hm.set = lib.optionalAttrs (mod_kind == mod_kinds.HOME);
       };
     };
 
-    find_host_auto_imports = host: builtins.concatMap (find_auto_imports "i") host.moduleDirs;
+    find_host_auto_imports = host: host.modulePaths
+    ++ [
+      ./shared/base.nix
+      ./shared/cli/bash/bash.nix
+      ./shared/cli/distrobox.nix
+      ./shared/cli/fish/fish.nix
+      ./shared/cli/git/git.nix
+      ./shared/cli/kitty/kitty.nix
+      ./shared/cli/misc-cli.nix
+      ./shared/cli/nvim/nvim.nix
+      ./shared/cli/pferd/pferd.nix
+      ./shared/cli/scripts/scripts.nix
+      ./shared/desktop/auth.nix
+      ./shared/desktop/hyprland/hypr.nix
+      ./shared/desktop/kde.nix
+      ./shared/desktop/misc.nix
+      ./shared/desktop/qt.nix
+      ./shared/desktop/shortcuts.nix
+      ./shared/helper.nix
+      ./shared/langs/cpp.nix
+      ./shared/langs/js.nix
+      ./shared/langs/lean.nix
+      ./shared/langs/nix/nix.nix
+      ./shared/langs/python.nix
+      ./shared/langs/rust.nix
+      ./shared/langs/tex.nix
+      ./shared/misc-apps.nix
+      ./shared/nixld.nix
+      ./shared/options/hm-env-vars.nix
+      ./shared/options/host-options.nix
+      ./shared/xdg-vars.nix
+    ];
 
     nixos_system = host: let
       auto_imports = find_host_auto_imports host;
