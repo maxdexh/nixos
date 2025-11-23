@@ -2,7 +2,7 @@
   inputs,
   ctx,
   ...
-}: builtins.trace ctx.kind {
+}: {
   imports =
     [
       ./os.nix

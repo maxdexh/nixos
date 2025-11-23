@@ -45,22 +45,12 @@
       inherit name;
     }) _users;
 
-    find_auto_imports = typ: basepath: let
-      imports = lib.pipe basepath [
-        lib.filesystem.listFilesRecursive
-        (builtins.filter (path: lib.hasSuffix ".${typ}.nix" (toString path)))
-        (map (x: builtins.trace x x))
-      ];
-      count = builtins.length imports;
-    in
-      builtins.trace "Importing ${toString count} files of ${configPathToRel basepath}/**.${typ}.nix" imports;
-
     # Like nixpkgs.legacyPackages, maps systems to packages
     packagesBySystem = lib.pipe hosts [
       (builtins.groupBy (host: host.system))
       (builtins.mapAttrs (system: _: builtins.trace "Importing nixpkgs for ${system}" import inputs.nixpkgs {
         inherit system;
-        overlays = map import (find_auto_imports "o" ./overlays);
+        overlays = import ./overlays;
         config = {
           allowUnfree = true;
         };
