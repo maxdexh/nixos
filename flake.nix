@@ -28,8 +28,6 @@
     };
     hosts = lib.mapAttrsToList (name: {
       modulePaths ? [./hosts/${name}],
-      # FIXME: Configure this via options instead
-      hyprHostConf ? ./hosts/${name}/hyprland.conf,
       system ? "x86_64-linux",
       nixOS ? false,
       # TODO: Remove
@@ -37,7 +35,7 @@
       termux ? false, # NOTE: unimplemented
       usersDir ? (assert !termux; name: "/home/${name}"),
     }: {
-      inherit system name nixOS hmStandalone termux usersDir hyprHostConf;
+      inherit system name nixOS hmStandalone termux usersDir;
       modulePaths = assert hmStandalone || nixOS; assert !termux; modulePaths ++ [./shared];
     }) _hosts;
 
@@ -46,11 +44,12 @@
     }) _users;
 
     # Like nixpkgs.legacyPackages, maps systems to packages
-    packagesBySystem = lib.pipe hosts [
+    packagesBySystem = let
+      overlays = import ./overlays;
+    in lib.pipe hosts [
       (builtins.groupBy (host: host.system))
-      (builtins.mapAttrs (system: _: builtins.trace "Importing nixpkgs for ${system}" import inputs.nixpkgs {
-        inherit system;
-        overlays = import ./overlays;
+      (builtins.mapAttrs (system: _: import inputs.nixpkgs {
+        inherit system overlays;
         config = {
           allowUnfree = true;
         };
@@ -65,25 +64,22 @@
     lib = inputs.nixpkgs.lib;
     cross_lists = f: lib.foldl (fs: args: builtins.concatMap (f: map f args) fs) [f]; # Copy of the deprecated lib.crossLists
 
-    configPathToRel = lib.flip lib.pipe [
-      (path: assert builtins.isPath path; path)
-      toString
-      # Turn /nix/store/<hash>-<basename> into ${source-store}/actual/path/to/<basename>
-      # Could also be done without the builtin by traversing backwards using
-      # `+ "/.."` and using `baseNameOf` to get each path segment.
-      builtins.unsafeDiscardStringContext
-      (abs: assert lib.hasPrefix "${inputs.self}/" abs; lib.removePrefix "${inputs.self}/" abs)
-    ];
-
-    build_special_args = host: mod_kind: {
-      inherit host inputs configPathToRel;
-      pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
-      ctx = {
-        kind = mod_kind;
-        os.set = lib.optionalAttrs (mod_kind == mod_kinds.SYSTEM);
-        os.list = lib.optionals (mod_kind == mod_kinds.SYSTEM);
-        hm.set = lib.optionalAttrs (mod_kind == mod_kinds.HOME);
+    build_special_args = host: kind: let
+      _mk_ctx = name: {
+        ${name} = rec {
+          inherit name;
+          enabled = kind == name;
+          set = lib.optionalAttrs enabled;
+          list = lib.optionals enabled;
+        };
       };
+    in {
+      inherit host inputs;
+      pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
+      ctx =
+        {inherit kind;}
+        // _mk_ctx mod_kinds.SYSTEM
+        // _mk_ctx mod_kinds.HOME;
     };
 
     nixos_system = host: let

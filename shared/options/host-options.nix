@@ -3,13 +3,14 @@
   inputs,
   ctx,
   config,
-  configPathToRel,
   host,
   ...
 }: let
   cfg = config.custom.host;
   iso_layout = cfg.usIsoLayout.enable;
   iso_remap = iso_layout && cfg.usIsoLayout.remaps;
+
+  path_prefix = "${inputs.self}/";
 in {
   options.custom.host = {
     laptop.enable = lib.mkEnableOption "laptop";
@@ -31,9 +32,16 @@ in {
     {
       custom.host.fullDesktop = lib.mkDefault (!host.termux);
 
-      lib.custom.mkNixConfigSymlink = p: if cfg.nixConfigLocation == null
-      then p
-      else config.lib.file.mkOutOfStoreSymlink "${cfg.nixConfigLocation}/${configPathToRel p}";
+      lib.custom.mkNixConfigSymlink = path: assert builtins.isPath path;
+        if cfg.nixConfigLocation == null
+        then path
+        else let
+          # Turn /nix/store/<hash>-<basename> into ${source-store}/actual/path/to/<basename>
+          # Could also be done without the builtin by traversing backwards using
+          # `+ "/.."` and using `baseNameOf` to get each path segment.
+          abs = builtins.unsafeDiscardStringContext (toString path);
+          rel = assert lib.hasPrefix path_prefix abs; lib.removePrefix path_prefix abs;
+        in config.lib.file.mkOutOfStoreSymlink "${cfg.nixConfigLocation}/${rel}";
     }
     (ctx.os.set {
       nix.nixPath = [

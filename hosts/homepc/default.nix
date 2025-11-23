@@ -1,6 +1,7 @@
 {
   inputs,
   ctx,
+  config,
   ...
 }: builtins.trace ctx.kind {
   imports =
@@ -18,4 +19,10 @@
       hardware.common-cpu-amd-zenpower
       ./hardware-configuration.nix
     ]);
+
+  config = ctx.hm.set {
+    wayland.windowManager.hyprland.settings.source = [
+      "${config.lib.custom.mkNixConfigSymlink ./hyprland.conf}"
+    ];
+  };
 }

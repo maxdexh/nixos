@@ -3,7 +3,6 @@
   lib,
   config,
   ctx,
-  host,
   ...
 }:
 lib.flip lib.pipe [
@@ -42,13 +41,8 @@ lib.flip lib.pipe [
       # such that we can pass variables from the nix config
       sourceFirst = false;
 
-      settings = lib.mkMerge [
-        {
-          source = [
-            "${config.lib.custom.mkNixConfigSymlink ./hypr-conf}/*"
-            "${config.lib.custom.mkNixConfigSymlink host.hyprHostConf}"
-          ];
-        }
+      settings.source = [
+        "${config.lib.custom.mkNixConfigSymlink ./hypr-conf}/*"
       ];
     };
 
