@@ -4,6 +4,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     # nix profile install nixpkgs/nixpkgs-unstable#packagename
+    # TODO: Also add overlays to this and make them available
+    # like the overlayed nixpks
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     home-manager = {
@@ -47,12 +49,14 @@
       imports = lib.pipe basepath [
         lib.filesystem.listFilesRecursive
         (builtins.filter (path: lib.hasSuffix ".${typ}.nix" (toString path)))
+        (x: builtins.trace x x)
       ];
       count = builtins.length imports;
     in
       builtins.trace "Importing ${toString count} files of ${configPathToRel basepath}/**.${typ}.nix" imports;
 
-    sys_pkgs = lib.pipe hosts [
+    # Like nixpkgs.legacyPackages, maps systems to packages
+    packagesBySystem = lib.pipe hosts [
       (builtins.groupBy (host: host.system))
       (builtins.mapAttrs (system: _: builtins.trace "Importing nixpkgs for ${system}" import inputs.nixpkgs {
         inherit system;
@@ -95,7 +99,7 @@
     nixos_system = host: let
       auto_imports = find_host_auto_imports host;
     in lib.nixosSystem {
-      pkgs = sys_pkgs.${host.system};
+      pkgs = packagesBySystem.${host.system};
 
       modules = let
         mk_user_sets = mk_val: lib.pipe users [
@@ -136,7 +140,7 @@
     };
 
     standalone_hm_config = host: user: inputs.home-manager.lib.homeManagerConfiguration {
-      pkgs = sys_pkgs.${host.system};
+      pkgs = packagesBySystem.${host.system};
       extraSpecialArgs = build_special_args host mod_kinds.HOME;
       modules = [
         {
@@ -162,5 +166,13 @@
       }))
       lib.attrsets.mergeAttrsList
     ];
+
+    # This allows using the nix config location like nixpkgs
+    # in commands like `nix shell nixpkgs#package`.
+    # The packages have the overlays applied to them.
+    #
+    # Example: `nix profile install /etc/nixos#mathematica`
+    # installs the mathematica overlay from the config
+    packages = packagesBySystem;
   };
 }
