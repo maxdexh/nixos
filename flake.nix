@@ -15,38 +15,7 @@
   };
 
   outputs = inputs: let
-    _hosts = {
-      fw13 = {
-        nixOS = true;
-      };
-      homepc = {
-        nixOS = true;
-      };
-    };
-    _users = {
-      max = {
-        trusted = true;
-      };
-    };
-
-    hosts = lib.mapAttrsToList (name: {
-      modulePaths ? [./hosts/${name}],
-      system ? "x86_64-linux",
-      nixOS ? false,
-      usersDir ? (user: "/home/${user.name}"),
-    }: {
-      inherit system name nixOS usersDir;
-      modulePaths = modulePaths ++ [./shared];
-    }) _hosts;
-
-    users = lib.mapAttrsToList (name: {
-      trusted ? false,
-      modulePaths ? [],
-    }: {
-      inherit name trusted;
-      modulePaths = modulePaths ++ [./shared];
-    }) _users;
-
+    hosts = import ./hosts inputs;
     overlays = import ./overlays;
     # Like nixpkgs.legacyPackages, maps systems to packages
     packagesBySystem = lib.pipe hosts [
@@ -65,55 +34,50 @@
     };
 
     lib = inputs.nixpkgs.lib;
-    cross_lists = f: lib.foldl (fs: args: builtins.concatMap (f: map f args) fs) [f]; # Copy of the deprecated lib.crossLists
 
-    build_special_args = host: kind: let
-      _mk_ctx = name: {
-        ${name} = rec {
-          inherit name;
-          enabled = kind == name;
-          set = lib.optionalAttrs enabled;
-          list = lib.optionals enabled;
-        };
-      };
-    in {
+    build_special_args = host: kind: {
       inherit host inputs;
       pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
-      ctx =
+      ctx = let
+        mk = name: {
+          ${name} = rec {
+            inherit name;
+            enabled = kind == name;
+            set = lib.optionalAttrs enabled;
+            list = lib.optionals enabled;
+          };
+        };
+      in
         {inherit kind;}
-        // _mk_ctx mod_kinds.SYSTEM
-        // _mk_ctx mod_kinds.HOME;
+        // mk mod_kinds.SYSTEM
+        // mk mod_kinds.HOME;
     };
 
     nixos_system = host: lib.nixosSystem {
       pkgs = packagesBySystem.${host.system};
 
-      modules = let
-        # FIXME: WTF
-        mk_user_sets = mk_val: lib.pipe users [
-          (builtins.filter (user: true))
-          (map (user: {${user.name} = mk_val user;}))
-          lib.attrsets.mergeAttrsList
-        ];
-      in [
+      modules = [
         {
-          networking.hostName = host.name; # see see config.system.name
+          networking.hostName = host.name; # see config.system.name
           imports = host.modulePaths;
           system.stateVersion = "25.05";
-          users.users = mk_user_sets (_: {
-            isNormalUser = true;
-            description = "Max";
-            extraGroups = ["networkmanager" "wheel"];
-          });
-          nix.settings.trusted-users = builtins.attrNames (mk_user_sets (_: null));
+          users.users =
+            builtins.mapAttrs (_: user: {
+              isNormalUser = true;
+              description = user.name;
+              extraGroups = ["networkmanager" "wheel"];
+            })
+            host.users;
+          nix.settings.trusted-users = builtins.attrNames host.users;
         }
         {
           # Home Manager user config
-          home-manager.users = mk_user_sets (_: {
-            imports =
-              host.modulePaths;
-            home.stateVersion = "25.05";
-          });
+          home-manager.users =
+            builtins.mapAttrs (_: user: {
+              imports = user.modulePaths;
+              home.stateVersion = "25.05";
+            })
+            host.users;
 
           home-manager = {
             useGlobalPkgs = true; # Also inherits nixpkgs configs
@@ -127,15 +91,15 @@
       specialArgs = build_special_args host mod_kinds.SYSTEM;
     };
 
-    standalone_hm_config = host: user: inputs.home-manager.lib.homeManagerConfiguration {
-      pkgs = packagesBySystem.${host.system};
-      extraSpecialArgs = build_special_args host mod_kinds.HOME;
+    standalone_hm_config = user: inputs.home-manager.lib.homeManagerConfiguration {
+      pkgs = packagesBySystem.${user.host.system};
+      extraSpecialArgs = build_special_args user.host mod_kinds.HOME;
       modules = [
         {
-          imports = host.modulePaths;
+          imports = user.modulePaths;
           home.stateVersion = "25.05";
           home.username = user.name;
-          home.homeDirectory = host.usersDir user;
+          home.homeDirectory = user.homeDirectory;
         }
       ];
     };
@@ -148,11 +112,15 @@
       lib.attrsets.mergeAttrsList
     ];
 
-    homeConfigurations = lib.pipe [hosts users] [
-      (cross_lists (host: user: {
-        "${user.name}@${host.name}" = standalone_hm_config host user;
-      }))
-      lib.attrsets.mergeAttrsList
+    homeConfigurations = lib.pipe hosts [
+      (builtins.concatMap (host: builtins.attrValues host.users))
+      (map (
+        user: {
+          name = user.homeConfigurationName;
+          value = standalone_hm_config user;
+        }
+      ))
+      builtins.listToAttrs
     ];
 
     # This allows using the nix config location like nixpkgs

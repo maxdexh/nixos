@@ -51,6 +51,7 @@
       hm = "home-manager";
       hmr = "nix-cfg-repl hm";
       hms = "home-manager switch";
+      hm-option = "nixos-option home-manager.users.${config.home.username}.";
     }
     (lib.mkIf host.nixOS {
       os = "nixos-rebuild";
