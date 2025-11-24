@@ -33,13 +33,10 @@
       modulePaths ? [./hosts/${name}],
       system ? "x86_64-linux",
       nixOS ? false,
-      # TODO: Remove
-      hmStandalone ? false,
-      usersDir ? (user: "/home/${name.name}"),
+      usersDir ? (user: "/home/${user.name}"),
     }: {
-      inherit system name nixOS hmStandalone usersDir;
-      termux = false; # FIXME: Replace with cliOnly option
-      modulePaths = assert hmStandalone || nixOS; modulePaths ++ [./shared];
+      inherit system name nixOS usersDir;
+      modulePaths = modulePaths ++ [./shared];
     }) _hosts;
 
     users = lib.mapAttrsToList (name: {
@@ -88,9 +85,7 @@
         // _mk_ctx mod_kinds.HOME;
     };
 
-    nixos_system = host: let
-      auto_imports = host.modulePaths;
-    in lib.nixosSystem {
+    nixos_system = host: lib.nixosSystem {
       pkgs = packagesBySystem.${host.system};
 
       modules = let
@@ -100,10 +95,10 @@
           (map (user: {${user.name} = mk_val user;}))
           lib.attrsets.mergeAttrsList
         ];
-
-        base = {
+      in [
+        {
           networking.hostName = host.name; # see see config.system.name
-          imports = auto_imports;
+          imports = host.modulePaths;
           system.stateVersion = "25.05";
           users.users = mk_user_sets (_: {
             isNormalUser = true;
@@ -111,12 +106,12 @@
             extraGroups = ["networkmanager" "wheel"];
           });
           nix.settings.trusted-users = builtins.attrNames (mk_user_sets (_: null));
-        };
-
-        hmModule = {
+        }
+        {
           # Home Manager user config
           home-manager.users = mk_user_sets (_: {
-            imports = auto_imports;
+            imports =
+              host.modulePaths;
             home.stateVersion = "25.05";
           });
 
@@ -125,9 +120,9 @@
             verbose = true;
             extraSpecialArgs = build_special_args host mod_kinds.HOME;
           };
-        };
-      in
-        [base] ++ lib.optionals (!host.hmStandalone) [inputs.home-manager.nixosModules.home-manager hmModule];
+        }
+        inputs.home-manager.nixosModules.home-manager
+      ];
 
       specialArgs = build_special_args host mod_kinds.SYSTEM;
     };

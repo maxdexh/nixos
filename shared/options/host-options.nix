@@ -3,7 +3,6 @@
   inputs,
   ctx,
   config,
-  host,
   ...
 }: let
   cfg = config.custom.host;
@@ -14,6 +13,7 @@
 in {
   options.custom.host = {
     laptop.enable = lib.mkEnableOption "laptop";
+    cliOnly.enable = lib.mkEnableOption "cli config only";
 
     usIsoLayout = {
       enable = lib.mkEnableOption "US ISO Keyboard Layout";
@@ -30,7 +30,7 @@ in {
 
   config = lib.mkMerge [
     {
-      custom.host.fullDesktop = lib.mkDefault (!host.termux);
+      custom.host.fullDesktop = lib.mkDefault (!cfg.cliOnly.enable);
 
       lib.custom.mkNixConfigSymlink = path: assert builtins.isPath path;
         if cfg.nixConfigLocation == null
