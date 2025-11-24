@@ -41,23 +41,30 @@ vim.lsp.config("nil_ls", {
       end
    end,
 })
-vim.lsp.enable("nil_ls")
 
 local config_name = vim.fn.expand("$NVIM_NIX_HOST_NAME")
 local is_nixos = vim.fn.expand("$NVIM_NIX_IS_NIXOS")
+local username = vim.fn.expand("$USER")
+local flake_expr = "(builtins.getFlake (builtins.toString ./.))"
 
 local nix_options = {
    ["home-manager"] = {
-      expr = (
-         "(builtins.getFlake (builtins.toString ./.)).nixosConfigurations."
-         .. config_name
-         .. ".options.home-manager.users.type.getSubOptions []"
+      expr = string.format( --
+         '%s.homeConfigurations."%s@%s".options',
+         flake_expr,
+         username,
+         config_name
       ),
    },
 }
-if is_nixos == "true" then
-   nix_options.nixos =
-      { expr = "(builtins.getFlake (builtins.toString ./.)).nixosConfigurations." .. config_name .. ".options" }
+if is_nixos == "1" then
+   nix_options.nixos = {
+      expr = string.format( --
+         '%s.nixosConfigurations."%s".options',
+         flake_expr,
+         config_name
+      ),
+   }
 end
 
 -- NOTE: Installed via nix
@@ -66,12 +73,11 @@ vim.lsp.config("nixd", {
    filetypes = { "nix" },
    settings = {
       nixd = {
-         formatting = { command = {} },
+         formatting = { command = { "alejandra" } },
          options = nix_options,
       },
    },
 })
-vim.lsp.enable("nixd")
 
 return {
    {
@@ -87,14 +93,6 @@ return {
       "mason.nvim",
       opts = {
          ensure_installed = { "nil" },
-      },
-   },
-   {
-      "stevearc/conform.nvim",
-      opts = {
-         formatters_by_ft = {
-            nix = { "alejandra" },
-         },
       },
    },
    {

@@ -4,7 +4,8 @@
   host,
   ctx,
   ...
-}: ctx.hm.set {
+}:
+ctx.hm.set {
   home.packages = with pkgs; [
     tree-sitter
   ];
@@ -16,7 +17,6 @@
     VISUAL = "nvim";
     EDITOR = "nvim";
     MANPAGER = "nvim +Man!";
-    NVIM_NIX_CONFIG_ROOT = config.custom.host.nixConfigLocation;
     NVIM_NIX_HOST_NAME = host.name;
     NVIM_NIX_IS_NIXOS = toString (host.nixOS);
   };

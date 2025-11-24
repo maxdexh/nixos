@@ -24,29 +24,35 @@
       };
     };
     _users = {
-      max = {};
+      max = {
+        trusted = true;
+      };
     };
+
     hosts = lib.mapAttrsToList (name: {
       modulePaths ? [./hosts/${name}],
       system ? "x86_64-linux",
       nixOS ? false,
       # TODO: Remove
       hmStandalone ? false,
-      termux ? false, # NOTE: unimplemented
-      usersDir ? (assert !termux; name: "/home/${name}"),
+      usersDir ? (user: "/home/${name.name}"),
     }: {
-      inherit system name nixOS hmStandalone termux usersDir;
-      modulePaths = assert hmStandalone || nixOS; assert !termux; modulePaths ++ [./shared];
+      inherit system name nixOS hmStandalone usersDir;
+      termux = false; # FIXME: Replace with cliOnly option
+      modulePaths = assert hmStandalone || nixOS; modulePaths ++ [./shared];
     }) _hosts;
 
-    users = lib.mapAttrsToList (name: {}: {
-      inherit name;
+    users = lib.mapAttrsToList (name: {
+      trusted ? false,
+      modulePaths ? [],
+    }: {
+      inherit name trusted;
+      modulePaths = modulePaths ++ [./shared];
     }) _users;
 
+    overlays = import ./overlays;
     # Like nixpkgs.legacyPackages, maps systems to packages
-    packagesBySystem = let
-      overlays = import ./overlays;
-    in lib.pipe hosts [
+    packagesBySystem = lib.pipe hosts [
       (builtins.groupBy (host: host.system))
       (builtins.mapAttrs (system: _: import inputs.nixpkgs {
         inherit system overlays;
@@ -88,6 +94,7 @@
       pkgs = packagesBySystem.${host.system};
 
       modules = let
+        # FIXME: WTF
         mk_user_sets = mk_val: lib.pipe users [
           (builtins.filter (user: true))
           (map (user: {${user.name} = mk_val user;}))
@@ -133,7 +140,7 @@
           imports = host.modulePaths;
           home.stateVersion = "25.05";
           home.username = user.name;
-          home.homeDirectory = host.usersDir user.name;
+          home.homeDirectory = host.usersDir user;
         }
       ];
     };
