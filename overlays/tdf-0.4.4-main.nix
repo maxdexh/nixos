@@ -9,7 +9,7 @@ final: prev: {
       owner = "itsjunetime";
       repo = "tdf";
       fetchSubmodules = true;
-      rev = "38b307d628609f1b8a1310ae5f0d7da6e5ed557d";
+      rev = "670251fdffd41b6ffa6290f28cebd9259c93e180";
       hash = "sha256-YqUF3qQ+kmqiO1TxrQYxdjBivVl4d3YSkjKJ1fOvheg=";
     };
 
