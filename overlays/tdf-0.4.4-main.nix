@@ -1,13 +1,15 @@
+# Uses a newer version of tdf. package spec copied from nixpkgs.
+# TODO: Remove when 0.4.4 releases
 final: prev: {
   tdf = prev.rustPlatform.buildRustPackage (finalAttrs: {
     pname = "tdf";
     version = "0.4.3";
 
     src = prev.fetchFromGitHub {
-      owner = "maxdexh";
+      owner = "itsjunetime";
       repo = "tdf";
       fetchSubmodules = true;
-      rev = "5fddedaebb56a120bf373c2d2709a7c55dcdf91d";
+      rev = "38b307d628609f1b8a1310ae5f0d7da6e5ed557d";
       hash = "sha256-YqUF3qQ+kmqiO1TxrQYxdjBivVl4d3YSkjKJ1fOvheg=";
     };
 
@@ -37,5 +39,9 @@ final: prev: {
       mainProgram = "tdf";
       platforms = prev.lib.platforms.unix;
     };
+
+    postInstall = ''
+      rm "$out/bin/for_profiling"
+    '';
   });
 }
