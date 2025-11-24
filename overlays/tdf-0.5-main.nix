@@ -1,5 +1,5 @@
 # Uses a newer version of tdf. package spec copied from nixpkgs.
-# TODO: Remove when 0.4.4 releases
+# TODO: Remove when 0.5 releases
 final: prev: {
   tdf = prev.rustPlatform.buildRustPackage (finalAttrs: {
     pname = "tdf";
@@ -11,7 +11,7 @@ final: prev: {
       repo = "tdf";
       fetchSubmodules = true;
       rev = "670251fdffd41b6ffa6290f28cebd9259c93e180";
-      hash = "sha256-YqUF3qQ+kmqiO1TxrQYxdjBivVl4d3YSkjKJ1fOvheg=";
+      hash = "sha256-YkoM0ZtREzGKgALELYtdSuy2On3/pXkrCNZ2MQm9mSY=";
     };
 
     cargoHash = "sha256-tfKabeXE5Q1S2yiEhRkZhi/KKJf0NOVC0lFiKcBMbNQ=";
@@ -41,6 +41,7 @@ final: prev: {
       platforms = prev.lib.platforms.unix;
     };
 
+    # https://github.com/NixOS/nixpkgs/pull/464661#pullrequestreview-3502067889
     postInstall = ''
       rm "$out/bin/for_profiling"
     '';
