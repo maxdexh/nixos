@@ -5,9 +5,12 @@ final: prev: {
     pname = "alejandra";
     version = "4.0.0";
 
-    # FIXME: Precompile into github release, and use flakes
-    src = builtins.fetchGit {
-      url = "https://github.com/maxdexh/alejandra";
+    src = prev.fetchFromGitHub rec {
+      name = "alejandra-fork-${rev}"; # https://discourse.nixos.org/t/fetchfromgithub-doesnt-fetch-new-files-when-i-update-the-rev/15312/5
+      owner = "maxdexh";
+      repo = "alejandra";
+      fetchSubmodules = true;
+      hash = "sha256-2gdS7j+FTpxKETUiANeOQMfSmabsy3cS9+4hqC5IyMI=";
       rev = "dcdc1e10450694d76fc83cb00ca4c9ba9cd0ba5d";
     };
 

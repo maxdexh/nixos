@@ -5,7 +5,8 @@ final: prev: {
     pname = "tdf";
     version = "0.4.3";
 
-    src = prev.fetchFromGitHub {
+    src = prev.fetchFromGitHub rec {
+      name = "tdf-${rev}"; # https://discourse.nixos.org/t/fetchfromgithub-doesnt-fetch-new-files-when-i-update-the-rev/15312/5
       owner = "itsjunetime";
       repo = "tdf";
       fetchSubmodules = true;
