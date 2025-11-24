@@ -1,6 +1,7 @@
 map import [
-  ./alejandra-fork.o.nix
-  ./swaync-no-kde.o.nix
+  ./alejandra-fork.nix
+  ./swaync-no-kde.nix
+  ./tdf-clicker-support.nix
   ./home-patches
   ./mathematica
 ]
