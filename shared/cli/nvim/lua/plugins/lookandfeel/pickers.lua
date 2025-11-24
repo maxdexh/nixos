@@ -16,8 +16,8 @@ return {
             },
             { "<leader>fP", LazyVim.pick("pickers"), desc = "Find Pickers" },
             -- Swapped root and non-root from lazyvim
-            { "<leader>ff", LazyVim.pick("smart", { root = false }), desc = "Find Files (cwd)" },
-            { "<leader>fF", LazyVim.pick("smart", { root = true }), desc = "Find Files (Root Dir)" },
+            { "<leader>ff", LazyVim.pick("files", { root = false }), desc = "Find Files (cwd)" },
+            { "<leader>fF", LazyVim.pick("files", { root = true }), desc = "Find Files (Root Dir)" },
             { "<leader>sw", LazyVim.pick("grep_visual", { root = false }), mode = "x", desc = "Selection (cwd)" },
             { "<leader>sW", LazyVim.pick("grep_visual", { root = true }), mode = "x", desc = "Selection (Root Dir)" },
             { "<leader>sg", LazyVim.pick("grep", { root = false }), desc = "Grep (cwd)" },
