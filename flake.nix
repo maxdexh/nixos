@@ -123,12 +123,9 @@
       builtins.listToAttrs
     ];
 
-    # This allows using the nix config location like nixpkgs
-    # in commands like `nix shell nixpkgs#package`.
-    # The packages have the overlays applied to them.
-    #
-    # Example: `nix profile install /etc/nixos#mathematica`
-    # installs the mathematica overlay from the config
+    # This allows using the nix config location as a replacement for nixpkgs,
+    # but with overlays applied.
+    # Also see ./shared/base.nix
     packages = packagesBySystem;
   };
 }

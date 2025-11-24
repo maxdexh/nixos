@@ -34,7 +34,6 @@
       discord
       zathura
 
-      lunar-client
       prismlauncher
     ]);
   })
