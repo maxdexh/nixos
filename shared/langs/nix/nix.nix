@@ -43,7 +43,7 @@
   ];
 
   custom.sessionVars = {
-    NIX_CONFIG_LOCATION = config.custom.host.nixConfigLocation;
+    NIXOS_CONFIG = config.custom.host.nixConfigLocation;
   };
 
   programs.fish.shellAbbrs = lib.mkMerge [

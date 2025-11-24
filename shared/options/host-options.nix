@@ -46,8 +46,7 @@ in {
     (ctx.os.set {
       nix.nixPath = [
         "nixpkgs=${inputs.nixpkgs}"
-        # FIXME: What???
-        "nixos-config=${config.custom.host.nixConfigLocation}/configuration.nix"
+        "nixos-config=${config.custom.host.nixConfigLocation}"
       ];
     })
     (ctx.hm.set {

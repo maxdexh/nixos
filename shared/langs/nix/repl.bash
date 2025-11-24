@@ -67,7 +67,7 @@ if [[ -n $flake ]]; then
 fi
 
 if [[ -z $flake ]]; then
-	flake="$NIX_CONFIG_LOCATION"
+	flake="$NIXOS_CONFIG"
 	if [[ -z $flake ]]; then
 		echo "$0: Failed to determine flake location"
 		exit 1

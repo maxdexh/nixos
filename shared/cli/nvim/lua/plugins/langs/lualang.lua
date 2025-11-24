@@ -5,7 +5,7 @@ vim.fn.setenv("LAZY_LIBRARY_PATH_PREFIX", vim.fn.stdpath("data") .. "/lazy/")
 local config_locations = {
    vim.fn.expand("~/.local/share/nvim"),
    vim.fn.expand("~/.config/nvim"),
-   vim.fn.expand("$NIX_CONFIG_LOCATION"),
+   vim.fn.expand("$NIXOS_CONFIG"),
 }
 ---@param path string
 ---@return boolean
