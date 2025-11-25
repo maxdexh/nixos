@@ -4,12 +4,13 @@
   ctx,
   lib,
   inputs,
+  myconf,
   ...
 }: lib.mkMerge [
   (ctx.hm.set {
     home.packages = [pkgs.home-manager];
     xdg.configFile."home-manager".source =
-      config.lib.file.mkOutOfStoreSymlink config.custom.host.nixConfigLocation;
+      config.lib.file.mkOutOfStoreSymlink myconf.host.nixConfigLocation;
     # Replace nixpkgs with this flake in commands like `nix profile install nixpkgs#package`
     nix.registry = {
       nixpkgs.flake = assert inputs.self?packages; inputs.self;

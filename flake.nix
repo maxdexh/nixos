@@ -60,6 +60,7 @@
     build_special_args = host: kind: {
       inherit host inputs;
       pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
+      inmyconf = cfg: {custom = cfg;}; # See ./shared/myconf/default.nix
       ctx = let
         mk = name: {
           ${name} = rec {

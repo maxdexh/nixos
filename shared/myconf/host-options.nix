@@ -3,15 +3,17 @@
   inputs,
   ctx,
   config,
+  inmyconf,
+  myconf,
   ...
 }: let
-  cfg = config.custom.host;
+  cfg = myconf.host;
   iso_layout = cfg.usIsoLayout.enable;
   iso_remap = iso_layout && cfg.usIsoLayout.remaps;
 
   path_prefix = "${inputs.self}/";
 in {
-  options.custom.host = {
+  options = inmyconf {
     laptop.enable = lib.mkEnableOption "laptop";
     cliOnly.enable = lib.mkEnableOption "cli config only";
 
@@ -29,10 +31,10 @@ in {
   };
 
   config = lib.mkMerge [
-    {
-      custom.host.fullDesktop = lib.mkDefault (!cfg.cliOnly.enable);
+    (inmyconf {
+      host.fullDesktop = lib.mkDefault (!cfg.cliOnly.enable);
 
-      lib.custom.mkNixConfigSymlink = path: assert builtins.isPath path;
+      lib.mkNixConfigSymlink = path: assert builtins.isPath path;
         if cfg.nixConfigLocation == null
         then path
         else let
@@ -42,7 +44,7 @@ in {
           abs = builtins.unsafeDiscardStringContext (toString path);
           rel = assert lib.hasPrefix path_prefix abs; lib.removePrefix path_prefix abs;
         in config.lib.file.mkOutOfStoreSymlink "${cfg.nixConfigLocation}/${rel}";
-    }
+    })
     (ctx.os.set {
       nix.nixPath = [
         "nixpkgs=${inputs.nixpkgs}"

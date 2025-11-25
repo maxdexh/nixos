@@ -1,6 +1,6 @@
 {
   imports = [
-    ./options
+    ./myconf
     ./base.nix
     ./helper.nix
     ./misc-apps.nix
