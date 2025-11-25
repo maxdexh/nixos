@@ -6,8 +6,8 @@
     ./git/git.nix
     ./kitty/kitty.nix
     ./misc-cli.nix
-    ./nvim/nvim.nix
-    ./pferd/pferd.nix
-    ./scripts/scripts.nix
+    ./nvim/nixos.nix
+    ./pferd
+    ./scripts
   ];
 }

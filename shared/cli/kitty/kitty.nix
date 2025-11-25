@@ -1,13 +1,13 @@
 {
   pkgs,
   lib,
-  config,
+  custom,
   ctx,
   ...
 }:
 lib.flip lib.pipe [
   lib.mkMerge
-  (lib.mkIf config.custom.host.fullDesktop)
+  (lib.mkIf custom.host.fullDesktop)
 ] [
   (ctx.os.set {
     environment.systemPackages = with pkgs; [kitty];
@@ -17,7 +17,7 @@ lib.flip lib.pipe [
     programs.kitty = {
       enable = true;
       enableGitIntegration = true;
-      extraConfig = "include ${config.lib.custom.mkNixConfigSymlink ./kitty.conf}";
+      extraConfig = "include ${custom.lib.mkNixConfigSymlink ./kitty.conf}";
     };
 
     home.packages = with pkgs; [

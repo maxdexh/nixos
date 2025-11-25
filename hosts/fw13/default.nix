@@ -1,7 +1,7 @@
 {
   inputs,
   ctx,
-  config,
+  custom,
   ...
 }: {
   imports =
@@ -16,7 +16,7 @@
 
   config = ctx.hm.set {
     wayland.windowManager.hyprland.settings.source = [
-      "${config.lib.custom.mkNixConfigSymlink ./hyprland.conf}"
+      "${custom.lib.mkNixConfigSymlink ./hyprland.conf}"
     ];
   };
 }

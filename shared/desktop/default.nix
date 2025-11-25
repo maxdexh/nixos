@@ -1,7 +1,7 @@
 {
   imports = [
+    ./hypr
     ./auth.nix
-    ./hyprland/hypr.nix
     ./kde.nix
     ./misc.nix
     ./qt.nix

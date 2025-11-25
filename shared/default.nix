@@ -1,8 +1,8 @@
 {
   imports = [
-    ./myconf
+    ./custom
     ./base.nix
-    ./helper.nix
+    ./build-helpers.nix
     ./misc-apps.nix
     ./nixld.nix
     ./xdg-vars.nix

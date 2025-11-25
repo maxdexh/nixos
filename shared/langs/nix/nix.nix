@@ -2,11 +2,13 @@
   pkgs,
   pkgs-unstable,
   config,
+  custom,
   lib,
   host,
   ctx,
   ...
 }: ctx.hm.set {
+  # TODO: Consider unifying this with the other nix utils?
   home.packages = with pkgs; [
     alejandra
 
@@ -19,7 +21,7 @@
     nix-tree
     pkgs-unstable.dix # unavailable in nixpkgs
     statix
-    (config.lib.custom.writeFishApplication {
+    (custom.lib.writeFishApplication {
       name = "nixos-rebuild-diff";
       runtimeInputs = [pkgs-unstable.dix];
       text = /* fish */ ''
@@ -43,7 +45,7 @@
   ];
 
   custom.sessionVars = {
-    NIXOS_CONFIG = config.custom.host.nixConfigLocation;
+    NIXOS_CONFIG = custom.host.nixConfigLocation;
   };
 
   programs.fish.shellAbbrs = lib.mkMerge [

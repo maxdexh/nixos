@@ -1,13 +1,13 @@
 {
   pkgs,
   lib,
-  config,
+  custom,
   ctx,
   ...
 }:
 lib.flip lib.pipe [
   lib.mkMerge
-  (lib.mkIf config.custom.host.fullDesktop)
+  (lib.mkIf custom.host.fullDesktop)
 ] [
   (ctx.os.set {
     programs.hyprland = {
@@ -42,13 +42,13 @@ lib.flip lib.pipe [
       sourceFirst = false;
 
       settings.source = [
-        "${config.lib.custom.mkNixConfigSymlink ./hypr-conf}/*"
+        "${custom.lib.mkNixConfigSymlink ./hypr-conf}/*"
       ];
     };
 
     programs.waybar = {
       enable = true;
-      style = config.lib.custom.mkNixConfigSymlink ./waybar.css;
+      style = custom.lib.mkNixConfigSymlink ./waybar.css;
       settings.mainBar = {
         modules-left = ["hyprland/workspaces"];
 
@@ -64,11 +64,11 @@ lib.flip lib.pipe [
             "clock"
           ];
         in
-          if config.custom.host.laptop.enable
+          if custom.host.laptop.enable
           then modules
           else lib.lists.remove "group/energy" modules;
 
-        include = [(toString (config.lib.custom.mkNixConfigSymlink ./waybar.mainbar.jsonc))];
+        include = [(toString (custom.lib.mkNixConfigSymlink ./waybar.mainbar.jsonc))];
       };
     };
 
@@ -76,14 +76,14 @@ lib.flip lib.pipe [
 
     # Override home-manager's config file # NOTE: services.swaync.settings will not work.
     xdg.configFile."swaync/config.json" = lib.mkForce {
-      source = config.lib.custom.mkNixConfigSymlink ./swaync.json;
+      source = custom.lib.mkNixConfigSymlink ./swaync.json;
     };
 
     # TODO: Configure this
     # https://github.com/ErikReider/SwayNotificationCenter/discussions/183
     # TODO: Make this work together with hm's css by importing (like with hyprland.conf)
     xdg.configFile."swaync/style.css" = {
-      source = config.lib.custom.mkNixConfigSymlink ./swaync.css;
+      source = custom.lib.mkNixConfigSymlink ./swaync.css;
     };
   })
 ]

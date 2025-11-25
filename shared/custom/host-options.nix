@@ -3,17 +3,18 @@
   inputs,
   ctx,
   config,
-  inmyconf,
-  myconf,
+  custom,
   ...
 }: let
-  cfg = myconf.host;
   iso_layout = cfg.usIsoLayout.enable;
   iso_remap = iso_layout && cfg.usIsoLayout.remaps;
 
   path_prefix = "${inputs.self}/";
+
+  cfg = custom.host;
 in {
-  options = inmyconf {
+  # FIXME: Move the host special arg into here so
+  options.custom.host = {
     laptop.enable = lib.mkEnableOption "laptop";
     cliOnly.enable = lib.mkEnableOption "cli config only";
 
@@ -31,7 +32,7 @@ in {
   };
 
   config = lib.mkMerge [
-    (inmyconf {
+    (lib.setAttrByPath ["custom"] {
       host.fullDesktop = lib.mkDefault (!cfg.cliOnly.enable);
 
       lib.mkNixConfigSymlink = path: assert builtins.isPath path;
@@ -48,7 +49,7 @@ in {
     (ctx.os.set {
       nix.nixPath = [
         "nixpkgs=${inputs.nixpkgs}"
-        "nixos-config=${config.custom.host.nixConfigLocation}"
+        "nixos-config=${custom.host.nixConfigLocation}"
       ];
     })
     (ctx.hm.set {

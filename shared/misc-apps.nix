@@ -1,19 +1,19 @@
 {
   pkgs,
   lib,
-  config,
+  custom,
   ctx,
   ...
 }: lib.mkMerge [
   (ctx.os.set {
     environment.systemPackages = with pkgs; [openvpn gnumake];
 
-    programs.steam.enable = config.custom.host.fullDesktop;
+    programs.steam.enable = custom.host.fullDesktop;
   })
 
   (ctx.hm.set {
     # Misc applications
-    home.packages = lib.mkIf config.custom.host.fullDesktop (with pkgs; [
+    home.packages = lib.mkIf custom.host.fullDesktop (with pkgs; [
       vlc
       losslesscut-bin
 

@@ -1,12 +1,12 @@
 {
   pkgs,
-  config,
+  custom,
   lib,
   ctx,
   ...
 }: lib.flip lib.pipe [
   ctx.hm.set
-  (lib.mkIf config.custom.host.fullDesktop)
+  (lib.mkIf custom.host.fullDesktop)
 ] {
   home.packages = with pkgs; [
     # These packages are required for the kcmshell desktop entries to work in hyprland

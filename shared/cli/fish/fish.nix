@@ -3,6 +3,7 @@
   lib,
   pkgs,
   ctx,
+  custom,
   ...
 }: ctx.hm.set {
   programs.fish = {
@@ -76,5 +77,5 @@
   };
 
   xdg.configFile."fish/themes/fish-old.theme".source =
-    config.lib.custom.mkNixConfigSymlink ./fish-old.theme;
+    custom.lib.mkNixConfigSymlink ./fish-old.theme;
 }

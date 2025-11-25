@@ -1,6 +1,6 @@
 {
   lib,
-  config,
+  custom,
   ctx,
   ...
 }: ctx.hm.set {
@@ -16,5 +16,5 @@
   };
 
   # Use systemd for home vars. can be changed for hosts without systemd.
-  config.systemd.user.sessionVariables = config.custom.sessionVars;
+  config.systemd.user.sessionVariables = custom.sessionVars;
 }
