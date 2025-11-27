@@ -10,11 +10,11 @@ final: prev: {
       owner = "itsjunetime";
       repo = "tdf";
       fetchSubmodules = true;
-      rev = "670251fdffd41b6ffa6290f28cebd9259c93e180";
-      hash = "sha256-YkoM0ZtREzGKgALELYtdSuy2On3/pXkrCNZ2MQm9mSY=";
+      rev = "55e0c2b33f2d1b9930533a2c962a3283e00b7bcc";
+      hash = "sha256-l3oQCFMCs+cXSBERHneJvto2MOB+OzKBOaGB32uLtW8=";
     };
 
-    cargoHash = "sha256-tfKabeXE5Q1S2yiEhRkZhi/KKJf0NOVC0lFiKcBMbNQ=";
+    cargoHash = "sha256-zOuHpLdWvuS5OKq1k7wvWxw+fZtCV78SnQPCxMU8Wws=";
 
     nativeBuildInputs = [prev.pkg-config];
 

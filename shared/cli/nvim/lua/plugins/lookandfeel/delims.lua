@@ -24,7 +24,7 @@ return {
    },
    {
       "windwp/nvim-autopairs",
-      lazy = true,
+      --lazy = true, -- doesnt work
       event = "InsertEnter",
       opts = {},
    },
