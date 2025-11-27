@@ -42,6 +42,8 @@ vim.lsp.config("nil_ls", {
    end,
 })
 
+-- TODO: Make nix config declare the name of the current nixos
+-- config and hm config directly. If unset, we are not using nixos
 local config_name = vim.fn.expand("$NVIM_NIX_HOST_NAME")
 local is_nixos = vim.fn.expand("$NVIM_NIX_IS_NIXOS")
 local username = vim.fn.expand("$USER")
@@ -65,6 +67,11 @@ if is_nixos == "1" then
          config_name
       ),
    }
+end
+
+-- Do not let nixd load the config while editing e.g. a random shell.nix file somewhere else.
+if not vim.startswith(vim.fn.getcwd(), vim.fn.expand("$NIXOS_CONFIG")) then
+   nix_options = {}
 end
 
 -- NOTE: Installed via nix

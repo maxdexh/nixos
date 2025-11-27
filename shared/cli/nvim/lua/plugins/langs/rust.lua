@@ -1,3 +1,11 @@
+vim.api.nvim_create_autocmd("FileType", {
+   pattern = "rust",
+   callback = function()
+      vim.o.shiftwidth = 4
+      vim.o.tabstop = 4
+   end,
+})
+
 -- See :LazyExtras, vim.g.lazyvim_rust_diagnostics in options.lua
 return {
    {

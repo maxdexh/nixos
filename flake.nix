@@ -16,6 +16,11 @@
       url = "github:maxdexh/alejandra";
       flake = false;
     };
+
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs: let
@@ -38,7 +43,7 @@
         };
       }
     );
-    overlays = import ./overlays ++ [alejandra_overlay];
+    overlays = import ./overlays ++ [alejandra_overlay inputs.fenix.overlays.default];
     # Like nixpkgs.legacyPackages, maps systems to packages
     packagesBySystem = lib.pipe hosts [
       (builtins.groupBy (host: host.system))

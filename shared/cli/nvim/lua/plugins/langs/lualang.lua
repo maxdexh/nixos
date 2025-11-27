@@ -1,12 +1,15 @@
 -- See .luarc.json
 vim.fn.setenv("LAZY_LIBRARY_PATH_PREFIX", vim.fn.stdpath("data") .. "/lazy/")
 
+local nvim_config_dir = vim.fn.stdpath("config") --[[@as string]]
+
 -- vim.api.nvim_list_runtime_paths()
 local config_locations = {
-   vim.fn.expand("~/.local/share/nvim"),
-   vim.fn.expand("~/.config/nvim"),
+   vim.fn.stdpath("data") --[[@as string]],
+   nvim_config_dir,
    vim.fn.expand("$NIXOS_CONFIG"),
 }
+
 ---@param path string
 ---@return boolean
 local function is_nvim_config(path)
@@ -16,10 +19,6 @@ local function is_nvim_config(path)
       end
    end
    return false
-end
-local nvim_config_dir = vim.fn.stdpath("config") --[[@as string]]
-if not is_nvim_config(nvim_config_dir) then
-   table.insert(config_locations, nvim_config_dir)
 end
 
 -- https://github.com/EmmyLuaLs/emmylua-analyzer-rust/tree/main/docs
