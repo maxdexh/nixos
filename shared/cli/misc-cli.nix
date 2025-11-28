@@ -9,6 +9,13 @@
   };
 
   shellint = {enableBashIntegration = true;} // shellint-no-bash;
+
+  ls_aliases = {
+    ll = "ls -l";
+    la = "ls -a";
+    lla = "ls -la";
+    lt = "eza --tree";
+  };
 in ctx.hm.set {
   home.packages = with pkgs; [
     gh
@@ -53,6 +60,7 @@ in ctx.hm.set {
     icons = "auto";
   };
   programs.fish = {
+    shellAliases = ls_aliases;
     functions.ls = {
       body = ''
         if test -t 1
@@ -63,17 +71,14 @@ in ctx.hm.set {
       '';
       wraps = "eza";
     };
-    shellAliases = {
-      ll = "ls -l";
-      la = "ls -a";
-      lla = "ls -la";
-      lt = "eza --tree";
-    };
   };
+  programs.bash.shellAliases = ls_aliases // {ls = "eza";}; # FIXME: Do same thing as fish
 
   programs.fzf = shellint;
 
-  programs.carapace = shellint;
+  # FIXME: Breaks with blesh
+  # TODO: Is this even needed?
+  programs.carapace = shellint-no-bash;
 
   # This sucks, but I can't be bothered.
   xdg.configFile."nixpkgs/config.nix".text = ''
