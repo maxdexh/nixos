@@ -46,12 +46,6 @@ in {
           rel = assert lib.hasPrefix path_prefix abs; lib.removePrefix path_prefix abs;
         in config.lib.file.mkOutOfStoreSymlink "${cfg.nixConfigLocation}/${rel}";
     })
-    (ctx.os.set {
-      nix.nixPath = [
-        "nixpkgs=${inputs.nixpkgs}"
-        "nixos-config=${custom.host.nixConfigLocation}"
-      ];
-    })
     (ctx.hm.set {
       wayland.windowManager.hyprland.settings.input = lib.mkIf iso_layout {
         kb_layout = "us";

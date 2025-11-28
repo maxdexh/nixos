@@ -17,6 +17,13 @@
       nixpkgs.flake = assert inputs.self?packages; inputs.self;
     };
   })
+  (ctx.os.set {
+    # TODO: Set via hm if not on nixos
+    nix.nixPath = [
+      "nixpkgs=flake:${inputs.self}"
+      "nixos-config=${custom.host.nixConfigLocation}"
+    ];
+  })
 
   (ctx.os.set {
     nix.settings.experimental-features = ["nix-command" "flakes"];
