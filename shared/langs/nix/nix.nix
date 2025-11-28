@@ -51,8 +51,9 @@
   programs.fish.shellAbbrs = lib.mkMerge [
     {
       hm = "home-manager";
-      hmr = "nix-cfg-repl hm";
+      hmr = "nix-cfg-repl hm"; # TODO: Merged repl
       hms = "home-manager switch";
+      hml = "journalctl -xeu home-manager-max.service";
       hm-option = "nixos-option home-manager.users.${config.home.username}.";
     }
     (lib.mkIf host.nixOS {

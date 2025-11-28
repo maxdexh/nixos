@@ -17,6 +17,7 @@
       flake = false;
     };
 
+    # TODO: Use
     fenix = {
       url = "github:nix-community/fenix";
       inputs.nixpkgs.follows = "nixpkgs";

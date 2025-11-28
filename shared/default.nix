@@ -7,6 +7,7 @@
     ./nixld.nix
     ./xdg-vars.nix
     ./cli
+    ./nvim/nixos.nix
     ./desktop
     ./langs
   ];

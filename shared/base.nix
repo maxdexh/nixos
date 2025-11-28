@@ -12,6 +12,7 @@
     xdg.configFile."home-manager".source =
       config.lib.file.mkOutOfStoreSymlink custom.host.nixConfigLocation;
     # Replace nixpkgs with this flake in commands like `nix profile install nixpkgs#package`
+    # TODO: Change nix path, disable channels, use nix-index
     nix.registry = {
       nixpkgs.flake = assert inputs.self?packages; inputs.self;
     };

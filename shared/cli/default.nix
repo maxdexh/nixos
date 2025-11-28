@@ -6,7 +6,6 @@
     ./git/git.nix
     ./kitty/kitty.nix
     ./misc-cli.nix
-    ./nvim/nixos.nix
     ./pferd
     ./scripts
   ];
