@@ -9,8 +9,8 @@ vim.opt.timeoutlen = 750
 
 vim.cmd("set shell=fish")
 
-vim.g.tex_conceal = ""
-vim.o.conceallevel = 0
+--vim.g.tex_conceal = ""
+--vim.o.conceallevel = 0
 vim.o.termguicolors = true
 vim.g.lazyvim_picker = "snacks"
 vim.g.snacks_animate = false
