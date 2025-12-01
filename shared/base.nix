@@ -18,10 +18,14 @@
     };
   })
   (ctx.os.set {
+    nix.channel.enable = false;
+
     # TODO: Set via hm if not on nixos
     nix.nixPath = [
-      "nixpkgs=flake:${inputs.self}"
-      "nixos-config=${custom.host.nixConfigLocation}"
+      "nixpkgs=flake:${inputs.nixpkgs}"
+      # FIXME: Make this work
+      # "nixpkgs-overlays=${../overlays/default.nix}"
+      "nixos-config=flake:${custom.host.nixConfigLocation}"
     ];
   })
 
