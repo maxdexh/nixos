@@ -89,7 +89,7 @@
     # enable bluetooth
     hardware.bluetooth = {
       enable = true;
-      powerOnBoot = false;
+      powerOnBoot = !custom.host.laptop.enable;
     };
 
     programs.neovim = {
