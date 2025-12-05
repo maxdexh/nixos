@@ -1,20 +1,20 @@
 # Uses a newer version of tdf. package spec copied from nixpkgs.
-# TODO: Remove when 0.5 releases
+# TODO: Use overrides instead (see nixpkgs manual for how to do this with rust)
 final: prev: {
   tdf = prev.rustPlatform.buildRustPackage (finalAttrs: {
     pname = "tdf";
-    version = "0.4.3";
+    version = "0.5.0";
 
     src = prev.fetchFromGitHub rec {
       name = "tdf-${rev}"; # https://discourse.nixos.org/t/fetchfromgithub-doesnt-fetch-new-files-when-i-update-the-rev/15312/5
       owner = "itsjunetime";
       repo = "tdf";
       fetchSubmodules = true;
-      rev = "55e0c2b33f2d1b9930533a2c962a3283e00b7bcc";
-      hash = "sha256-l3oQCFMCs+cXSBERHneJvto2MOB+OzKBOaGB32uLtW8=";
+      rev = "d5d62c81a30a80383380de6567e436bd8cf1b731";
+      hash = "sha256-AZ1ISZuPnU2foaEJ9gxCCDoeQJAWiXYRUp3l15rH0po=";
     };
 
-    cargoHash = "sha256-zOuHpLdWvuS5OKq1k7wvWxw+fZtCV78SnQPCxMU8Wws=";
+    cargoHash = "sha256-lGbsb3hlFen0tXBVLbm8+CE5dddv6Ner4YSAvAd3/ug=";
 
     nativeBuildInputs = [prev.pkg-config];
 
@@ -25,9 +25,6 @@ final: prev: {
 
     # Tests depend on cpuprofiler, which is not packaged in nixpkgs
     doCheck = false;
-
-    # requires nightly features (feature(portable_simd))
-    RUSTC_BOOTSTRAP = true;
 
     meta = {
       description = "Tui-based PDF viewer";
@@ -41,7 +38,6 @@ final: prev: {
       platforms = prev.lib.platforms.unix;
     };
 
-    # https://github.com/NixOS/nixpkgs/pull/464661#pullrequestreview-3502067889
     postInstall = ''
       rm "$out/bin/for_profiling"
     '';
