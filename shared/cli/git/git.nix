@@ -5,9 +5,11 @@
 }: ctx.hm.set {
   programs.git = {
     enable = true;
-    userName = "Max Dexheimer";
-    userEmail = "maxdexh03@gmail.com";
-    aliases = rec {
+  };
+  programs.git.settings = {
+    user.name = "Max Dexheimer";
+    user.email = "maxdexh03@gmail.com";
+    alias = rec {
       # TODO: Use multi-word shell aliases (via expand function) for these instead
       s = "status";
       p = "push";
@@ -24,11 +26,10 @@
       ca = "!git add -A && git commit";
       ce = "${ca} --amend --no-edit";
     };
-    extraConfig = {
-      safe.directory = "/etc/nixos/";
-      init.defaultBranch = "main";
-      core.editor = "nvim";
-    };
+
+    safe.directory = "/etc/nixos/";
+    init.defaultBranch = "main";
+    core.editor = "nvim";
   };
 
   # Configure ssh keys

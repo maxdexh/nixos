@@ -14,7 +14,7 @@
     services.displayManager = {
       defaultSession = "hyprland-uwsm";
     };
-    services.xserver.displayManager.gdm = {
+    services.displayManager.gdm = {
       enable = true;
       wayland = true;
     };
@@ -54,7 +54,7 @@
       SUDO_ASKPASS = let
         askpass = pkgs.writeShellApplication {
           name = "askpass";
-          runtimeInputs = [pkgs.rofi-wayland];
+          runtimeInputs = [pkgs.rofi];
           text = ''
             rofi -theme material -dmenu -password -p "Password" -l 0 -theme-str 'mainbox { children: [inputbar]; }'
           '';

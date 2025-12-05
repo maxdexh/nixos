@@ -13,6 +13,7 @@ inputs: let
 
   lib = inputs.nixpkgs.lib;
 in lib.mapAttrsToList (host_name: {
+  # TODO: Optionally put the other hosts behind mkif for checking
   modulePaths ? [./${host_name}],
   system ? "x86_64-linux",
   nixOS ? false,

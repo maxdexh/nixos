@@ -2,25 +2,19 @@
   description = "My NixOS configuration flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     # nix profile install nixpkgs/nixpkgs-unstable#packagename
     # TODO: Also add overlays to this and make them available
     # like the overlayed nixpks
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     alejandra-fork = {
       url = "github:maxdexh/alejandra";
       flake = false;
-    };
-
-    # TODO: Use
-    fenix = {
-      url = "github:nix-community/fenix";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
@@ -44,7 +38,7 @@
         };
       }
     );
-    overlays = import ./overlays ++ [alejandra_overlay inputs.fenix.overlays.default];
+    overlays = import ./overlays ++ [alejandra_overlay];
     # Like nixpkgs.legacyPackages, maps systems to packages
     packagesBySystem = lib.pipe hosts [
       (builtins.groupBy (host: host.system))

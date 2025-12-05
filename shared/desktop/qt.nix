@@ -3,7 +3,7 @@
   ctx,
   ...
 }: let
-  theme = "kde6";
+  theme = "kde";
 in {
   # NOTE: Do not bother with qtct/qt5ct/qt6ct, set everything to "kde6" and use the
   # plasma system settings (plasma not required) to configure the theme.

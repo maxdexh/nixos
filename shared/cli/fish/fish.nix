@@ -39,7 +39,7 @@
             else command
           }";
         })
-        config.programs.git.aliases
+        config.programs.git.settings.alias
       );
 
     functions = {

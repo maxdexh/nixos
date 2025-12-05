@@ -1,6 +1,5 @@
 {
   config,
-  inputs,
   ctx,
   ...
 }: ctx.os.set {
@@ -21,11 +20,9 @@
     package = config.boot.kernelPackages.nvidiaPackages.production;
   };
 
-  services.logind = {
-    extraConfig = ''
-      IdleAction=suspend-then-hibernate
-      IdleActionSec=60m
-    '';
+  services.logind.settings.Login = {
+    IdleAction = "suspend-then-hibernate";
+    IdleActionSec = "60m";
   };
   systemd.sleep.extraConfig = ''
     HibernateDelaySec=60m

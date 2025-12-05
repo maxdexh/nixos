@@ -10,19 +10,17 @@
   ];
 
   # TODO: udev rule to prevent the keyboard & touchpad from waking the device from sleep
-  services.logind = {
-    lidSwitch = "suspend-then-hibernate";
-    lidSwitchExternalPower = "suspend";
-    lidSwitchDocked = "ignore";
+  services.logind.settings.Login = {
+    HandleLidSwitch = "suspend-then-hibernate";
+    HandleLidSwitchExternalPower = "suspend";
+    HandleLidSwitchDocked = "ignore";
 
-    powerKey = "suspend-then-hibernate";
+    HandlePowerKey = "suspend-then-hibernate";
     # This is seperate from the 10s force power cut handled by BIOS
-    powerKeyLongPress = "poweroff";
+    HandlePowerKeyLongPress = "poweroff";
 
-    extraConfig = ''
-      IdleAction=suspend-then-hibernate
-      IdleActionSec=5m
-    '';
+    IdleAction = "suspend-then-hibernate";
+    IdleActionSec = "5m";
   };
   # Hibernate after 15min of sleep
   systemd.sleep.extraConfig = ''

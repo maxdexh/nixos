@@ -28,7 +28,7 @@ lib.flip lib.pipe [
       hyprshot
       hyprpicker
       brightnessctl
-      rofi-wayland
+      rofi
       xorg.xrdb # For kde-style xwayland scaling
       killall
       playerctl
