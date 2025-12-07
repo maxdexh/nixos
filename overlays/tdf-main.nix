@@ -10,8 +10,8 @@ final: prev: {
       owner = "itsjunetime";
       repo = "tdf";
       fetchSubmodules = true;
-      rev = "d5d62c81a30a80383380de6567e436bd8cf1b731";
-      hash = "sha256-AZ1ISZuPnU2foaEJ9gxCCDoeQJAWiXYRUp3l15rH0po=";
+      rev = "19030f7fd496ffeae0fe1d97c0ef41179de9390f";
+      hash = "sha256-H0620av1jqurJesoZLH9kB9wp3q6wMzv0alrX2hJ77w=";
     };
 
     cargoHash = "sha256-lGbsb3hlFen0tXBVLbm8+CE5dddv6Ner4YSAvAd3/ug=";
