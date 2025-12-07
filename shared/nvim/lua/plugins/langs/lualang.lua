@@ -7,7 +7,7 @@ local nvim_config_dir = vim.fn.stdpath("config") --[[@as string]]
 local config_locations = {
    vim.fn.stdpath("data") --[[@as string]],
    nvim_config_dir,
-   vim.fn.expand("$NIXOS_CONFIG"),
+   vim.fn.expand("$NIXOS_FLAKE"),
 }
 
 ---@param path string

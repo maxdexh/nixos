@@ -26,7 +26,8 @@
       "nixpkgs=flake:${inputs.nixpkgs}"
       # FIXME: Make this work
       # "nixpkgs-overlays=${../overlays/default.nix}"
-      "nixos-config=flake:${custom.host.nixConfigLocation}"
+
+      # NOTE: Do not set nixos-config, since tools like nixos-option assume it is non-flake
     ];
   })
 

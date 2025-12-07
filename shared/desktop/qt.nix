@@ -2,20 +2,18 @@
   lib,
   ctx,
   ...
-}: let
-  theme = "kde";
-in {
-  # NOTE: Do not bother with qtct/qt5ct/qt6ct, set everything to "kde6" and use the
+}:
+{
+  # NOTE: Do not bother with qtct/qt5ct/qt6ct, set everything to "kde" and use the
   # plasma system settings (plasma not required) to configure the theme.
-  # If breeze cursors are grey you are using KDE 5 systemsettings!
   config = lib.mkMerge [
     (ctx.os.set {
       qt.enable = true;
-      qt.platformTheme = theme;
+      qt.platformTheme = "kde";
     })
     (ctx.hm.set {
       qt.enable = true;
-      qt.platformTheme.name = theme;
+      qt.platformTheme.name = "kde";
     })
   ];
 }

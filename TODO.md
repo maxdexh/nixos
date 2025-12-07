@@ -11,7 +11,7 @@
 - programs.firefoxpwa
 - programs.wayprompt (pw prompter)
 - programs.quickshell
-- programs.name instead of pkgs.name: discord, hyprshot, rofi, distrobox, nh, thunderbird, btop
+- programs/services instead of pkgs: discord, hyprshot, rofi, distrobox, nh, thunderbird, btop, hyprpolkitagent
   - Just check everything
 - bluetuith
 - programs.zapzap (whatsapp client)

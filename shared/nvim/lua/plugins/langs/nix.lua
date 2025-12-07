@@ -70,7 +70,7 @@ if is_nixos == "1" then
 end
 
 -- Do not let nixd load the config while editing e.g. a random shell.nix file somewhere else.
-if not vim.startswith(vim.fn.getcwd(), vim.fn.expand("$NIXOS_CONFIG")) then
+if not vim.startswith(vim.fn.getcwd(), vim.fn.expand("$NIXOS_FLAKE")) then
    nix_options = {}
 end
 
