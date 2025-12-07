@@ -8,7 +8,6 @@
   ctx,
   ...
 }: ctx.hm.set {
-  # TODO: Consider unifying this with the other nix utils?
   home.packages = with pkgs; [
     alejandra
 
@@ -54,6 +53,7 @@
       hmr = "nix-cfg-repl hm"; # TODO: Merged repl
       hms = "home-manager switch";
       hml = "journalctl -xeu home-manager-max.service";
+      # TODO: Write a script for this instead
       hm-option = "nixos-option home-manager.users.${config.home.username}.";
     }
     (lib.mkIf host.nixOS {

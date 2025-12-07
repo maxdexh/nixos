@@ -7,6 +7,7 @@
   custom,
   ...
 }: lib.mkMerge [
+  # FIXME: Unify with the other nix utils into a single nix-meta.nix
   (ctx.hm.set {
     home.packages = [pkgs.home-manager];
     xdg.configFile."home-manager".source =

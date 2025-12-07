@@ -39,6 +39,7 @@
             else command
           }";
         })
+        # TODO: Remove most of the git aliases and only use the abbrs
         config.programs.git.settings.alias
       );
 

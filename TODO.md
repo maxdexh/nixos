@@ -1,0 +1,32 @@
+- programs.nix-init (generate packages from urls)
+- programs.pay-respects (command-not-found replacement)
+- programs.ripgrep-all (replacement for pdfgrep and more)
+- services.way-displays (display config)
+- services.home-manager.autoExpire
+- nix devenv
+- programs.vicinae/sherlock/onagre/services.walker/hyprshell (rofi alternatives)
+- services.clipcat (clipboard manager)
+- services.hyprpaper
+- xdg.terminal-exec (both nixos and hm)
+- programs.firefoxpwa
+- programs.wayprompt (pw prompter)
+- programs.quickshell
+- programs.name instead of pkgs.name: discord, hyprshot, rofi, distrobox, nh, thunderbird, btop
+  - Just check everything
+- bluetuith
+- programs.zapzap (whatsapp client)
+- Try home-manager.minimal for build times
+- programs.wleave (logout/shutdown menu)
+- programs.nvchecker (update checker)
+- programs.kitty.quickAccessTerminalConfig
+- hyprland submaps
+- programs.shpool (shell pool)
+- programs.nyxt
+- programs.meli
+- programs.obsidian
+- programs.lutris
+- programs.jqp
+- programs.neovides
+- programs.tex-fmt (or mason, replacement for latexindent)
+- services.ssh-agent
+- package recaf (or find good alternative)
