@@ -12,26 +12,24 @@
   })
 
   (ctx.hm.set {
-    # Misc applications
     home.packages = lib.mkIf custom.host.fullDesktop (with pkgs; [
-      vlc
-      losslesscut-bin
-
-      # disk utils
       baobab
       gparted
 
-      # gui apps
+      vlc
+      losslesscut-bin
       obs-studio
       gimp
       krita
+
       libreoffice-qt6
       xournalpp
+
       vscode
       brave
-      thunderbird
+      thunderbird # TODO: programs.thunderbird?
       gnome-system-monitor
-      discord # TODO: Use programs.discord instead
+      discord # TODO: programs.discord
       zathura
 
       prismlauncher
