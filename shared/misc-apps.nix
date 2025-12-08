@@ -31,7 +31,7 @@
       brave
       thunderbird
       gnome-system-monitor
-      discord
+      discord # TODO: Use programs.discord instead
       zathura
 
       prismlauncher

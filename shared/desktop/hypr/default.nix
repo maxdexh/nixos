@@ -24,15 +24,15 @@ lib.flip lib.pipe [
 
   (ctx.hm.set {
     home.packages = with pkgs; [
-      waybar
-      hyprshot
       hyprpicker
       brightnessctl
-      rofi
       xorg.xrdb # For kde-style xwayland scaling
       killall
       playerctl
     ];
+
+    programs.rofi.enable = true;
+    programs.hyprshot.enable = true;
 
     wayland.windowManager.hyprland = {
       enable = true;

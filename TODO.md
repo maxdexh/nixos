@@ -2,11 +2,10 @@
 - programs.vicinae/sherlock/onagre/services.walker/hyprshell (rofi alternatives)
 - services.clipcat (clipboard manager)
 - services.hyprpaper
-- xdg.terminal-exec (both nixos and hm)
 - programs.firefoxpwa
 - programs.wayprompt (pw prompter)
 - programs.quickshell
-- programs/services instead of pkgs: discord, hyprshot, rofi, distrobox, nh, thunderbird, btop, hyprpolkitagent
+- programs/services instead of pkgs: distrobox, nh, thunderbird, btop, hyprpolkitagent
   - Just check everything
 - bluetuith
 - programs.zapzap (whatsapp client)
@@ -21,7 +20,7 @@
 - programs.obsidian
 - programs.lutris
 - programs.jqp
-- programs.neovides
+- programs.neovide
 - programs.tex-fmt (or mason, replacement for latexindent)
 - services.ssh-agent
 - package recaf (or find good alternative)
