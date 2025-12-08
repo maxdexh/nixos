@@ -7,18 +7,15 @@
   ctx,
   ...
 }: ctx.hm.set {
+  programs.nix-init.enable = true;
+
   home.packages = with pkgs; [
     alejandra
 
     nix-search-cli
 
-    nixfmt-rfc-style
-    nixd
-
     nh
-    nix-tree
     dix
-    statix
     (custom.lib.writeFishApplication {
       name = "nixos-rebuild-diff";
       runtimeInputs = [pkgs.dix];
