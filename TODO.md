@@ -5,8 +5,6 @@
 - programs.firefoxpwa
 - programs.wayprompt (pw prompter)
 - programs.quickshell
-- programs/services instead of pkgs: nh, thunderbird, btop, hyprpolkitagent
-  - Just check everything
 - bluetuith
 - programs.zapzap (whatsapp client)
 - Try home-manager.minimal for build times
@@ -14,7 +12,6 @@
 - programs.nvchecker (update checker)
 - programs.kitty.quickAccessTerminalConfig
 - hyprland submaps
-- programs.shpool (shell pool)
 - programs.nyxt
 - programs.meli
 - programs.obsidian

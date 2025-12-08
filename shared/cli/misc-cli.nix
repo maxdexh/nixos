@@ -35,9 +35,9 @@ in ctx.hm.set {
     pdftk
 
     glow
-
-    btop
   ];
+
+  programs.btop.enable = true;
 
   # Make shell integrations explicit
   home.shell.enableShellIntegration = false;
@@ -106,10 +106,4 @@ in ctx.hm.set {
     .idea/
     .vscode/
   '';
-
-  # programs.nix-index = enable-shellint;
-
-  # programs.mcfly = enable-shellint;
-
-  # programs.scmpuff = enable-shellint;
 }
