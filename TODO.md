@@ -1,5 +1,3 @@
-- services.way-displays (display config)
-- services.home-manager.autoExpire
 - nix devenv
 - programs.vicinae/sherlock/onagre/services.walker/hyprshell (rofi alternatives)
 - services.clipcat (clipboard manager)
