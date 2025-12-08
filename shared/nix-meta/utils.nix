@@ -5,12 +5,22 @@
   lib,
   host,
   ctx,
-  inputs,
   ...
-}: ctx.hm.set {
+}: let
+  programs_sql_cache = "${config.xdg.cacheHome}/nix-programs-sql";
+in ctx.hm.set {
   programs.nix-init.enable = true;
 
+  programs.command-not-found = {
+    enable = true;
+    dbPath = "${programs_sql_cache}/programs.sqlite";
+  };
+
   home.packages = with pkgs; [
+    (pkgs.writeShellScriptBin "fetch-nix-programs" ''
+      mkdir -p ${lib.escapeShellArg programs_sql_cache} && cd "$_"
+      curl -sL 'https://channels.nixos.org/nixos-25.11-small/nixexprs.tar.xz' | tar -xvJ --wildcards '*/programs.sqlite' --strip-components 1
+    '')
     alejandra
 
     nix-search-cli
