@@ -1,6 +1,5 @@
 {
   pkgs,
-  pkgs-unstable,
   config,
   custom,
   lib,
@@ -18,11 +17,11 @@
 
     nh
     nix-tree
-    pkgs-unstable.dix # unavailable in nixpkgs
+    dix
     statix
     (custom.lib.writeFishApplication {
       name = "nixos-rebuild-diff";
-      runtimeInputs = [pkgs-unstable.dix];
+      runtimeInputs = [pkgs.dix];
       text = /* fish */ ''
         set -l tmpdir "$(mktemp -d)"
         cd $tmpdir
