@@ -32,7 +32,6 @@ in ctx.hm.set {
     zip
     unzip
 
-    pdfgrep
     pdftk
 
     glow
@@ -44,6 +43,7 @@ in ctx.hm.set {
   home.shell.enableShellIntegration = false;
 
   programs.ripgrep.enable = true;
+  programs.ripgrep-all.enable = true;
   programs.bat.enable = true;
 
   programs.zoxide =

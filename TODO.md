@@ -1,4 +1,3 @@
-- programs.ripgrep-all (replacement for pdfgrep and more)
 - services.way-displays (display config)
 - services.home-manager.autoExpire
 - nix devenv
