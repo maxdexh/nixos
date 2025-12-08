@@ -16,6 +16,11 @@ in ctx.hm.set {
     dbPath = "${programs_sql_cache}/programs.sqlite";
   };
 
+  programs.nh = {
+    enable = true;
+    flake = custom.host.nixConfigLocation;
+  };
+
   home.packages = with pkgs; [
     (pkgs.writeShellScriptBin "fetch-nix-programs" ''
       mkdir -p ${lib.escapeShellArg programs_sql_cache} && cd "$_"

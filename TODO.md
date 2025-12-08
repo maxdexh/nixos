@@ -5,7 +5,7 @@
 - programs.firefoxpwa
 - programs.wayprompt (pw prompter)
 - programs.quickshell
-- programs/services instead of pkgs: distrobox, nh, thunderbird, btop, hyprpolkitagent
+- programs/services instead of pkgs: nh, thunderbird, btop, hyprpolkitagent
   - Just check everything
 - bluetuith
 - programs.zapzap (whatsapp client)
