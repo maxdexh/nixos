@@ -18,6 +18,5 @@
 - programs.lutris
 - programs.jqp
 - programs.neovide
-- programs.tex-fmt (or mason, replacement for latexindent)
 - services.ssh-agent
 - package recaf (or find good alternative)

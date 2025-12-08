@@ -13,8 +13,10 @@
       config.lib.file.mkOutOfStoreSymlink custom.host.nixConfigLocation;
 
     # Replace nixpkgs with this flake in commands like `nix profile install nixpkgs#package`
-    nix.registry = {
-      nixpkgs.flake = assert inputs.self?packages; inputs.self;
+    # Also adds an alias so we can use `n#package`
+    nix.registry = assert inputs.self?packages; {
+      nixpkgs.flake = inputs.self;
+      n.flake = inputs.self;
     };
   })
   (ctx.os.set {
