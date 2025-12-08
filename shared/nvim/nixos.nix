@@ -8,6 +8,7 @@
 ctx.hm.set {
   home.packages = with pkgs; [
     tree-sitter
+    nixd
   ];
 
   xdg.configFile."nvim".source = custom.lib.mkNixConfigSymlink ./.;

@@ -1,5 +1,3 @@
-- programs.nix-init (generate packages from urls)
-- programs.pay-respects (command-not-found replacement)
 - programs.ripgrep-all (replacement for pdfgrep and more)
 - services.way-displays (display config)
 - services.home-manager.autoExpire

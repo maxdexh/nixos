@@ -5,9 +5,17 @@
   lib,
   host,
   ctx,
+  inputs,
   ...
 }: ctx.hm.set {
+  imports = [inputs.nix-index-database.homeModules.nix-index];
+
   programs.nix-init.enable = true;
+  programs.nix-index = {
+    enable = true;
+    enableFishIntegration = true;
+    enableBashIntegration = true;
+  };
 
   home.packages = with pkgs; [
     alejandra
