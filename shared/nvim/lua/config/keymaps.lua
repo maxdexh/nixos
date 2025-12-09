@@ -107,7 +107,7 @@ local function set_lsp_keybinds(buf)
          "gr",
          function()
             -- TODO: vim.lsp.buf.references() / Trouble
-            get_snacks().picker.lsp_references()
+            Snacks.picker.lsp_references()
          end,
          desc = "View References",
       },
