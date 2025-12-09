@@ -26,8 +26,8 @@ in {
     fullDesktop = lib.mkEnableOption "Whether a full desktop environment is available";
 
     nixConfigLocation = lib.mkOption {
-      type = lib.types.nullOr lib.types.path;
-      default = null;
+      type = lib.types.path;
+      default = inputs.self.outPath;
     };
   };
 
@@ -36,7 +36,7 @@ in {
       host.fullDesktop = lib.mkDefault (!cfg.cliOnly.enable);
 
       lib.mkNixConfigSymlink = path: assert builtins.isPath path;
-        if cfg.nixConfigLocation == null
+        if cfg.nixConfigLocation == inputs.self.outPath # Fewer symlinks
         then path
         else let
           # Turn /nix/store/<hash>-<basename> into ${source-store}/actual/path/to/<basename>
