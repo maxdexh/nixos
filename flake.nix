@@ -40,7 +40,7 @@
     );
     overlays = import ./overlays ++ [alejandra_overlay];
     # Like nixpkgs.legacyPackages, maps systems to packages
-    packagesBySystem = lib.pipe hosts [
+    pkgs_by_system = lib.pipe hosts [
       (builtins.groupBy (host: host.system))
       (builtins.mapAttrs (system: _: import inputs.nixpkgs {
         inherit system overlays;
@@ -50,14 +50,9 @@
       }))
     ];
 
-    mod_kinds = {
-      HOME = "hm";
-      SYSTEM = "os";
-    };
-
     lib = inputs.nixpkgs.lib;
 
-    build_special_args = host: kind: {
+    mk_special_args = host: kind: {
       inherit host inputs;
       pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
       ctx = let
@@ -71,12 +66,12 @@
         };
       in
         {inherit kind;}
-        // mk mod_kinds.SYSTEM
-        // mk mod_kinds.HOME;
+        // mk "os"
+        // mk "hm";
     };
 
     nixos_system = host: lib.nixosSystem {
-      pkgs = packagesBySystem.${host.system};
+      pkgs = pkgs_by_system.${host.system};
 
       modules = [
         {
@@ -104,18 +99,18 @@
           home-manager = {
             useGlobalPkgs = true; # Also inherits nixpkgs configs
             verbose = true;
-            extraSpecialArgs = build_special_args host mod_kinds.HOME;
+            extraSpecialArgs = mk_special_args host "hm";
           };
         }
         inputs.home-manager.nixosModules.home-manager
       ];
 
-      specialArgs = build_special_args host mod_kinds.SYSTEM;
+      specialArgs = mk_special_args host "os";
     };
 
     standalone_hm_config = user: inputs.home-manager.lib.homeManagerConfiguration {
-      pkgs = packagesBySystem.${user.host.system};
-      extraSpecialArgs = build_special_args user.host mod_kinds.HOME;
+      pkgs = pkgs_by_system.${user.host.system};
+      extraSpecialArgs = mk_special_args user.host "hm";
       modules = [
         {
           imports = user.modulePaths;
@@ -148,6 +143,6 @@
     # This allows using the nix config location as a replacement for nixpkgs,
     # but with overlays applied.
     # Also see ./modules/base.nix
-    packages = packagesBySystem;
+    packages = pkgs_by_system;
   };
 }
