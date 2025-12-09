@@ -1,5 +1,5 @@
 {
-  custom,
+  host,
   ctx,
   ...
 }: ctx.hm.set {
@@ -33,5 +33,5 @@
   };
 
   # Configure ssh keys
-  home.file.".ssh/config".source = custom.lib.mkNixConfigSymlink ./ssh-config;
+  home.file.".ssh/config".source = host.mkNixConfigSymlink ./ssh-config;
 }

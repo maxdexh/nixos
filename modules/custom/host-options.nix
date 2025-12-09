@@ -1,30 +1,13 @@
 {
   lib,
-  inputs,
   ctx,
-  config,
   host,
   ...
 }: let
   iso_layout = host.usIsoLayout.enable;
   iso_remap = iso_layout && host.usIsoLayout.remaps;
-
-  path_prefix = "${inputs.self}/";
 in {
   config = lib.mkMerge [
-    {
-      # TODO: Move this to host too somehow?
-      custom.lib.mkNixConfigSymlink = path: assert builtins.isPath path;
-        if host.nixConfigLocation == inputs.self.outPath # Fewer symlinks
-        then path
-        else let
-          # Turn /nix/store/<hash>-<basename> into ${source-store}/actual/path/to/<basename>
-          # Could also be done without the builtin by traversing backwards using
-          # `+ "/.."` and using `baseNameOf` to get each path segment.
-          abs = builtins.unsafeDiscardStringContext (toString path);
-          rel = assert lib.hasPrefix path_prefix abs; lib.removePrefix path_prefix abs;
-        in config.lib.file.mkOutOfStoreSymlink "${host.nixConfigLocation}/${rel}";
-    }
     (ctx.hm.set {
       wayland.windowManager.hyprland.settings.input = lib.mkIf iso_layout {
         kb_layout = "us";

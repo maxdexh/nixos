@@ -38,6 +38,8 @@
         };
       }
     );
+
+    # TODO: Use another module system for overlays, and let them depend on hosts
     overlays = import ./overlays ++ [alejandra_overlay];
     # Like nixpkgs.legacyPackages, maps systems to packages
     pkgs_by_system = lib.pipe hosts [
@@ -52,9 +54,22 @@
 
     lib = inputs.nixpkgs.lib;
 
-    mk_special_args = host: kind: {
-      inherit host inputs;
+    mk_special_args = host: kind: let
+      pkgs = pkgs_by_system.${host.system};
+      mkSymlink = path: let path_str = toString path; in pkgs.runCommandLocal path_str {} "ln -s ${lib.escapeShellArg path_str} $out";
+      nixConfigSymlink = mkSymlink host.nixConfigLocation;
+      path_prefix = "${inputs.self}/";
+      mkNixConfigSymlink = path: let
+        # Turn /nix/store/<hash>-<basename> into ${source-store}/actual/path/to/<basename>
+        # Could also be done without the builtin by traversing backwards using
+        # `+ "/.."` and using `baseNameOf` to get each path segment.
+        abs = builtins.unsafeDiscardStringContext (toString path);
+        rel = assert lib.hasPrefix path_prefix abs; lib.removePrefix path_prefix abs;
+      in "${nixConfigSymlink}/${rel}";
+    in {
+      inherit inputs mkSymlink;
       pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
+      host = host // {inherit nixConfigSymlink mkNixConfigSymlink;};
       ctx = let
         mk = name: {
           ${name} = rec {

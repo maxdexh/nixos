@@ -1,7 +1,6 @@
 {
   lib,
   ctx,
-  config,
   host,
   inputs,
   ...
@@ -9,8 +8,7 @@
   (ctx.hm.set {
     programs.home-manager.enable = true;
 
-    xdg.configFile."home-manager".source =
-      config.lib.file.mkOutOfStoreSymlink host.nixConfigLocation;
+    xdg.configFile."home-manager".source = host.nixConfigSymlink;
 
     # Replace nixpkgs with this flake in commands like `nix profile install nixpkgs#package`
     # Also adds an alias so we can use `n#package`

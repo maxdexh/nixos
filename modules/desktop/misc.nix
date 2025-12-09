@@ -2,7 +2,7 @@
   pkgs,
   lib,
   ctx,
-  custom,
+  host,
   ...
 }: lib.mkMerge [
   (ctx.os.set {
@@ -39,7 +39,7 @@
     };
 
     # Basic profile with better appearance and using fish shell
-    xdg.dataFile."konsole/custom.profile".source = custom.lib.mkNixConfigSymlink ./konsole-custom.profile;
+    xdg.dataFile."konsole/custom.profile".source = host.mkNixConfigSymlink ./konsole-custom.profile;
 
     custom.sessionVars = {
       # gtk.theme is dysfunctional, but this works nicely, except that it still has window decorations.

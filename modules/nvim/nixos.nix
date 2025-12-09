@@ -1,5 +1,4 @@
 {
-  custom,
   pkgs,
   host,
   ctx,
@@ -11,7 +10,7 @@ ctx.hm.set {
     nixd
   ];
 
-  xdg.configFile."nvim".source = custom.lib.mkNixConfigSymlink ./.;
+  xdg.configFile."nvim".source = host.mkNixConfigSymlink ./.;
 
   custom.sessionVars = {
     VISUAL = "nvim";

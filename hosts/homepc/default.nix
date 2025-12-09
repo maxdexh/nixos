@@ -1,9 +1,9 @@
 {inputs, ...}: {
   hosts.homepc = {
     sharedHmModules = [
-      ({config, ...}: {
+      ({host, ...}: {
         wayland.windowManager.hyprland.settings.source = [
-          "${config.custom.lib.mkNixConfigSymlink ./hyprland.conf}"
+          "${host.mkNixConfigSymlink ./hyprland.conf}"
         ];
       })
     ];

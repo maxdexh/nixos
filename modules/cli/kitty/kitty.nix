@@ -2,7 +2,6 @@
   pkgs,
   lib,
   host,
-  custom,
   ctx,
   ...
 }:
@@ -18,7 +17,7 @@ lib.flip lib.pipe [
     programs.kitty = {
       enable = true;
       enableGitIntegration = true;
-      extraConfig = "include ${custom.lib.mkNixConfigSymlink ./kitty.conf}";
+      extraConfig = "include ${host.mkNixConfigSymlink ./kitty.conf}";
     };
 
     home.packages = with pkgs; [

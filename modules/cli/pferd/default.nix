@@ -1,10 +1,10 @@
 {
   pkgs-unstable,
-  custom,
+  host,
   ctx,
   ...
 }: ctx.hm.set {
-  xdg.configFile."PFERD/pferd.cfg".source = custom.lib.mkNixConfigSymlink ./pferd.cfg;
+  xdg.configFile."PFERD/pferd.cfg".source = host.mkNixConfigSymlink ./pferd.cfg;
 
   home.packages = [pkgs-unstable.pferd];
 }

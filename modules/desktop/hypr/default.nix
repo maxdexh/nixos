@@ -1,9 +1,9 @@
 {
   pkgs,
   lib,
-  custom,
   ctx,
   host,
+  mkSymlink,
   ...
 }:
 lib.mkMerge [
@@ -40,13 +40,15 @@ lib.mkMerge [
       sourceFirst = false;
 
       settings.source = [
-        "${custom.lib.mkNixConfigSymlink ./hypr-conf}/*"
+        "${host.mkNixConfigSymlink ./hypr-conf}/*"
       ];
     };
 
     programs.waybar = {
       enable = true;
-      style = custom.lib.mkNixConfigSymlink ./waybar.css;
+      # WARN: `style` changes behavior depending on whether a path/derivation or a string is passed.
+      # To use a symlink here, the output of mkNixConfigSymlink needs to be symlinked again!
+      style = ./waybar.css;
       settings.mainBar = {
         modules-left = ["hyprland/workspaces"];
 
@@ -66,7 +68,7 @@ lib.mkMerge [
           then modules
           else lib.lists.remove "group/energy" modules;
 
-        include = [(toString (custom.lib.mkNixConfigSymlink ./waybar.mainbar.jsonc))];
+        include = [(toString (host.mkNixConfigSymlink ./waybar.mainbar.jsonc))];
       };
     };
 
@@ -74,14 +76,14 @@ lib.mkMerge [
 
     # Override home-manager's config file # NOTE: services.swaync.settings will not work.
     xdg.configFile."swaync/config.json" = lib.mkForce {
-      source = custom.lib.mkNixConfigSymlink ./swaync.json;
+      source = host.mkNixConfigSymlink ./swaync.json;
     };
 
     # TODO: Configure this
     # https://github.com/ErikReider/SwayNotificationCenter/discussions/183
     # TODO: Make this work together with hm's css by importing (like with hyprland.conf)
     xdg.configFile."swaync/style.css" = {
-      source = custom.lib.mkNixConfigSymlink ./swaync.css;
+      source = host.mkNixConfigSymlink ./swaync.css;
     };
   })
 ]
