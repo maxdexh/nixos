@@ -3,7 +3,7 @@
   ctx,
   custom,
   ...
-}: builtins.trace ctx.kind {
+}: ctx.kind {
   imports =
     [
       ./os.nix
