@@ -147,7 +147,7 @@
 
     # This allows using the nix config location as a replacement for nixpkgs,
     # but with overlays applied.
-    # Also see ./shared/base.nix
+    # Also see ./modules/base.nix
     packages = packagesBySystem;
   };
 }

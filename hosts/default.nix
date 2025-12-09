@@ -32,7 +32,7 @@ in lib.mapAttrsToList (host_name: {
   host = {
     inherit system nixOS;
     name = host_name;
-    modulePaths = modulePaths ++ [../shared];
+    modulePaths = modulePaths ++ [../modules];
     users = builtins.mapAttrs mk_user DEFAULT_USERS;
   };
 in host) HOSTS
