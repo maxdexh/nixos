@@ -2,7 +2,7 @@
   lib,
   ctx,
   config,
-  custom,
+  host,
   inputs,
   ...
 }: lib.mkMerge [
@@ -10,7 +10,7 @@
     programs.home-manager.enable = true;
 
     xdg.configFile."home-manager".source =
-      config.lib.file.mkOutOfStoreSymlink custom.host.nixConfigLocation;
+      config.lib.file.mkOutOfStoreSymlink host.nixConfigLocation;
 
     # Replace nixpkgs with this flake in commands like `nix profile install nixpkgs#package`
     # Also adds an alias so we can use `n#package`

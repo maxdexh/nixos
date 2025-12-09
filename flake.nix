@@ -19,7 +19,7 @@
   };
 
   outputs = inputs: let
-    hosts = import ./hosts inputs;
+    hosts = builtins.attrValues (import ./hosts inputs);
     alejandra_overlay = (
       final: prev: {
         # https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/al/alejandra/package.nix
@@ -76,7 +76,7 @@
       modules = [
         {
           networking.hostName = host.name; # see config.system.name
-          imports = host.modulePaths;
+          imports = host.nixos.modules ++ [./modules];
           system.stateVersion = "25.05";
           users.users =
             builtins.mapAttrs (_: user: {
@@ -91,7 +91,7 @@
           # Home Manager user config
           home-manager.users =
             builtins.mapAttrs (_: user: {
-              imports = user.modulePaths;
+              imports = host.sharedHmModules ++ user.modules ++ [./modules];
               home.stateVersion = "25.05";
             })
             host.users;
@@ -108,12 +108,12 @@
       specialArgs = mk_special_args host "os";
     };
 
-    standalone_hm_config = user: inputs.home-manager.lib.homeManagerConfiguration {
-      pkgs = pkgs_by_system.${user.host.system};
-      extraSpecialArgs = mk_special_args user.host "hm";
+    standalone_hm_config = host: user: inputs.home-manager.lib.homeManagerConfiguration {
+      pkgs = pkgs_by_system.${host.system};
+      extraSpecialArgs = mk_special_args host "hm";
       modules = [
         {
-          imports = user.modulePaths;
+          imports = host.sharedHmModules ++ user.modules ++ [./modules];
           home.stateVersion = "25.05";
           home.username = user.name;
           home.homeDirectory = user.homeDirectory;
@@ -122,21 +122,19 @@
     };
   in {
     nixosConfigurations = lib.pipe hosts [
-      (builtins.filter (host: host.nixOS))
+      (builtins.filter (host: host.nixos.enable))
       (map (host: {
-        ${host.name} = nixos_system host;
+        name = host.name;
+        value = nixos_system host;
       }))
-      lib.attrsets.mergeAttrsList
+      builtins.listToAttrs
     ];
 
     homeConfigurations = lib.pipe hosts [
-      (builtins.concatMap (host: builtins.attrValues host.users))
-      (map (
-        user: {
-          name = user.homeConfigurationName;
-          value = standalone_hm_config user;
-        }
-      ))
+      (builtins.concatMap (host: map (user: {
+        name = "${user.name}@${host.name}";
+        value = standalone_hm_config host user;
+      }) (builtins.attrValues host.users)))
       builtins.listToAttrs
     ];
 

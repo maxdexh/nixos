@@ -33,7 +33,7 @@
 
     # HACK: Hotfix for cursor theme not working in steam.
     # https://github.com/ValveSoftware/steam-for-linux/issues/11484#issuecomment-3437303820
-    xdg.dataFile."icons/default" = lib.mkIf custom.host.fullDesktop {
+    xdg.dataFile."icons/default" = {
       source = "${pkgs.kdePackages.breeze}/share/icons/breeze_cursors/";
       recursive = true;
     };
@@ -41,7 +41,7 @@
     # Basic profile with better appearance and using fish shell
     xdg.dataFile."konsole/custom.profile".source = custom.lib.mkNixConfigSymlink ./konsole-custom.profile;
 
-    custom.sessionVars = lib.mkIf custom.host.fullDesktop {
+    custom.sessionVars = {
       # gtk.theme is dysfunctional, but this works nicely, except that it still has window decorations.
       GTK_THEME = "Breeze:dark"; # or: "Adwaita:dark"
 
@@ -66,7 +66,7 @@
     };
 
     # TODO: Configure more default apps
-    xdg.mimeApps = lib.mkIf custom.host.fullDesktop {
+    xdg.mimeApps = {
       enable = true;
       defaultApplications = {
         "application/pdf" = "firefox.desktop";

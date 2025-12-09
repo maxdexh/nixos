@@ -1,13 +1,10 @@
 {
   pkgs,
-  custom,
   lib,
   ctx,
   ...
-}: lib.flip lib.pipe [
-  ctx.hm.set
-  (lib.mkIf custom.host.fullDesktop)
-] {
+}:
+ctx.hm.set {
   home.packages = with pkgs; [
     # These packages are required for the kcmshell desktop entries to work in hyprland
     kdePackages.kirigami-addons

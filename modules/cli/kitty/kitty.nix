@@ -1,13 +1,14 @@
 {
   pkgs,
   lib,
+  host,
   custom,
   ctx,
   ...
 }:
 lib.flip lib.pipe [
   lib.mkMerge
-  (lib.mkIf custom.host.fullDesktop)
+  (lib.mkIf host.fullDesktop)
 ] [
   (ctx.os.set {
     environment.systemPackages = with pkgs; [kitty];

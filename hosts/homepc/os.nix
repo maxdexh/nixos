@@ -1,8 +1,4 @@
-{
-  config,
-  ctx,
-  ...
-}: ctx.os.set {
+{config, ...}: {
   # NOTE: `hardware.nvidia.enabled` is set based on this
   services.xserver.videoDrivers = ["nvidia"];
 

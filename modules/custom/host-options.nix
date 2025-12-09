@@ -3,40 +3,19 @@
   inputs,
   ctx,
   config,
-  custom,
+  host,
   ...
 }: let
-  iso_layout = cfg.usIsoLayout.enable;
-  iso_remap = iso_layout && cfg.usIsoLayout.remaps;
+  iso_layout = host.usIsoLayout.enable;
+  iso_remap = iso_layout && host.usIsoLayout.remaps;
 
   path_prefix = "${inputs.self}/";
-
-  cfg = custom.host;
 in {
-  # FIXME: Move the host special arg into here so
-  options.custom.host = {
-    laptop.enable = lib.mkEnableOption "laptop";
-    cliOnly.enable = lib.mkEnableOption "cli config only";
-
-    usIsoLayout = {
-      enable = lib.mkEnableOption "US ISO Keyboard Layout";
-      remaps = lib.mkEnableOption "US ISO Keyboard Remaps";
-    };
-
-    fullDesktop = lib.mkEnableOption "Whether a full desktop environment is available";
-
-    nixConfigLocation = lib.mkOption {
-      type = lib.types.path;
-      default = inputs.self.outPath;
-    };
-  };
-
   config = lib.mkMerge [
-    (lib.setAttrByPath ["custom"] {
-      host.fullDesktop = lib.mkDefault (!cfg.cliOnly.enable);
-
-      lib.mkNixConfigSymlink = path: assert builtins.isPath path;
-        if cfg.nixConfigLocation == inputs.self.outPath # Fewer symlinks
+    {
+      # TODO: Move this to host too somehow?
+      custom.lib.mkNixConfigSymlink = path: assert builtins.isPath path;
+        if host.nixConfigLocation == inputs.self.outPath # Fewer symlinks
         then path
         else let
           # Turn /nix/store/<hash>-<basename> into ${source-store}/actual/path/to/<basename>
@@ -44,8 +23,8 @@ in {
           # `+ "/.."` and using `baseNameOf` to get each path segment.
           abs = builtins.unsafeDiscardStringContext (toString path);
           rel = assert lib.hasPrefix path_prefix abs; lib.removePrefix path_prefix abs;
-        in config.lib.file.mkOutOfStoreSymlink "${cfg.nixConfigLocation}/${rel}";
-    })
+        in config.lib.file.mkOutOfStoreSymlink "${host.nixConfigLocation}/${rel}";
+    }
     (ctx.hm.set {
       wayland.windowManager.hyprland.settings.input = lib.mkIf iso_layout {
         kb_layout = "us";
@@ -80,7 +59,7 @@ in {
       };
     })
     (ctx.os.set {
-      environment.etc."libinput/local-overrides.quirks" = lib.mkIf (iso_remap && cfg.laptop.enable) {
+      environment.etc."libinput/local-overrides.quirks" = lib.mkIf (iso_remap && host.laptop.enable) {
         text = ''
           [Serial Keyboards]
           MatchUdevType=keyboard

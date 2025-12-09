@@ -4,7 +4,6 @@
     ./base.nix
     ./nix-meta
     ./build-helpers.nix
-    ./misc-apps.nix
     ./nixld.nix
     ./xdg-vars.nix
     ./cli

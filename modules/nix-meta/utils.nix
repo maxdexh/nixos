@@ -18,7 +18,7 @@ in ctx.hm.set {
 
   programs.nh = {
     enable = true;
-    flake = custom.host.nixConfigLocation;
+    flake = host.nixConfigLocation;
   };
 
   home.packages = with pkgs; [
@@ -56,7 +56,7 @@ in ctx.hm.set {
   ];
 
   custom.sessionVars = {
-    NIXOS_FLAKE = custom.host.nixConfigLocation;
+    NIXOS_FLAKE = host.nixConfigLocation;
   };
 
   programs.fish.shellAbbrs = lib.mkMerge [
@@ -68,7 +68,7 @@ in ctx.hm.set {
       # TODO: Write a script for this instead
       hm-option = "nixos-option home-manager.users.${config.home.username}.";
     }
-    (lib.mkIf host.nixOS {
+    (lib.mkIf host.nixos.enable {
       os = "nixos-rebuild";
       osr = "nixos-rebuild repl";
       oss = "sudo nixos-rebuild switch";

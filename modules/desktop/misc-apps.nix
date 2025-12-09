@@ -1,18 +1,18 @@
 {
   pkgs,
   lib,
-  custom,
+  host,
   ctx,
   ...
 }: lib.mkMerge [
   (ctx.os.set {
     environment.systemPackages = with pkgs; [openvpn gnumake];
 
-    programs.steam.enable = custom.host.fullDesktop;
+    programs.steam.enable = host.fullDesktop;
   })
 
   (ctx.hm.set {
-    home.packages = lib.mkIf custom.host.fullDesktop (with pkgs; [
+    home.packages = with pkgs; [
       baobab
       gparted
 
@@ -33,6 +33,6 @@
       zathura
 
       prismlauncher
-    ]);
+    ];
   })
 ]

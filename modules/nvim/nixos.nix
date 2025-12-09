@@ -18,6 +18,6 @@ ctx.hm.set {
     EDITOR = "nvim";
     MANPAGER = "nvim +Man!";
     NVIM_NIX_HOST_NAME = host.name;
-    NVIM_NIX_IS_NIXOS = toString (host.nixOS);
+    NVIM_NIX_IS_NIXOS = toString host.nixos.enable;
   };
 }

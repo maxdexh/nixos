@@ -8,5 +8,6 @@
     ./misc.nix
     ./qt.nix
     ./shortcuts.nix
+    ./misc-apps.nix
   ];
 }

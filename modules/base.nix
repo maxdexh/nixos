@@ -1,7 +1,7 @@
 {
   pkgs,
   ctx,
-  custom,
+  host,
   ...
 }: ctx.os.set {
   nix.settings.experimental-features = ["nix-command" "flakes"];
@@ -53,7 +53,7 @@
   # enable bluetooth
   hardware.bluetooth = {
     enable = true;
-    powerOnBoot = !custom.host.laptop.enable;
+    powerOnBoot = !host.laptop.enable;
   };
 
   programs.neovim = {

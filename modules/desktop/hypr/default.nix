@@ -3,12 +3,10 @@
   lib,
   custom,
   ctx,
+  host,
   ...
 }:
-lib.flip lib.pipe [
-  lib.mkMerge
-  (lib.mkIf custom.host.fullDesktop)
-] [
+lib.mkMerge [
   (ctx.os.set {
     programs.hyprland = {
       enable = true;
@@ -64,7 +62,7 @@ lib.flip lib.pipe [
             "clock"
           ];
         in
-          if custom.host.laptop.enable
+          if host.laptop.enable
           then modules
           else lib.lists.remove "group/energy" modules;
 
