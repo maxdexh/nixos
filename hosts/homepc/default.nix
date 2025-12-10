@@ -1,6 +1,8 @@
 {inputs, ...}: {
   hosts.homepc = {
-    users.max = {};
+    users.max = {
+      hm.module.home.homeDirectory = "/home/max";
+    };
 
     hm.sharedModule = {host, ...}: {
       wayland.windowManager.hyprland.settings.source = [

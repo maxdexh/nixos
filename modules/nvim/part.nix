@@ -1,11 +1,12 @@
 {
-  pkgs,
-  host,
-  ...
-}: {
   parts.nvim = {
     tags = ["default"];
+
     hm = {
+      host,
+      pkgs,
+      ...
+    }: {
       home.packages = with pkgs; [
         tree-sitter
         nixd

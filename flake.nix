@@ -54,7 +54,11 @@
       nixos = modules.nixos or [];
       hm = modules.hm or [];
     };
-    hosts = map (host: host // {modules = modules_of host;}) (builtins.attrValues full_config.hosts);
+    hosts = map (host: host
+      // {
+        modules = modules_of host;
+        _pkgs = pkgs_by_system.${host.system};
+      }) (builtins.attrValues full_config.hosts);
 
     alejandra_overlay = final: prev: {
       # https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/al/alejandra/package.nix
@@ -88,7 +92,7 @@
     ];
 
     mk_special_args = host: kind: let
-      pkgs = pkgs_by_system.${host.system};
+      pkgs = host._pkgs;
       mkSymlink = path: let path_str = toString path; in pkgs.runCommandLocal path_str {} "ln -s ${lib.escapeShellArg path_str} $out";
       nixConfigSymlink = mkSymlink host.nixConfigLocation;
       path_prefix = "${inputs.self}/";
@@ -124,7 +128,7 @@
     };
 
     nixos_system = host: lib.nixosSystem {
-      pkgs = pkgs_by_system.${host.system};
+      pkgs = host._pkgs;
 
       modules = [
         {
@@ -140,7 +144,7 @@
             host.users;
           nix.settings.trusted-users = builtins.attrNames host.users;
         }
-        {
+        ({pkgs, ...}: {
           # Home Manager user config
           home-manager.users =
             builtins.mapAttrs (_: user: base_hm_module host user)
@@ -149,9 +153,11 @@
           home-manager = {
             useGlobalPkgs = true; # Also inherits nixpkgs configs
             verbose = true;
-            extraSpecialArgs = mk_special_args host "hm";
+            extraSpecialArgs =
+              mk_special_args host "hm"
+              // {inherit pkgs;};
           };
-        }
+        })
         inputs.home-manager.nixosModules.home-manager
       ];
 
@@ -165,7 +171,6 @@
         (base_hm_module host user)
         {
           home.username = user.name;
-          home.homeDirectory = user.homeDirectory;
         }
       ];
     };
