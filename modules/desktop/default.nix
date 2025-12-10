@@ -1,6 +1,4 @@
 {
-  # FIXME: Some modules here need a fullDesktop conditional.
-  # Apply it here somehow?
   imports = [
     ./hypr
     ./auth.nix

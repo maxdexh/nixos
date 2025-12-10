@@ -9,15 +9,19 @@
       tags = lib.mkOption {
         type = lib.types.listOf lib.types.str;
       };
+
+      # NOTE: do not touch the types of these,
+      # it can break things like `pkgs` being
+      # passed to modules and `mkForce` will
+      # stop working
       nixos = lib.mkOption {
-        type = lib.types.anything;
+        type = lib.types.deferredModule;
         default = {};
       };
       hm = lib.mkOption {
-        type = lib.types.anything;
+        type = lib.types.deferredModule;
         default = {};
       };
-      alwaysMkIf = lib.mkEnableOption "always use mkIf";
     };
   };
 in {

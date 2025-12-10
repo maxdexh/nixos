@@ -39,14 +39,9 @@
       parts =
         map
         (part: let
-          cond = builtins.any (tag: tags.${tag}) part.tags;
           conv = module:
-            if part.alwaysMkIf
-            then args: lib.mkIf cond (lib.toFunction module args)
-            else if cond
-            # HACK: We don't get the pkgs argument without doing this :shrug:
-            # FIXME: ignore warning for unused param
-            then args @ {pkgs, ...}: lib.toFunction module args
+            if builtins.any (tag: tags.${tag}) part.tags
+            then module
             else {};
         in {
           hm = conv part.hm;
