@@ -4,6 +4,7 @@
     ./nix-meta
     ./cli
     ./custom
+    ./langs
   ];
 
   defaultTags.default = true;
