@@ -29,7 +29,18 @@
       };
     };
     full_config = module_system.config;
-    hosts = builtins.attrValues full_config.hosts;
+    modules_of = host: let
+      tags = full_config.defaultTags // host.tags;
+      parts =
+        builtins.filter
+        (part: builtins.any (tag: tags.${tag}) part.tags)
+        (builtins.attrValues full_config.parts);
+      modules = lib.zipAttrs parts;
+    in {
+      nixos = modules.nixos or [];
+      hm = modules.hm or [];
+    };
+    hosts = map (host: host // {modules = modules_of host;}) (builtins.attrValues full_config.hosts);
 
     alejandra_overlay = final: prev: {
       # https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/al/alejandra/package.nix
@@ -49,6 +60,7 @@
     };
 
     # TODO: Use another module system for overlays, and let them depend on hosts
+    # (how to make outputs.packages depend on host?)
     overlays = import ./overlays ++ [alejandra_overlay];
     # Like nixpkgs.legacyPackages, maps systems to packages
     pkgs_by_system = lib.pipe hosts [
@@ -94,13 +106,18 @@
         // mk "hm";
     };
 
+    base_hm_module = host: user: {
+      imports = [host.hm.sharedModule user.hm.module ./modules] ++ host.modules.hm;
+      home.stateVersion = "25.05";
+    };
+
     nixos_system = host: lib.nixosSystem {
       pkgs = pkgs_by_system.${host.system};
 
       modules = [
         {
           networking.hostName = host.name; # see config.system.name
-          imports = [host.nixos.module ./modules];
+          imports = [host.nixos.module ./modules] ++ host.modules.nixos;
           system.stateVersion = "25.05";
           users.users =
             builtins.mapAttrs (_: user: {
@@ -114,10 +131,7 @@
         {
           # Home Manager user config
           home-manager.users =
-            builtins.mapAttrs (_: user: {
-              imports = [host.hm.sharedModule user.hm.module ./modules];
-              home.stateVersion = "25.05";
-            })
+            builtins.mapAttrs (_: user: base_hm_module host user)
             host.users;
 
           home-manager = {
@@ -136,9 +150,8 @@
       pkgs = pkgs_by_system.${host.system};
       extraSpecialArgs = mk_special_args host "hm";
       modules = [
+        (base_hm_module host user)
         {
-          imports = [host.hm.sharedModule user.hm.module ./modules];
-          home.stateVersion = "25.05";
           home.username = user.name;
           home.homeDirectory = user.homeDirectory;
         }
