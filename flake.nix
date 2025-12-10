@@ -19,7 +19,22 @@
   };
 
   outputs = inputs: let
-    hosts = builtins.attrValues (import ./hosts inputs);
+    hosts_set = let
+      base =
+        (lib.evalModules {
+          modules = [
+            ./hosts
+          ];
+          specialArgs = {
+            inherit inputs;
+          };
+        }).config.hosts;
+
+      convert_user = host: _name: user: user // {inherit host;};
+      convert = _name: host: host // {users = builtins.mapAttrs (convert_user host) host.users;};
+    in builtins.mapAttrs convert base;
+    hosts = builtins.attrValues hosts_set;
+
     alejandra_overlay = final: prev: {
       # https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/al/alejandra/package.nix
       # https://nixos.org/manual/nixpkgs/stable/#compiling-rust-applications-with-cargo

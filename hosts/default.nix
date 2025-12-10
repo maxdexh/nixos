@@ -1,13 +1,8 @@
-inputs: let
-  lib = inputs.nixpkgs.lib;
-in (lib.evalModules {
-  modules = [
+{
+  imports = [
     ./options.nix
     ./default-users.nix
     ./fw13
     ./homepc
   ];
-  specialArgs = {
-    inherit inputs;
-  };
-}).config.hosts
+}
