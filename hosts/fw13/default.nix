@@ -1,5 +1,7 @@
 {inputs, ...}: {
   hosts.fw13 = {
+    users.max = {};
+
     sharedHmModules = [
       ({host, ...}: {
         wayland.windowManager.hyprland.settings.source = [
@@ -9,7 +11,7 @@
     ];
 
     nixos.enable = true;
-    nixos.modules = [
+    nixos.extraModules = [
       ./os.nix
       inputs.nixos-hardware.nixosModules.framework-13-7040-amd
       ./hardware-configuration.nix

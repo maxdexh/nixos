@@ -1,7 +1,6 @@
 {
   inputs,
   lib,
-  config,
   ...
 }: let
   user_type = lib.types.submodule ({name, ...}: {
@@ -16,7 +15,6 @@
       };
     };
   });
-  base_config = config;
 
   host_type = lib.types.submodule ({
     name,
@@ -32,27 +30,12 @@
         type = lib.types.str;
         default = "x86_64-linux";
       };
-      nixos = {
-        enable = lib.mkEnableOption "nixos";
-        modules = lib.mkOption {
-          type = lib.types.listOf lib.types.anything;
-        };
-      };
       users = lib.mkOption {
         type = lib.types.attrsOf user_type;
-        default = base_config.defaultUsers;
-      };
-      homeBase = lib.mkOption {
-        type = lib.types.path;
-        default = "/home";
       };
       configLocation = lib.mkOption {
         type = lib.types.path;
         default = "${inputs.self}";
-      };
-      sharedHmModules = lib.mkOption {
-        type = lib.types.listOf lib.types.anything;
-        default = [];
       };
       laptop.enable = lib.mkEnableOption "laptop";
       cliOnly.enable = lib.mkEnableOption "cli config only";
@@ -68,6 +51,20 @@
         type = lib.types.path;
         default = inputs.self.outPath;
       };
+
+      nixos = {
+        enable = lib.mkEnableOption "nixos";
+        extraModules = lib.mkOption {
+          type = lib.types.listOf lib.types.deferredModule;
+        };
+        tags = lib.mkOption {
+          type = lib.types.attrsOf lib.types.bool;
+        };
+      };
+      sharedHmModules = lib.mkOption {
+        type = lib.types.listOf lib.types.deferredModule;
+        default = [];
+      };
     };
     config = {
       fullDesktop = lib.mkDefault (!config.cliOnly.enable);
@@ -75,9 +72,6 @@
   });
 in {
   options = {
-    defaultUsers = lib.mkOption {
-      type = lib.types.attrsOf user_type;
-    };
     hosts = lib.mkOption {
       type = lib.types.attrsOf host_type;
     };

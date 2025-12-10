@@ -1,5 +1,0 @@
-{
-  defaultUsers = {
-    max = {};
-  };
-}

@@ -19,16 +19,18 @@
   };
 
   outputs = inputs: let
+    fullConfig = lib.evalModules {
+      modules = [
+        ./hosts
+        ./options
+      ];
+      specialArgs = {
+        inherit inputs;
+      };
+    };
+
     hosts_set = let
-      base =
-        (lib.evalModules {
-          modules = [
-            ./hosts
-          ];
-          specialArgs = {
-            inherit inputs;
-          };
-        }).config.hosts;
+      base = fullConfig.config.hosts;
 
       convert_user = host: _name: user: user // {inherit host;};
       convert = _name: host: host // {users = builtins.mapAttrs (convert_user host) host.users;};
@@ -104,7 +106,7 @@
       modules = [
         {
           networking.hostName = host.name; # see config.system.name
-          imports = host.nixos.modules ++ [./modules];
+          imports = host.nixos.extraModules ++ [./modules];
           system.stateVersion = "25.05";
           users.users =
             builtins.mapAttrs (_: user: {
