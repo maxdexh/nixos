@@ -1,4 +1,8 @@
 {
+  imports = [
+    ./nvim/part.nix
+  ];
+
   defaultTags.default = true;
 
   parts.base = {
