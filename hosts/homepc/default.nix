@@ -28,5 +28,9 @@
       enable = true;
       remaps = true;
     };
+
+    tags = {
+      desktop = true;
+    };
   };
 }

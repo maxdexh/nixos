@@ -24,5 +24,9 @@
     };
 
     laptop.enable = true;
+
+    tags = {
+      desktop = true;
+    };
   };
 }

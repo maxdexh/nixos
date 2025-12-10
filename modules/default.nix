@@ -2,6 +2,7 @@
   imports = [
     ./nvim/part.nix
     ./nix-meta
+    ./cli
   ];
 
   defaultTags.default = true;

@@ -43,7 +43,11 @@
           conv = module:
             if part.alwaysMkIf
             then args: lib.mkIf cond (lib.toFunction module args)
-            else lib.optionalAttrs cond module;
+            else if cond
+            # HACK: We don't get the pkgs argument without doing this :shrug:
+            # FIXME: ignore warning for unused param
+            then args @ {pkgs, ...}: lib.toFunction module args
+            else {};
         in {
           hm = conv part.hm;
           nixos = conv part.nixos;
@@ -173,7 +177,7 @@
             host.users;
           nix.settings.trusted-users = builtins.attrNames host.users;
         }
-        ({pkgs, ...}: {
+        {
           # Home Manager user config
           home-manager.users =
             builtins.mapAttrs (_: user: base_hm_module host user)
@@ -182,10 +186,9 @@
           home-manager = {
             useGlobalPkgs = true; # Also inherits nixpkgs configs
             verbose = true;
-            # HACK: We just don't get the pkgs argument without doing this :shrug:
-            extraSpecialArgs = mk_special_args host "hm" // {inherit pkgs;};
+            extraSpecialArgs = mk_special_args host "hm";
           };
-        })
+        }
         inputs.home-manager.nixosModules.home-manager
       ];
 
