@@ -15,7 +15,7 @@
       ./hardware-configuration.nix
     ];
 
-    nixConfigLocation = "/etc/nixos";
+    # nixConfigLocation = "/etc/nixos";
     usIsoLayout = {
       enable = true;
       remaps = true;

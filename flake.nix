@@ -115,7 +115,7 @@
     };
 
     base_hm_module = host: user: {
-      imports = [host.hm.sharedModule user.hm.module ./modules] ++ host.modules.hm;
+      imports = [host.hm.sharedModule user.hm.module ./old-modules] ++ host.modules.hm;
       home.stateVersion = "25.05";
     };
 
@@ -125,7 +125,7 @@
       modules = [
         {
           networking.hostName = host.name; # see config.system.name
-          imports = [host.nixos.module ./modules] ++ host.modules.nixos;
+          imports = [host.nixos.module ./old-modules] ++ host.modules.nixos;
           system.stateVersion = "25.05";
           users.users =
             builtins.mapAttrs (_: user: {
