@@ -1,9 +1,9 @@
 {
   pkgs,
   config,
-  custom,
   lib,
   host,
+  cfgUtils,
   ctx,
   ...
 }: let
@@ -32,7 +32,7 @@ in ctx.hm.set {
 
     nh
     dix
-    (custom.lib.writeFishApplication {
+    (cfgUtils.writeFishApplication {
       name = "nixos-rebuild-diff";
       runtimeInputs = [pkgs.dix];
       text = /* fish */ ''

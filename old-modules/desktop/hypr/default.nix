@@ -3,7 +3,6 @@
   lib,
   ctx,
   host,
-  mkSymlink,
   ...
 }:
 lib.mkMerge [

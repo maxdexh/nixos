@@ -93,8 +93,36 @@
 
     mk_special_args = host: kind: let
       pkgs = host._pkgs;
-      mkSymlink = path: let path_str = toString path; in pkgs.runCommandLocal path_str {} "ln -s ${lib.escapeShellArg path_str} $out";
-      nixConfigSymlink = mkSymlink host.nixConfigLocation;
+
+      # TODO: Use overlays instead
+      cfgUtils.mkSymlink = path: let path_str = toString path; in pkgs.runCommandLocal path_str {} "ln -s ${lib.escapeShellArg path_str} $out";
+      cfgUtils.writeFishApplication = {
+        name,
+        text,
+        runtimeInputs ? [],
+        inheritPath ? true,
+        # TODO: runtimeEnv
+      }: pkgs.writeTextFile {
+        inherit name;
+        executable = true;
+        destination = "/bin/${name}";
+        meta.mainProgram = name;
+
+        text = /* fish */ ''
+          #!${lib.getExe pkgs.fish}
+
+          set ${
+            if inheritPath
+            then "--prepend"
+            else ""
+          } PATH (string split ':' -- "${
+            lib.makeBinPath runtimeInputs
+          }")
+
+          ${text}
+        '';
+      };
+
       path_prefix = "${inputs.self}/";
       mkNixConfigSymlink = path: let
         # Turn /nix/store/<hash>-<basename> into ${source-store}/actual/path/to/<basename>
@@ -103,8 +131,9 @@
         abs = builtins.unsafeDiscardStringContext (toString path);
         rel = assert lib.hasPrefix path_prefix abs; lib.removePrefix path_prefix abs;
       in "${nixConfigSymlink}/${rel}";
+      nixConfigSymlink = cfgUtils.mkSymlink host.nixConfigLocation;
     in {
-      inherit inputs mkSymlink;
+      inherit inputs cfgUtils;
       unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
       host = host // {inherit nixConfigSymlink mkNixConfigSymlink;};
       ctx = let
@@ -153,9 +182,8 @@
           home-manager = {
             useGlobalPkgs = true; # Also inherits nixpkgs configs
             verbose = true;
-            extraSpecialArgs =
-              mk_special_args host "hm"
-              // {inherit pkgs;};
+            # HACK: We just don't get the pkgs argument without doing this :shrug:
+            extraSpecialArgs = mk_special_args host "hm" // {inherit pkgs;};
           };
         })
         inputs.home-manager.nixosModules.home-manager

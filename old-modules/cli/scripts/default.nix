@@ -1,6 +1,6 @@
 {
   pkgs,
-  custom,
+  cfgUtils,
   ctx,
   ...
 }: ctx.hm.set {
@@ -9,10 +9,10 @@
       eval "$@" &>/dev/null &
       disown
     '')
-    (writeShellScriptBin "list-fonts" ''
+    (cfgUtils.writeShellScriptBin "list-fonts" ''
       fc-list | sed 's/.*:\s*\([^:]*\):.*/\1/' | tr ',' '\n' | sed 's/^[ \t]*//;s/[ \t]*$//' | sort | uniq
     '')
-    (custom.lib.writeFishApplication {
+    (cfgUtils.writeFishApplication {
       name = "find-mimes";
       text = /* fish */ ''
         set -l xdg_dirs (string split ':' -- $XDG_DATA_DIRS)
@@ -24,7 +24,7 @@
         end | string sub -s 3 --end=-4 | sort | uniq
       '';
     })
-    (custom.lib.writeFishApplication {
+    (cfgUtils.writeFishApplication {
       name = "find-unsynced";
       text = builtins.readFile ./find-unsynced.fish;
       runtimeInputs = [pkgs.fd];
