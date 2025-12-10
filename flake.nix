@@ -68,7 +68,7 @@
       in "${nixConfigSymlink}/${rel}";
     in {
       inherit inputs mkSymlink;
-      pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
+      unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
       host = host // {inherit nixConfigSymlink mkNixConfigSymlink;};
       ctx = let
         mk = name: {

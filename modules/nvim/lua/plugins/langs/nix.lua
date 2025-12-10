@@ -20,6 +20,7 @@ vim.lsp.config("nil_ls", {
       do
          local cap = client.capabilities or {}
          local td = cap.textDocument or {}
+         -- FIXME: nixd's hover info is bad, try replacing that part with nil_ls?
          client.capabilities = {
             -- nixd doesn't have semantic highlighting
             workspace = {
