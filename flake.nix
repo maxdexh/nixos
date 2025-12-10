@@ -19,7 +19,7 @@
   };
 
   outputs = inputs: let
-    fullConfig = lib.evalModules {
+    module_system = lib.evalModules {
       modules = [
         ./hosts
         ./options
@@ -28,14 +28,8 @@
         inherit inputs;
       };
     };
-
-    hosts_set = let
-      base = fullConfig.config.hosts;
-
-      convert_user = host: _name: user: user // {inherit host;};
-      convert = _name: host: host // {users = builtins.mapAttrs (convert_user host) host.users;};
-    in builtins.mapAttrs convert base;
-    hosts = builtins.attrValues hosts_set;
+    full_config = module_system.config;
+    hosts = builtins.attrValues full_config.hosts;
 
     alejandra_overlay = final: prev: {
       # https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/al/alejandra/package.nix
@@ -106,7 +100,7 @@
       modules = [
         {
           networking.hostName = host.name; # see config.system.name
-          imports = host.nixos.extraModules ++ [./modules];
+          imports = [host.nixos.module ./modules];
           system.stateVersion = "25.05";
           users.users =
             builtins.mapAttrs (_: user: {
@@ -121,7 +115,7 @@
           # Home Manager user config
           home-manager.users =
             builtins.mapAttrs (_: user: {
-              imports = host.sharedHmModules ++ user.modules ++ [./modules];
+              imports = [host.hm.sharedModule user.hm.module ./modules];
               home.stateVersion = "25.05";
             })
             host.users;
@@ -143,7 +137,7 @@
       extraSpecialArgs = mk_special_args host "hm";
       modules = [
         {
-          imports = host.sharedHmModules ++ user.modules ++ [./modules];
+          imports = [host.hm.sharedModule user.hm.module ./modules];
           home.stateVersion = "25.05";
           home.username = user.name;
           home.homeDirectory = user.homeDirectory;

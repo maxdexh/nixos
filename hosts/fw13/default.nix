@@ -2,16 +2,14 @@
   hosts.fw13 = {
     users.max = {};
 
-    sharedHmModules = [
-      ({host, ...}: {
-        wayland.windowManager.hyprland.settings.source = [
-          "${host.mkNixConfigSymlink ./hyprland.conf}"
-        ];
-      })
-    ];
+    hm.sharedModule = {host, ...}: {
+      wayland.windowManager.hyprland.settings.source = [
+        "${host.mkNixConfigSymlink ./hyprland.conf}"
+      ];
+    };
 
     nixos.enable = true;
-    nixos.extraModules = [
+    nixos.module.imports = [
       ./os.nix
       inputs.nixos-hardware.nixosModules.framework-13-7040-amd
       ./hardware-configuration.nix

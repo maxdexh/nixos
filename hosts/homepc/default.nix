@@ -2,16 +2,14 @@
   hosts.homepc = {
     users.max = {};
 
-    sharedHmModules = [
-      ({host, ...}: {
-        wayland.windowManager.hyprland.settings.source = [
-          "${host.mkNixConfigSymlink ./hyprland.conf}"
-        ];
-      })
-    ];
+    hm.sharedModule = {host, ...}: {
+      wayland.windowManager.hyprland.settings.source = [
+        "${host.mkNixConfigSymlink ./hyprland.conf}"
+      ];
+    };
 
     nixos.enable = true;
-    nixos.extraModules = let
+    nixos.module.imports = let
       hardware = inputs.nixos-hardware.nixosModules;
     in [
       ./os.nix

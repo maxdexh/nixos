@@ -9,9 +9,9 @@
         type = lib.types.str;
         default = name;
       };
-      modules = lib.mkOption {
-        type = lib.types.listOf lib.types.anything;
-        default = [];
+      hm.module = lib.mkOption {
+        type = lib.types.deferredModule;
+        default = {};
       };
     };
   });
@@ -37,14 +37,18 @@
         type = lib.types.path;
         default = "${inputs.self}";
       };
+      # FIXME: Use tags
       laptop.enable = lib.mkEnableOption "laptop";
+      # FIXME: Use tags
       cliOnly.enable = lib.mkEnableOption "cli config only";
 
+      # FIXME: Use tags
       usIsoLayout = {
         enable = lib.mkEnableOption "US ISO Keyboard Layout";
         remaps = lib.mkEnableOption "US ISO Keyboard Remaps";
       };
 
+      # FIXME: Use tags
       fullDesktop = lib.mkEnableOption "Whether a full desktop environment is available";
 
       nixConfigLocation = lib.mkOption {
@@ -52,18 +56,20 @@
         default = inputs.self.outPath;
       };
 
+      tags = lib.mkOption {
+        type = lib.types.attrsOf lib.types.bool;
+      };
       nixos = {
         enable = lib.mkEnableOption "nixos";
-        extraModules = lib.mkOption {
-          type = lib.types.listOf lib.types.deferredModule;
-        };
-        tags = lib.mkOption {
-          type = lib.types.attrsOf lib.types.bool;
+        module = lib.mkOption {
+          type = lib.types.deferredModule;
         };
       };
-      sharedHmModules = lib.mkOption {
-        type = lib.types.listOf lib.types.deferredModule;
-        default = [];
+      hm = {
+        sharedModule = lib.mkOption {
+          type = lib.types.deferredModule;
+          default = {};
+        };
       };
     };
     config = {
