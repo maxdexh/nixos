@@ -4,12 +4,12 @@
   ctx,
   ...
 }: ctx.hm.set {
-  home.packages = with pkgs; [
-    (writeShellScriptBin "start" ''
+  home.packages = [
+    (pkgs.writeShellScriptBin "start" ''
       eval "$@" &>/dev/null &
       disown
     '')
-    (cfgUtils.writeShellScriptBin "list-fonts" ''
+    (pkgs.writeShellScriptBin "list-fonts" ''
       fc-list | sed 's/.*:\s*\([^:]*\):.*/\1/' | tr ',' '\n' | sed 's/^[ \t]*//;s/[ \t]*$//' | sort | uniq
     '')
     (cfgUtils.writeFishApplication {
