@@ -19,6 +19,8 @@
   };
 
   outputs = inputs: let
+    lib = inputs.nixpkgs.lib;
+
     module_system = lib.evalModules {
       modules = [
         ./hosts
@@ -29,11 +31,19 @@
       };
     };
     full_config = module_system.config;
+
+    cond_module = cond: module: args: lib.mkIf cond (lib.toFunction module args);
+
     modules_of = host: let
       tags = full_config.defaultTags // host.tags;
       parts =
-        builtins.filter
-        (part: builtins.any (tag: tags.${tag}) part.tags)
+        map
+        (part: let
+          cond = cond_module (builtins.any (tag: tags.${tag}) part.tags);
+        in {
+          hm = cond part.hm;
+          nixos = cond part.nixos;
+        })
         (builtins.attrValues full_config.parts);
       modules = lib.zipAttrs parts;
     in {
@@ -72,8 +82,6 @@
         };
       }))
     ];
-
-    lib = inputs.nixpkgs.lib;
 
     mk_special_args = host: kind: let
       pkgs = pkgs_by_system.${host.system};

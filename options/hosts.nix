@@ -9,6 +9,7 @@
         type = lib.types.str;
         default = name;
       };
+      # FIXME: Use tags
       hm.module = lib.mkOption {
         type = lib.types.deferredModule;
         default = {};
@@ -61,11 +62,13 @@
       };
       nixos = {
         enable = lib.mkEnableOption "nixos";
+        # FIXME: Use tags
         module = lib.mkOption {
           type = lib.types.deferredModule;
         };
       };
       hm = {
+        # FIXME: Use tags
         sharedModule = lib.mkOption {
           type = lib.types.deferredModule;
           default = {};
