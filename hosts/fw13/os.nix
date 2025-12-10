@@ -1,8 +1,4 @@
-{
-  pkgs,
-  ctx,
-  ...
-}: ctx.os.set {
+{pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     powertop
     nvme-cli

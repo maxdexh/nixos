@@ -90,11 +90,10 @@
       }))
     ];
 
-    mk_special_args = host: kind: let
+    mk_special_args = host: _: let
       pkgs = host._pkgs;
 
       # TODO: Use overlays instead
-      cfgUtils.mkSymlink = path: let path_str = toString path; in pkgs.runCommandLocal path_str {} "ln -s ${lib.escapeShellArg path_str} $out";
       cfgUtils.writeFishApplication = {
         name,
         text,
@@ -122,6 +121,8 @@
         '';
       };
 
+      # TODO: Do escaping like hm, to make store names more readable
+      cfgUtils.mkSymlink = path: let path_str = toString path; in pkgs.runCommandLocal path_str {} "ln -s ${lib.escapeShellArg path_str} $out";
       path_prefix = "${inputs.self}/";
       mkNixConfigSymlink = path: let
         # Turn /nix/store/<hash>-<basename> into ${source-store}/actual/path/to/<basename>
@@ -135,23 +136,10 @@
       inherit inputs cfgUtils;
       unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
       host = host // {inherit nixConfigSymlink mkNixConfigSymlink;};
-      ctx = let
-        mk = name: {
-          ${name} = rec {
-            inherit name;
-            enabled = kind == name;
-            set = lib.optionalAttrs enabled;
-            list = lib.optionals enabled;
-          };
-        };
-      in
-        {inherit kind;}
-        // mk "os"
-        // mk "hm";
     };
 
     base_hm_module = host: user: {
-      imports = [host.hm.sharedModule user.hm.module ./old-modules] ++ host.modules.hm;
+      imports = [host.hm.sharedModule user.hm.module] ++ host.modules.hm;
       home.stateVersion = "25.05";
     };
 
@@ -161,7 +149,7 @@
       modules = [
         {
           networking.hostName = host.name; # see config.system.name
-          imports = [host.nixos.module ./old-modules] ++ host.modules.nixos;
+          imports = [host.nixos.module] ++ host.modules.nixos;
           system.stateVersion = "25.05";
           users.users =
             builtins.mapAttrs (_: user: {
