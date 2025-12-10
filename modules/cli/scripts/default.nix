@@ -2,11 +2,7 @@
   parts.scripts = {
     tags = ["default"];
 
-    hm = {
-      pkgs,
-      cfgUtils,
-      ...
-    }: {
+    hm = {pkgs, ...}: {
       home.packages = [
         (pkgs.writeShellScriptBin "start" ''
           eval "$@" &>/dev/null &
@@ -15,7 +11,7 @@
         (pkgs.writeShellScriptBin "list-fonts" ''
           fc-list | sed 's/.*:\s*\([^:]*\):.*/\1/' | tr ',' '\n' | sed 's/^[ \t]*//;s/[ \t]*$//' | sort | uniq
         '')
-        (cfgUtils.writeFishApplication {
+        (pkgs.cfgUtils.writeFishApplication {
           name = "find-mimes";
           text = /* fish */ ''
             set -l xdg_dirs (string split ':' -- $XDG_DATA_DIRS)
@@ -27,7 +23,7 @@
             end | string sub -s 3 --end=-4 | sort | uniq
           '';
         })
-        (cfgUtils.writeFishApplication {
+        (pkgs.cfgUtils.writeFishApplication {
           name = "find-unsynced";
           text = builtins.readFile ./find-unsynced.fish;
           runtimeInputs = [pkgs.fd];

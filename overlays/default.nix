@@ -3,4 +3,5 @@ map import [
   ./tdf-main.nix
   ./home-patches
   ./mathematica
+  ./cfg-utils.nix
 ]

@@ -5,7 +5,6 @@
     hm = {
       pkgs,
       config,
-      cfgUtils,
       host,
       ...
     }: let
@@ -23,18 +22,18 @@
         flake = host.nixConfigLocation;
       };
 
-      home.packages = with pkgs; [
+      home.packages = [
         (pkgs.writeShellScriptBin "fetch-nix-programs" ''
           mkdir -p ${lib.escapeShellArg programs_sql_cache} && cd "$_"
           curl -sL 'https://channels.nixos.org/nixos-25.11-small/nixexprs.tar.xz' | tar -xvJ --wildcards '*/programs.sqlite' --strip-components 1
         '')
-        alejandra
+        pkgs.alejandra
 
-        nix-search-cli
+        pkgs.nix-search-cli
 
-        nh
-        dix
-        (cfgUtils.writeFishApplication {
+        pkgs.nh
+        pkgs.dix
+        (pkgs.cfgUtils.writeFishApplication {
           name = "nixos-rebuild-diff";
           runtimeInputs = [pkgs.dix];
           text = /* fish */ ''

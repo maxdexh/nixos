@@ -53,38 +53,11 @@
       hm = modules.hm or [];
     };
 
-    host_extras = host: let
+    # Some attributes for host._internals that are only available in this flake
+    # (specialArgs gets the original host attrset)
+    host_flake_internals = host: let
       pkgs = pkgs_by_system.${host.system};
-      # TODO: Use overlays instead
-      cfgUtils.writeFishApplication = {
-        name,
-        text,
-        runtimeInputs ? [],
-        inheritPath ? true,
-        # TODO: runtimeEnv
-      }: pkgs.writeTextFile {
-        inherit name;
-        executable = true;
-        destination = "/bin/${name}";
-        meta.mainProgram = name;
 
-        text = /* fish */ ''
-          #!${lib.getExe pkgs.fish}
-
-          set ${
-            if inheritPath
-            then "--prepend"
-            else ""
-          } PATH (string split ':' -- "${
-            lib.makeBinPath runtimeInputs
-          }")
-
-          ${text}
-        '';
-      };
-
-      # TODO: Do escaping like hm, to make store names more readable
-      cfgUtils.mkSymlink = path: let path_str = toString path; in pkgs.runCommandLocal path_str {} "ln -s ${lib.escapeShellArg path_str} $out";
       path_prefix = "${inputs.self}/";
       mkNixConfigSymlink = path: let
         # Turn /nix/store/<hash>-<basename> into ${source-store}/actual/path/to/<basename>
@@ -93,17 +66,18 @@
         abs = builtins.unsafeDiscardStringContext (toString path);
         rel = assert lib.hasPrefix path_prefix abs; lib.removePrefix path_prefix abs;
       in "${nixConfigSymlink}/${rel}";
-      nixConfigSymlink = cfgUtils.mkSymlink host.nixConfigLocation;
+      nixConfigSymlink = pkgs.cfgUtils.mkSymlink host.nixConfigLocation;
     in {
+      inherit pkgs;
       modules = modules_of host;
-      _pkgs = pkgs;
-      _specialArgs = {
-        inherit inputs cfgUtils;
+      specialArgs = {
+        inherit inputs;
+
         unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
         host = host // {inherit nixConfigSymlink mkNixConfigSymlink;};
       };
     };
-    hosts = map (host: host // host_extras host) (builtins.attrValues full_config.hosts);
+    hosts = map (host: host // {_internals = host_flake_internals host;}) (builtins.attrValues full_config.hosts);
 
     alejandra_overlay = final: prev: {
       # https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/al/alejandra/package.nix
@@ -137,17 +111,17 @@
     ];
 
     base_hm_module = host: user: {
-      imports = [host.hm.sharedModule user.hm.module] ++ host.modules.hm;
+      imports = [host.hm.sharedModule user.hm.module] ++ host._internals.modules.hm;
       home.stateVersion = "25.05";
     };
 
     nixos_system = host: lib.nixosSystem {
-      pkgs = host._pkgs;
+      pkgs = host._internals.pkgs;
 
       modules = [
         {
           networking.hostName = host.name; # see config.system.name
-          imports = [host.nixos.module] ++ host.modules.nixos;
+          imports = [host.nixos.module] ++ host._internals.modules.nixos;
           system.stateVersion = "25.05";
           users.users =
             builtins.mapAttrs (_: user: {
@@ -167,18 +141,18 @@
           home-manager = {
             useGlobalPkgs = true; # Also inherits nixpkgs configs
             verbose = true;
-            extraSpecialArgs = host._specialArgs;
+            extraSpecialArgs = host._internals.specialArgs;
           };
         }
         inputs.home-manager.nixosModules.home-manager
       ];
 
-      specialArgs = host._specialArgs;
+      specialArgs = host._internals.specialArgs;
     };
 
     standalone_hm_config = host: user: inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = pkgs_by_system.${host.system};
-      extraSpecialArgs = host._specialArgs;
+      extraSpecialArgs = host._internals.specialArgs;
       modules = [
         (base_hm_module host user)
         {
