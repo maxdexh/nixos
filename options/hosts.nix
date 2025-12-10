@@ -59,6 +59,7 @@
 
       tags = lib.mkOption {
         type = lib.types.attrsOf lib.types.bool;
+        default = {};
       };
       nixos = {
         enable = lib.mkEnableOption "nixos";

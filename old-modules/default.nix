@@ -1,7 +1,6 @@
 {
   imports = [
     ./custom
-    ./base.nix
     ./nix-meta
     ./build-helpers.nix
     ./nixld.nix

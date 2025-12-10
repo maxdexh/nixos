@@ -25,6 +25,7 @@
       modules = [
         ./hosts
         ./options
+        ./modules
       ];
       specialArgs = {
         inherit inputs;
@@ -32,17 +33,20 @@
     };
     full_config = module_system.config;
 
-    cond_module = cond: module: args: lib.mkIf cond (lib.toFunction module args);
-
+    # TODO: Add option to always put module behind mkIf
     modules_of = host: let
       tags = full_config.defaultTags // host.tags;
       parts =
         map
         (part: let
-          cond = cond_module (builtins.any (tag: tags.${tag}) part.tags);
+          cond = builtins.any (tag: tags.${tag}) part.tags;
+          conv = module:
+            if part.alwaysMkIf
+            then args: lib.mkIf cond (lib.toFunction module args)
+            else lib.optionalAttrs cond module;
         in {
-          hm = cond part.hm;
-          nixos = cond part.nixos;
+          hm = conv part.hm;
+          nixos = conv part.nixos;
         })
         (builtins.attrValues full_config.parts);
       modules = lib.zipAttrs parts;

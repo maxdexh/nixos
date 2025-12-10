@@ -1,9 +1,8 @@
 {
   pkgs,
-  ctx,
   host,
   ...
-}: ctx.os.set {
+}: {
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
   # Bootloader.

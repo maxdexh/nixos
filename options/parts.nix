@@ -1,20 +1,23 @@
 {lib, ...}: let
   part_type = {name, ...}: {
-    name = lib.mkOption {
-      type = lib.types.str;
-      default = name;
-      readOnly = true;
-    };
-    tags = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-    };
-    nixos = lib.mkOption {
-      type = lib.types.deferredModule;
-      default = {};
-    };
-    hm = lib.mkOption {
-      type = lib.type.deferredModule;
-      default = {};
+    options = {
+      name = lib.mkOption {
+        type = lib.types.str;
+        default = name;
+        readOnly = true;
+      };
+      tags = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+      };
+      nixos = lib.mkOption {
+        type = lib.types.anything;
+        default = {};
+      };
+      hm = lib.mkOption {
+        type = lib.types.anything;
+        default = {};
+      };
+      alwaysMkIf = lib.mkEnableOption "always use mkIf";
     };
   };
 in {
