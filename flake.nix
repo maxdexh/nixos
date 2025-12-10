@@ -33,7 +33,6 @@
     };
     full_config = module_system.config;
 
-    # TODO: Add option to always put module behind mkIf
     modules_of = host: let
       tags = full_config.defaultTags // host.tags;
       parts =
@@ -53,46 +52,9 @@
       nixos = modules.nixos or [];
       hm = modules.hm or [];
     };
-    hosts = map (host: host
-      // {
-        modules = modules_of host;
-        _pkgs = pkgs_by_system.${host.system};
-      }) (builtins.attrValues full_config.hosts);
 
-    alejandra_overlay = final: prev: {
-      # https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/al/alejandra/package.nix
-      # https://nixos.org/manual/nixpkgs/stable/#compiling-rust-applications-with-cargo
-      # FIXME: Provide a better flake.nix over there instead.
-      alejandra = prev.rustPlatform.buildRustPackage {
-        pname = "alejandra";
-        version = "4.0.0";
-        src = inputs.alejandra-fork;
-        doCheck = false;
-        cargoHash = "sha256-IX4xp8llB7USpS/SSQ9L8+17hQk5nkXFP8NgFKVLqKU=";
-        meta = {
-          license = prev.lib.licenses.unlicense;
-          mainProgram = "alejandra";
-        };
-      };
-    };
-
-    # TODO: Use another module system for overlays, and let them depend on hosts
-    # (how to make outputs.packages depend on host?)
-    overlays = import ./overlays ++ [alejandra_overlay];
-    # Like nixpkgs.legacyPackages, maps systems to packages
-    pkgs_by_system = lib.pipe hosts [
-      (builtins.groupBy (host: host.system))
-      (builtins.mapAttrs (system: _: import inputs.nixpkgs {
-        inherit system overlays;
-        config = {
-          allowUnfree = true;
-        };
-      }))
-    ];
-
-    mk_special_args = host: _: let
-      pkgs = host._pkgs;
-
+    host_extras = host: let
+      pkgs = pkgs_by_system.${host.system};
       # TODO: Use overlays instead
       cfgUtils.writeFishApplication = {
         name,
@@ -133,10 +95,46 @@
       in "${nixConfigSymlink}/${rel}";
       nixConfigSymlink = cfgUtils.mkSymlink host.nixConfigLocation;
     in {
-      inherit inputs cfgUtils;
-      unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
-      host = host // {inherit nixConfigSymlink mkNixConfigSymlink;};
+      modules = modules_of host;
+      _pkgs = pkgs;
+      _specialArgs = {
+        inherit inputs cfgUtils;
+        unstable = inputs.nixpkgs-unstable.legacyPackages.${host.system};
+        host = host // {inherit nixConfigSymlink mkNixConfigSymlink;};
+      };
     };
+    hosts = map (host: host // host_extras host) (builtins.attrValues full_config.hosts);
+
+    alejandra_overlay = final: prev: {
+      # https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/al/alejandra/package.nix
+      # https://nixos.org/manual/nixpkgs/stable/#compiling-rust-applications-with-cargo
+      # FIXME: Provide a better flake.nix over there instead.
+      alejandra = prev.rustPlatform.buildRustPackage {
+        pname = "alejandra";
+        version = "4.0.0";
+        src = inputs.alejandra-fork;
+        doCheck = false;
+        cargoHash = "sha256-IX4xp8llB7USpS/SSQ9L8+17hQk5nkXFP8NgFKVLqKU=";
+        meta = {
+          license = prev.lib.licenses.unlicense;
+          mainProgram = "alejandra";
+        };
+      };
+    };
+
+    # TODO: Use another module system for overlays, and let them depend on hosts
+    # (how to make outputs.packages depend on host?)
+    overlays = import ./overlays ++ [alejandra_overlay];
+    # Like nixpkgs.legacyPackages, maps systems to packages
+    pkgs_by_system = lib.pipe hosts [
+      (builtins.groupBy (host: host.system))
+      (builtins.mapAttrs (system: _: import inputs.nixpkgs {
+        inherit system overlays;
+        config = {
+          allowUnfree = true;
+        };
+      }))
+    ];
 
     base_hm_module = host: user: {
       imports = [host.hm.sharedModule user.hm.module] ++ host.modules.hm;
@@ -169,18 +167,18 @@
           home-manager = {
             useGlobalPkgs = true; # Also inherits nixpkgs configs
             verbose = true;
-            extraSpecialArgs = mk_special_args host "hm";
+            extraSpecialArgs = host._specialArgs;
           };
         }
         inputs.home-manager.nixosModules.home-manager
       ];
 
-      specialArgs = mk_special_args host "os";
+      specialArgs = host._specialArgs;
     };
 
     standalone_hm_config = host: user: inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = pkgs_by_system.${host.system};
-      extraSpecialArgs = mk_special_args host "hm";
+      extraSpecialArgs = host._specialArgs;
       modules = [
         (base_hm_module host user)
         {
