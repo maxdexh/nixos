@@ -71,9 +71,7 @@
     };
   });
 in {
-  options = {
-    hosts = lib.mkOption {
-      type = lib.types.attrsOf host_type;
-    };
+  options.hosts = lib.mkOption {
+    type = lib.types.attrsOf host_type;
   };
 }
