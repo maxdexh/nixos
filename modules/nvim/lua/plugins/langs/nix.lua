@@ -81,7 +81,8 @@ vim.lsp.config("nixd", {
    filetypes = { "nix" },
    settings = {
       nixd = {
-         formatting = { command = { "alejandra" } },
+         -- Uses nixfmt on standalone files and freezes sometimes, for no reason.
+         -- formatting = { command = { "alejandra" } },
          options = nix_options,
       },
    },
@@ -101,6 +102,14 @@ return {
       "mason.nvim",
       opts = {
          ensure_installed = { "nil" },
+      },
+   },
+   {
+      "stevearc/conform.nvim",
+      opts = {
+         formatters_by_ft = {
+            nix = { "alejandra" },
+         },
       },
    },
    {
