@@ -1,8 +1,4 @@
-{
-  pkgs,
-  ctx,
-  ...
-}: ctx.os.set {
+{pkgs, ...}: {
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
     libudev-zero
