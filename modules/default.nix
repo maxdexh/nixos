@@ -3,6 +3,7 @@
     ./nvim/part.nix
     ./nix-meta
     ./cli
+    ./custom
   ];
 
   defaultTags.default = true;

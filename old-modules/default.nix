@@ -1,6 +1,5 @@
 {
   imports = [
-    ./custom
     ./desktop
     ./langs
   ];
