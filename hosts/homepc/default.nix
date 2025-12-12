@@ -4,7 +4,7 @@
       hm.module.home.homeDirectory = "/home/max";
     };
 
-    hm.sharedModule = {host, ...}: {
+    hm.shared.module = {host, ...}: {
       wayland.windowManager.hyprland.settings.source = [
         "${host.mkNixConfigSymlink ./hyprland.conf}"
       ];

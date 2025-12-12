@@ -33,26 +33,6 @@
     };
     full_config = module_system.config;
 
-    modules_of = host: let
-      tags = full_config.defaultTags // host.tags;
-      parts =
-        map
-        (part: let
-          conv = module:
-            if builtins.any (tag: tags.${tag}) part.tags
-            then module
-            else {};
-        in {
-          hm = conv part.hm;
-          nixos = conv part.nixos;
-        })
-        (builtins.attrValues full_config.parts);
-      modules = lib.zipAttrs parts;
-    in {
-      nixos = modules.nixos or [];
-      hm = modules.hm or [];
-    };
-
     # Some attributes for host._internals that are only available in this flake
     # (specialArgs gets the original host attrset)
     host_flake_internals = host: let
@@ -69,7 +49,6 @@
       nixConfigSymlink = pkgs.cfgUtils.mkSymlink host.nixConfigLocation;
     in {
       inherit pkgs;
-      modules = modules_of host;
       specialArgs = {
         inherit inputs;
 
@@ -110,8 +89,10 @@
       }))
     ];
 
-    base_hm_module = host: user: {
-      imports = [host.hm.sharedModule user.hm.module] ++ host._internals.modules.hm;
+    base_hm_module = user: {
+      imports = [user.hm.module];
+
+      # FIXME: Move
       home.stateVersion = "25.05";
     };
 
@@ -119,12 +100,15 @@
       pkgs = host._internals.pkgs;
 
       modules = [
+        host.nixos.module
         {
+          # FIXME: Move to default
           networking.hostName = host.name; # see config.system.name
-          imports = [host.nixos.module] ++ host._internals.modules.nixos;
+          # FIXME: Move
           system.stateVersion = "25.05";
           users.users =
             builtins.mapAttrs (_: user: {
+              # FIXME: Move to user
               isNormalUser = true;
               description = user.name;
               extraGroups = ["networkmanager" "wheel"];
@@ -135,7 +119,7 @@
         {
           # Home Manager user config
           home-manager.users =
-            builtins.mapAttrs (_: user: base_hm_module host user)
+            builtins.mapAttrs (_: user: base_hm_module user)
             host.users;
 
           home-manager = {
@@ -154,8 +138,9 @@
       pkgs = pkgs_by_system.${host.system};
       extraSpecialArgs = host._internals.specialArgs;
       modules = [
-        (base_hm_module host user)
+        (base_hm_module user)
         {
+          # FIXME: move
           home.username = user.name;
         }
       ];

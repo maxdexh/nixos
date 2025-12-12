@@ -1,4 +1,4 @@
-{lib, ...}: {
+{
   parts.iso-layout = {
     tags = ["default"];
     hm = {
@@ -56,6 +56,7 @@
     tags = ["default"];
     nixos = {
       config,
+      lib,
       host,
       ...
     }: {

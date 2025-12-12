@@ -2,14 +2,10 @@
   parts.misc-desktop-apps = {
     tags = ["desktop"];
 
-    nixos = {
-      host,
-      pkgs,
-      ...
-    }: {
+    nixos = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [openvpn gnumake];
 
-      programs.steam.enable = host.fullDesktop;
+      programs.steam.enable = true;
     };
 
     hm = {pkgs, ...}: {
