@@ -2,9 +2,7 @@
   hosts.homepc = {
     stateVersion = "25.05";
 
-    users.max = {
-      hm.module.home.homeDirectory = "/home/max";
-    };
+    users.max = {};
 
     hm.shared.module = {host, ...}: {
       wayland.windowManager.hyprland.settings.source = [

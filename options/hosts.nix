@@ -3,7 +3,7 @@ full_args @ {
   lib,
   ...
 }: let
-  user_type = host_args: lib.types.submodule ({name, ...}: {
+  user_type = host_args: lib.types.submodule (user_args @ {name, ...}: {
     options = {
       name = lib.mkOption {
         type = lib.types.str;
@@ -20,7 +20,15 @@ full_args @ {
       };
     };
     config = {
-      hm.module = host_args.config.hm.shared.module;
+      hm.module = lib.mkMerge [
+        host_args.config.hm.shared.module
+        {
+          home = {
+            username = lib.mkDefault user_args.config.name;
+            homeDirectory = lib.mkDefault "/home/${user_args.config.name}";
+          };
+        }
+      ];
     };
   });
 
@@ -89,10 +97,6 @@ full_args @ {
         nixos_parts
         {
           system.stateVersion = host_args.config.stateVersion;
-          home-manager = {
-            useGlobalPkgs = true; # Also inherits nixpkgs configs
-            verbose = true;
-          };
         }
       ];
       hm.shared.module = lib.mkMerge [

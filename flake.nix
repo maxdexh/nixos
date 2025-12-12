@@ -89,10 +89,6 @@
       }))
     ];
 
-    base_hm_module = user: {
-      imports = [user.hm.module];
-    };
-
     nixos_system = host: lib.nixosSystem {
       pkgs = host._internals.pkgs;
 
@@ -112,12 +108,10 @@
           nix.settings.trusted-users = builtins.attrNames host.users;
         }
         {
-          # Home Manager user config
-          home-manager.users =
-            builtins.mapAttrs (_: user: base_hm_module user)
-            host.users;
-
           home-manager = {
+            useGlobalPkgs = true; # Also inherits nixpkgs configs
+            verbose = true;
+            users = builtins.mapAttrs (_: user: user.hm.module) host.users;
             extraSpecialArgs = host._internals.specialArgs;
           };
         }
@@ -130,13 +124,7 @@
     standalone_hm_config = host: user: inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = pkgs_by_system.${host.system};
       extraSpecialArgs = host._internals.specialArgs;
-      modules = [
-        (base_hm_module user)
-        {
-          # FIXME: move
-          home.username = user.name;
-        }
-      ];
+      modules = [user.hm.module];
     };
   in {
     nixosConfigurations = lib.pipe hosts [
