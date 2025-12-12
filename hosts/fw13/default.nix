@@ -1,5 +1,7 @@
 {inputs, ...}: {
   hosts.fw13 = {
+    stateVersion = "25.05";
+
     users.max = {
       hm.module.home.homeDirectory = "/home/max";
     };

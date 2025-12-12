@@ -91,9 +91,6 @@
 
     base_hm_module = user: {
       imports = [user.hm.module];
-
-      # FIXME: Move
-      home.stateVersion = "25.05";
     };
 
     nixos_system = host: lib.nixosSystem {
@@ -104,8 +101,6 @@
         {
           # FIXME: Move to default
           networking.hostName = host.name; # see config.system.name
-          # FIXME: Move
-          system.stateVersion = "25.05";
           users.users =
             builtins.mapAttrs (_: user: {
               # FIXME: Move to user
@@ -123,8 +118,6 @@
             host.users;
 
           home-manager = {
-            useGlobalPkgs = true; # Also inherits nixpkgs configs
-            verbose = true;
             extraSpecialArgs = host._internals.specialArgs;
           };
         }
