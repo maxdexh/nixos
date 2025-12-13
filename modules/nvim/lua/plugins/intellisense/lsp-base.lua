@@ -7,7 +7,8 @@ return {
             bashls = {},
             jsonls = {},
             yamlls = {},
-            lemminx = {},
+            -- FIXME: Creates folder in home dir
+            -- lemminx = {},
          },
          -- FIXME: This doesn't belong here
          inlay_hints = {
