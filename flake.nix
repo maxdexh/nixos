@@ -66,7 +66,7 @@
       (builtins.groupBy (host: host.system))
       (builtins.mapAttrs (system: _: import inputs.nixpkgs {
         inherit system;
-        overlays = builtins.attrValues full_config.globalOverlays;
+        overlays = builtins.attrValues full_config.overlays;
         config = {
           allowUnfree = true;
         };

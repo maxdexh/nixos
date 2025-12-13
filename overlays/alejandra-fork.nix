@@ -2,7 +2,7 @@
   # https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/al/alejandra/package.nix
   # https://nixos.org/manual/nixpkgs/stable/#compiling-rust-applications-with-cargo
   # FIXME: Provide a better flake.nix over there instead.
-  globalOverlays.alejandra-fork = final: prev: {
+  overlays.alejandra-fork = final: prev: {
     alejandra = prev.rustPlatform.buildRustPackage {
       pname = "alejandra";
       version = "4.0.0";

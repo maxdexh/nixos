@@ -1,5 +1,5 @@
 {
-  globalOverlays.cfg-package-utils = final: prev: {
+  overlays.cfg-package-utils = final: prev: {
     cfgUtils = assert !(prev ? cfgUtils); {
       # TODO: Do escaping like hm, to make store names more readable
       mkSymlink = path: let

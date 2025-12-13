@@ -1,5 +1,5 @@
 {
-  globalOverlays.swaync-no-kde = final: prev: {
+  overlays.swaync-no-kde = final: prev: {
     # Patch the swaync binary to just exit when run under KDE
     swaync = let
       base = prev.swaynotificationcenter;

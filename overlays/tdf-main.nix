@@ -1,7 +1,7 @@
 {
   # Uses a newer version of tdf. package spec copied from nixpkgs.
   # TODO: Use overrides instead (see nixpkgs manual for how to do this with rust)
-  globalOverlays.tdf-main = final: prev: {
+  overlays.tdf-main = final: prev: {
     tdf = prev.rustPlatform.buildRustPackage (finalAttrs: {
       pname = "tdf";
       version = "0.5.0";
