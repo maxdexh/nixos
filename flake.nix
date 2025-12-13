@@ -26,6 +26,7 @@
         ./hosts
         ./options
         ./modules
+        ./overlays
       ];
       specialArgs = {
         inherit inputs;
@@ -58,31 +59,14 @@
     };
     hosts = map (host: host // {_internals = host_flake_internals host;}) (builtins.attrValues full_config.hosts);
 
-    alejandra_overlay = final: prev: {
-      # https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/al/alejandra/package.nix
-      # https://nixos.org/manual/nixpkgs/stable/#compiling-rust-applications-with-cargo
-      # FIXME: Provide a better flake.nix over there instead.
-      alejandra = prev.rustPlatform.buildRustPackage {
-        pname = "alejandra";
-        version = "4.0.0";
-        src = inputs.alejandra-fork;
-        doCheck = false;
-        cargoHash = "sha256-IX4xp8llB7USpS/SSQ9L8+17hQk5nkXFP8NgFKVLqKU=";
-        meta = {
-          license = prev.lib.licenses.unlicense;
-          mainProgram = "alejandra";
-        };
-      };
-    };
-
     # TODO: Use another module system for overlays, and let them depend on hosts
     # (how to make outputs.packages depend on host?)
-    overlays = import ./overlays ++ [alejandra_overlay];
     # Like nixpkgs.legacyPackages, maps systems to packages
     pkgs_by_system = lib.pipe hosts [
       (builtins.groupBy (host: host.system))
       (builtins.mapAttrs (system: _: import inputs.nixpkgs {
-        inherit system overlays;
+        inherit system;
+        overlays = builtins.attrValues full_config.globalOverlays;
         config = {
           allowUnfree = true;
         };
