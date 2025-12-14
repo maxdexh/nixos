@@ -7,6 +7,7 @@
       pkgs,
       ...
     }: {
+      # FIXME: Fix performance issues
       programs.bash = {
         enable = true;
         # Make sure this comes before everything, including e.g. shellAliases

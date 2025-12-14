@@ -21,6 +21,7 @@
   outputs = inputs: let
     lib = inputs.nixpkgs.lib;
 
+    # TODO: Try to add nixd completions for this somehow?
     module_system = lib.evalModules {
       modules = [
         ./hosts
@@ -30,14 +31,6 @@
       ];
       specialArgs = {
         inherit inputs;
-        builders = {
-          singleAttrPartMod = partName: tags: attrName: value: {
-            parts.${partName} = {
-              inherit tags;
-              ${attrName} = value;
-            };
-          };
-        };
       };
     };
     full_config = module_system.config;
