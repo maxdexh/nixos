@@ -66,6 +66,12 @@ full_args @ {
       tags = lib.mkOption {
         type = lib.types.attrsOf lib.types.bool;
       };
+      stateVersion = lib.mkOption {
+        type = lib.types.uniq lib.types.str;
+      };
+
+      # TODO: Make these readonly, use parts for these
+      # instead, so that we can mkIf them too
       nixos = {
         enable = lib.mkEnableOption "nixos";
         module = lib.mkOption {
@@ -75,9 +81,6 @@ full_args @ {
       hm.shared.module = lib.mkOption {
         type = lib.types.deferredModule;
       };
-      stateVersion = lib.mkOption {
-        type = lib.types.uniq lib.types.str;
-      };
     };
 
     config = let
@@ -86,20 +89,20 @@ full_args @ {
       all_parts = builtins.attrValues full_args.config.parts;
       filtered_parts = builtins.filter (part: builtins.any (tag: tags.${tag}) part.tags) all_parts;
 
-      parts_attrs_lists = lib.zipAttrs filtered_parts;
-      nixos_parts = lib.mkMerge parts_attrs_lists.nixos;
-      hm_parts = lib.mkMerge parts_attrs_lists.hm;
+      module_kinds = builtins.zipAttrsWith (_: lib.mkMerge) filtered_parts;
     in {
       tags = builtins.mapAttrs (_: lib.mkDefault) full_args.config.defaultTags;
       nixos.module = lib.mkMerge [
-        nixos_parts
+        module_kinds.nixos
+        module_kinds.nixosOrHm
         {
           system.stateVersion = host_args.config.stateVersion;
         }
       ];
       hm.shared.module = lib.mkMerge [
-        hm_parts
+        module_kinds.hm
         {
+          imports = lib.optional (!host_args.config.nixos.enable) module_kinds.nixosOrHm;
           home.stateVersion = host_args.config.stateVersion;
         }
       ];

@@ -1,4 +1,5 @@
 {lib, ...}: let
+  # TODO: Figure out a way to wrap modules in mkIf
   part_type = {name, ...}: {
     options = {
       name = lib.mkOption {
@@ -13,17 +14,16 @@
       #   - Condition.oneOf
       #   - Condition.allOf
       #   - Condition.not
-      #   - Condition.checkHost
-      #   - Condition.tag
-      #   - `true`
+      #   - Condition.checkHost (with helpers for hostname with existence check, ifNixos, hasPart, etc.)
+      #   - Condition.tag (simple objects, created via options)
+      #   - `true`/`false`
       tags = lib.mkOption {
         type = lib.types.listOf lib.types.str;
       };
 
-      # NOTE: do not touch the types of these,
-      # it can break things like `pkgs` being
-      # passed to modules and `mkForce` will
-      # stop working
+      # NOTE: The types of these must preserve function args,
+      # since `pkgs` might not be passed otherwise. It also
+      # needs to defer things like `mkForce`.
       nixos = lib.mkOption {
         type = lib.types.deferredModule;
         default = {};
@@ -32,11 +32,14 @@
         type = lib.types.deferredModule;
         default = {};
       };
+      # FIXME: Do this with tags instead?
+      nixosOrHm = lib.mkOption {
+        type = lib.types.deferredModule;
+        default = {};
+      };
     };
   };
 in {
-  # TODO: Extend tag system to general host -> bool functions
-  # TODO: Allow depending on other tag values, including host's
   options.defaultTags = lib.mkOption {
     type = lib.types.attrsOf (lib.types.nullOr lib.types.bool);
     default = {};

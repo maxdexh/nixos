@@ -73,6 +73,7 @@
           os = "nixos-rebuild";
           osr = "nixos-rebuild repl";
           oss = "sudo nixos-rebuild switch";
+          # TODO: Can we do the same thing but to diff the config by imitating the nixos-option command?
           osd = "nixos-rebuild-diff"; # TODO: Write one for hm too
         })
       ];

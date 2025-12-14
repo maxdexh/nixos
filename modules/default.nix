@@ -12,4 +12,14 @@
   ];
 
   defaultTags.default = true;
+
+  parts.nix-settings = {
+    tags = ["default"];
+    nixosOrHm = {
+      nix.settings = {
+        experimental-features = ["nix-command" "flakes"];
+        use-xdg-base-directories = true;
+      };
+    };
+  };
 }
