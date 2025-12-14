@@ -81,11 +81,6 @@ in {
       # TODO: Is this even needed?
       programs.carapace = shellint-no-bash;
 
-      # This sucks, but I can't be bothered.
-      xdg.configFile."nixpkgs/config.nix".text = ''
-        { allowUnfree = true; }
-      '';
-
       # nix run github:b3nj5m1n/xdg-ninja
       home.file.".ignore".text = ''
         /.cache

@@ -1,3 +1,5 @@
+- programs.kitty.quickAccessTerminalConfig for nixos-rebuild, etc.
+
 - nix devenv
 - programs.vicinae/sherlock/onagre/services.walker/hyprshell (rofi alternatives)
 - services.clipcat (clipboard manager)
@@ -10,7 +12,6 @@
 - Try home-manager.minimal for build times
 - programs.wleave (logout/shutdown menu)
 - programs.nvchecker (update checker)
-- programs.kitty.quickAccessTerminalConfig
 - hyprland submaps
 - programs.nyxt
 - programs.meli
