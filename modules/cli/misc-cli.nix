@@ -78,8 +78,7 @@ in {
       programs.fzf = shellint;
 
       # NOTE: Breaks blesh
-      # FIXME: Reenable after figuring out a way to force path completions
-      # programs.carapace = shellint-no-bash;
+      programs.carapace = shellint-no-bash;
 
       # nix run github:b3nj5m1n/xdg-ninja
       home.file.".ignore".text = ''
