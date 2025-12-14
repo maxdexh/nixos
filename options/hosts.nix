@@ -76,7 +76,7 @@ full_args @ {
         type = lib.types.deferredModule;
       };
       stateVersion = lib.mkOption {
-        type = lib.types.uniq lib.types.anything;
+        type = lib.types.uniq lib.types.str;
       };
     };
 
@@ -84,11 +84,9 @@ full_args @ {
       tags = host_args.config.tags;
 
       all_parts = builtins.attrValues full_args.config.parts;
-
       filtered_parts = builtins.filter (part: builtins.any (tag: tags.${tag}) part.tags) all_parts;
 
       parts_attrs_lists = lib.zipAttrs filtered_parts;
-
       nixos_parts = lib.mkMerge parts_attrs_lists.nixos;
       hm_parts = lib.mkMerge parts_attrs_lists.hm;
     in {

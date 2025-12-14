@@ -6,6 +6,16 @@
         default = name;
         readOnly = true;
       };
+
+      # TODO:
+      # - Require predefining tags, checked lookup of tags in attrset
+      # - Instead use `enableIf` attribute with sum types representing conditions
+      #   - Condition.oneOf
+      #   - Condition.allOf
+      #   - Condition.not
+      #   - Condition.checkHost
+      #   - Condition.tag
+      #   - `true`
       tags = lib.mkOption {
         type = lib.types.listOf lib.types.str;
       };
@@ -32,7 +42,7 @@ in {
     default = {};
   };
   options.parts = lib.mkOption {
-    type = lib.types.attrsOf (lib.types.submodule part_type);
+    type = lib.types.attrsOf (lib.types.uniq (lib.types.submodule part_type));
     default = {};
   };
 }

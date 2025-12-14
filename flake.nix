@@ -30,6 +30,14 @@
       ];
       specialArgs = {
         inherit inputs;
+        builders = {
+          singleAttrPartMod = partName: tags: attrName: value: {
+            parts.${partName} = {
+              inherit tags;
+              ${attrName} = value;
+            };
+          };
+        };
       };
     };
     full_config = module_system.config;
