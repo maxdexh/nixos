@@ -96,6 +96,8 @@ full_args @ {
         module_kinds.nixos
         module_kinds.nixosOrHm
         {
+          networking.hostName = host_args.config.name;
+          system.name = host_args.config.name;
           system.stateVersion = host_args.config.stateVersion;
         }
       ];

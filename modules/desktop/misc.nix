@@ -3,8 +3,13 @@
     tags = ["desktop"];
 
     nixos = {pkgs, ...}: {
+      virtualisation.podman = {
+        enable = true;
+        dockerCompat = true;
+      };
+
       services.ratbagd.enable = true; # For piper
-      environment.systemPackages = [pkgs.piper];
+      environment.systemPackages = [pkgs.distrobox pkgs.piper];
 
       services.xserver.enable = true;
 

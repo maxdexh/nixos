@@ -1,4 +1,6 @@
 - programs.kitty.quickAccessTerminalConfig for nixos-rebuild, etc.
+- nix-shell indicator
+- https://sw.kovidgoyal.net/kitty/kittens/desktop-ui/
 
 - nix devenv
 - programs.vicinae/sherlock/onagre/services.walker/hyprshell (rofi alternatives)

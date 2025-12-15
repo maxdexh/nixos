@@ -2,7 +2,7 @@
   homeDirOverlays = {
     lunar-client = {};
     thunderbird = {};
-    maven = {};
+    # maven = {};
     mathematica.package = prev: prev.mathematica.override {
       source = prev.requireFile {
         name = "Wolfram_14.3.0_LIN_Bndl.sh";

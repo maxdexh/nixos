@@ -60,9 +60,6 @@
     };
     hosts = map (host: host // {_internals = host_flake_internals host;}) (builtins.attrValues full_config.hosts);
 
-    # TODO: Use another module system for overlays, and let them depend on hosts
-    # (how to make outputs.packages depend on host?)
-    # Like nixpkgs.legacyPackages, maps systems to packages
     pkgs_by_system = lib.pipe hosts [
       (builtins.groupBy (host: host.system))
       (builtins.mapAttrs (system: _: import inputs.nixpkgs {
@@ -80,8 +77,6 @@
       modules = [
         host.nixos.module
         {
-          # FIXME: Move to default
-          networking.hostName = host.name; # see config.system.name
           users.users =
             builtins.mapAttrs (_: user: {
               # FIXME: Move to user
