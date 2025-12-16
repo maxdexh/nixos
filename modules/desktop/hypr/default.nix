@@ -1,6 +1,6 @@
 {
   parts.hyprland = {
-    enableIf.tags.desktop = true;
+    enableIf.tags.fullDesktop = true;
 
     nixos = {pkgs, ...}: {
       programs.hyprland = {
@@ -64,7 +64,7 @@
               "clock"
             ];
           in
-            if host.laptop.enable
+            if host.checkCond {tags.laptop = true;}
             then modules
             else lib.lists.remove "group/energy" modules;
 

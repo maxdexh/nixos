@@ -10,9 +10,16 @@
     };
 
     hm.shared.module = {host, ...}: {
-      wayland.windowManager.hyprland.settings.source = [
-        "${host.mkNixConfigSymlink ./hyprland.conf}"
-      ];
+      wayland.windowManager.hyprland.settings = {
+        source = [
+          "${host.mkNixConfigSymlink ./hyprland.conf}"
+        ];
+        # NOTE: This does not work when put into ./hyprland.conf and I have no idea why
+        input = {
+          kb_layout = "us";
+          kb_variant = "altgr-intl";
+        };
+      };
     };
 
     nixos.enable = true;
@@ -27,17 +34,19 @@
       hardware.common-cpu-amd-zenpower
       ./hardware-configuration.nix
     ];
+    nixos.module.services.xserver.xkb = {
+      layout = "us";
+      variant = "altgr-intl";
+    };
 
     # nixConfigLocation = "/etc/nixos";
 
-    usIsoLayout = {
-      enable = true;
-      remaps = true;
-    };
-
     tags = {
       personal = true;
-      desktop = true;
+      fullDesktop = true;
+      nixos = true;
+      laptop = false;
+      qwertyPatch = true;
     };
   };
 }

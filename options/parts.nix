@@ -20,14 +20,9 @@
         type = lib.types.deferredModule;
         default = {};
       };
-      # FIXME: Allow the same part to have multiple submodules with different conditions
+      # FIXME: Allow the same part to have multiple submodules with different conditions (needs nice api first)
       # FIXME: This does not give a way to filter by users
       hm = lib.mkOption {
-        type = lib.types.deferredModule;
-        default = {};
-      };
-      # FIXME: Do this with tags instead?
-      nixosOrHm = lib.mkOption {
         type = lib.types.deferredModule;
         default = {};
       };

@@ -1,6 +1,6 @@
 {
   parts.desktop-misc = {
-    enableIf.tags.desktop = true;
+    enableIf.tags.fullDesktop = true;
 
     nixos = {pkgs, ...}: {
       virtualisation.podman = {
@@ -72,7 +72,7 @@
         TERMINAL = "kitty";
       };
 
-      # TODO: Configure more default apps
+      # FIXME: Configure more default apps
       xdg.mimeApps = {
         enable = true;
         defaultApplications = {

@@ -3,8 +3,6 @@ modArgs @ {
   inputs,
   ...
 }: let
-  inherit (modArgs.config.lib) checkCond;
-
   # TODO: Let the host configure how to setup users by default
   hostTy = args @ {
     name,
@@ -26,14 +24,6 @@ modArgs @ {
       configLocation = lib.mkOption {
         type = lib.types.path;
         default = "${inputs.self}";
-      };
-      # FIXME: Use tags
-      laptop.enable = lib.mkEnableOption "laptop";
-
-      # FIXME: Use tags
-      usIsoLayout = {
-        enable = lib.mkEnableOption "US ISO Keyboard Layout";
-        remaps = lib.mkEnableOption "US ISO Keyboard Remaps";
       };
 
       nixConfigLocation = lib.mkOption {
@@ -57,12 +47,17 @@ modArgs @ {
       hm.shared.module = lib.mkOption {
         type = lib.types.deferredModule;
       };
+
+      checkCond = lib.mkOption {
+        readOnly = true;
+        default = cond: modArgs.config.lib.checkCond cond config;
+      };
     };
 
     config = let
       filteredParts =
         builtins.filter
-        (part: checkCond part.enableIf config)
+        (part: config.checkCond part.enableIf)
         (builtins.attrValues modArgs.config.parts);
 
       modKinds = builtins.zipAttrsWith (_: lib.mkMerge) filteredParts;
@@ -77,7 +72,6 @@ modArgs @ {
     in {
       nixos.module = lib.mkMerge [
         modKinds.nixos
-        modKinds.nixosOrHm
         {
           networking.hostName = config.name;
           system.name = config.name;
@@ -98,7 +92,6 @@ modArgs @ {
       hm.shared.module = lib.mkMerge [
         modKinds.hm
         {
-          imports = lib.optional (!config.nixos.enable) modKinds.nixosOrHm;
           home.stateVersion = config.stateVersion;
         }
       ];

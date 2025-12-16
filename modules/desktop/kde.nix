@@ -1,6 +1,6 @@
 {
   parts.kde = {
-    enableIf.tags.desktop = true;
+    enableIf.tags.fullDesktop = true;
 
     nixos = {pkgs, ...}: {
       services.desktopManager.plasma6.enable = true;

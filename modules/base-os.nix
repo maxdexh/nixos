@@ -55,12 +55,12 @@
       # enable bluetooth
       hardware.bluetooth = {
         enable = true;
-        powerOnBoot = !host.laptop.enable;
+        powerOnBoot = !host.checkCond {tags.laptop = true;};
       };
 
       programs.neovim = {
         enable = true;
-        defaultEditor = true;
+        defaultEditor = true; # TODO: remove?
       };
       environment.systemPackages = with pkgs; [
         wl-clipboard

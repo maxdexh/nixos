@@ -1,6 +1,6 @@
 {
   parts.desktop-entries = {
-    enableIf.tags.desktop = true;
+    enableIf.tags.fullDesktop = true;
     hm = {
       pkgs,
       lib,

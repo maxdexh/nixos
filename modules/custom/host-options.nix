@@ -1,51 +1,29 @@
 {
-  parts.iso-layout = {
-    enableIf.tags.personal = true;
-    hm = {
-      lib,
-      host,
-      ...
-    }: {
-      wayland.windowManager.hyprland.settings.input = lib.mkIf host.usIsoLayout.enable {
-        kb_layout = "us";
-        kb_variant = "altgr-intl";
-      };
-    };
-    nixos = {
-      lib,
-      host,
-      ...
-    }: {
-      services.xserver.xkb = lib.mkIf host.usIsoLayout.enable {
-        layout = "us";
-        variant = "altgr-intl";
+  parts.capslock-escape = {
+    enableIf.tags.fullDesktop = true;
+    nixos.services.keyd = {
+      enable = true;
+      keyboards.default = {
+        settings.main.capslock = "esc";
       };
     };
   };
 
   parts.iso-remap = {
-    enableIf.tags.personal = true;
-    nixos = {
-      lib,
-      host,
-      ...
-    }: {
-      services.keyd = lib.mkIf (host.usIsoLayout.enable && host.usIsoLayout.remaps) {
-        enable = true;
-        keyboards.default = {
-          ids = ["*"];
-          settings = {
-            main = {
-              z = "y";
-              y = "z";
-              capslock = "esc";
-            };
-            # Assumes AltGr key combining with ä on q, ö on p, ü on y.
-            altgr = {
-              a = "G-q";
-              o = "G-p";
-              u = "G-y";
-            };
+    enableIf.tags.qwertyPatch = true;
+    nixos.services.keyd = {
+      enable = true;
+      keyboards.default = {
+        settings = {
+          main = {
+            z = "y";
+            y = "z";
+          };
+          # Assumes AltGr key combining with ä on q, ö on p, ü on y.
+          altgr = {
+            a = "G-q";
+            o = "G-p";
+            u = "G-y";
           };
         };
       };
@@ -53,14 +31,13 @@
   };
 
   parts.keyd-palm-reject-fix = {
-    enableIf.tags.personal = true;
+    enableIf.tags.laptop = true;
     nixos = {
       config,
       lib,
-      host,
       ...
     }: {
-      environment.etc."libinput/local-overrides.quirks" = lib.mkIf (config.services.keyd.enable && host.laptop.enable) {
+      environment.etc."libinput/local-overrides.quirks" = lib.mkIf config.services.keyd.enable {
         text = ''
           [Serial Keyboards]
           MatchUdevType=keyboard

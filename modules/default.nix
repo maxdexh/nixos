@@ -1,4 +1,11 @@
-{
+let
+  nixSettingsModule = {
+    nix.settings = {
+      experimental-features = ["nix-command" "flakes"];
+      use-xdg-base-directories = true;
+    };
+  };
+in {
   imports = [
     ./nvim/part.nix
     ./nix-meta
@@ -11,13 +18,12 @@
     ./xdg-vars.nix
   ];
 
-  parts.nix-settings = {
-    enableIf.tags.personal = true;
-    nixosOrHm = {
-      nix.settings = {
-        experimental-features = ["nix-command" "flakes"];
-        use-xdg-base-directories = true;
-      };
-    };
+  parts.nix-settings-nixos = {
+    enableIf.tags.nixos = true;
+    nixos = nixSettingsModule;
+  };
+  parts.nix-settings-hm = {
+    enableIf.tags.nixos = false;
+    hm = nixSettingsModule;
   };
 }
