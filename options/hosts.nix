@@ -13,6 +13,15 @@ full_args @ {
         type = lib.types.deferredModule;
         default = {};
       };
+      nixos = {
+        userConf = lib.mkOption {
+          type = lib.types.anything;
+        };
+        isTrusted = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+        };
+      };
       host = lib.mkOption {
         type = host_type;
         default = host_args.config;
@@ -29,6 +38,11 @@ full_args @ {
           };
         }
       ];
+      nixos.userConf = {
+        isNormalUser = lib.mkDefault true;
+        description = lib.mkDefault user_args.config.name;
+        extraGroups = lib.mkDefault ["networkmanager" "wheel"];
+      };
     };
   });
 
@@ -99,6 +113,17 @@ full_args @ {
           networking.hostName = host_args.config.name;
           system.name = host_args.config.name;
           system.stateVersion = host_args.config.stateVersion;
+        }
+        {
+          users.users = lib.pipe host_args.config.users [
+            builtins.attrValues
+            (map (user: {
+              name = user.name;
+              value = user.nixos.userConf;
+            }))
+            builtins.listToAttrs
+          ];
+          nix.settings.trusted-users = builtins.attrNames host_args.config.users;
         }
       ];
       hm.shared.module = lib.mkMerge [

@@ -77,17 +77,6 @@
       modules = [
         host.nixos.module
         {
-          users.users =
-            builtins.mapAttrs (_: user: {
-              # FIXME: Move to user
-              isNormalUser = true;
-              description = user.name;
-              extraGroups = ["networkmanager" "wheel"];
-            })
-            host.users;
-          nix.settings.trusted-users = builtins.attrNames host.users;
-        }
-        {
           home-manager = {
             useGlobalPkgs = true; # Also inherits nixpkgs configs
             verbose = true;
