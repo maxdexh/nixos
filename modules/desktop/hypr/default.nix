@@ -1,6 +1,6 @@
 {
   parts.hyprland = {
-    tags = ["desktop"];
+    enableIf.tags.desktop = true;
 
     nixos = {pkgs, ...}: {
       programs.hyprland = {

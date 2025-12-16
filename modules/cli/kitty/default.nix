@@ -1,6 +1,6 @@
 {
   parts.kitty = {
-    tags = ["desktop"];
+    enableIf.tags.desktop = true;
 
     nixos = {pkgs, ...}: {
       environment.systemPackages = [pkgs.kitty];

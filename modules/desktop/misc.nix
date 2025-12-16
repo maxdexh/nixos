@@ -1,6 +1,6 @@
 {
   parts.desktop-misc = {
-    tags = ["desktop"];
+    enableIf.tags.desktop = true;
 
     nixos = {pkgs, ...}: {
       virtualisation.podman = {

@@ -14,7 +14,7 @@ let
   };
 in {
   parts.misc-cli = {
-    tags = ["personal"];
+    enableIf.tags.personal = true;
 
     # TODO: Split up
     hm = {pkgs, ...}: {

@@ -1,6 +1,6 @@
 {
   parts.pferd = {
-    tags = ["personal"];
+    enableIf.tags.personal = true;
 
     hm = {
       unstable,

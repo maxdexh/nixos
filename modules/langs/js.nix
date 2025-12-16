@@ -1,6 +1,6 @@
 {
   parts.js = {
-    tags = ["personal"];
+    enableIf.tags.personal = true;
 
     hm = {
       config,

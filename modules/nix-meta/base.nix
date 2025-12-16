@@ -1,6 +1,6 @@
 {inputs, ...}: {
   parts.nix-meta-cfg = {
-    tags = ["personal"];
+    enableIf.tags.personal = true;
 
     hm = {host, ...}: {
       programs.home-manager.enable = true;

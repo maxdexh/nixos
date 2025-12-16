@@ -1,4 +1,8 @@
-{lib, ...}: let
+{
+  lib,
+  config,
+  ...
+}: let
   # TODO: Figure out a way to wrap modules in mkIf
   partTy = {name, ...}: {
     options = {
@@ -8,19 +12,7 @@
         readOnly = true;
       };
 
-      # TODO:
-      # - Require predefining tags, checked lookup of tags in attrset
-      # - Instead use `enableIf` attribute with sum types representing conditions
-      #   - Condition.oneOf
-      #   - Condition.allOf
-      #   - Condition.not
-      #   - Condition.checkHost (with helpers for hostname with existence check, ifNixos, hasPart, etc.)
-      #   - Condition.tag (simple objects, created via options)
-      #   - `true`/`false`
-      tags = lib.mkOption {
-        type = lib.types.listOf lib.types.str;
-      };
-      enable = lib.mkOption {
+      enableIf = lib.mkOption {
         type = condTy;
       };
 
@@ -42,55 +34,57 @@
     };
   };
 
+  checkCond = let
+    byTag = {
+      check = checkFn: checkFn;
+      all = conds: arg: builtins.all (cond: checkCond cond arg) conds;
+      any = conds: arg: builtins.any (cond: checkCond cond arg) conds;
+      not = cond: arg: !checkCond cond arg;
+      tags = tagset: arg: assert tagset != {}; let
+        checkTag = {
+          name,
+          value,
+        }: let
+          defaultCond = config.tags.${name}.default or (throw "${arg.name or arg.username} must define a default for tag '${name}'");
+          default = checkCond defaultCond arg;
+          tagValue = arg.tags.${name} or default;
+        in value == tagValue;
+      in
+        builtins.all checkTag (lib.attrsToList tagset);
+    };
+  in cond: arg:
+    if builtins.isBool cond
+    then cond
+    else
+      builtins.all (
+        {
+          name,
+          value,
+        }: byTag.${name} value arg
+      ) (assert cond != {}; lib.attrsToList cond);
+
   condDeclTy = lib.types.attrTag {
-    noneOf = lib.mkOption {
+    check = lib.mkOption {
+      type = lib.uniq (lib.types.functionTo lib.types.bool);
+    };
+    all = lib.mkOption {
       type = lib.types.listOf condTy;
     };
-    oneOf = lib.mkOption {
-      type = lib.types.listOf condTy;
-    };
-    allOf = lib.mkOption {
-      type = lib.types.listOf condTy;
-    };
-    anyOf = lib.mkOption {
+    any = lib.mkOption {
       type = lib.types.listOf condTy;
     };
     not = lib.mkOption {
       type = condTy;
     };
-
-    tag = lib.mkOption {
-      type = lib.types.submodule {
-        options.name = lib.mkOption {
-          type = lib.types.str; # TODO: Constrain to declared tags
-        };
-      };
-    };
-
-    checks = lib.mkOption {
-      type = lib.types.submodule {
-        host = lib.mkOption {
-          type = lib.uniq (lib.types.functionTo lib.types.bool);
-        };
-        user = lib.mkOption {
-          type = lib.uniq (lib.types.functionTo lib.types.bool);
-        };
-      };
-    };
-
-    hostCheck = lib.mkOption {
-      type = lib.uniq (lib.types.functionTo lib.types.bool);
-    };
-    userCheck = lib.mkOption {
-      type = lib.uniq (lib.types.functionTo lib.types.bool);
+    tags = lib.mkOption {
+      type = lib.types.attrsOf lib.types.bool;
     };
   };
 
   condTy = lib.types.either lib.types.bool condDeclTy;
 in {
-  options.defaultTags = lib.mkOption {
-    type = lib.types.attrsOf (lib.types.nullOr lib.types.bool);
-    default = {};
+  config.lib = {
+    inherit condTy checkCond;
   };
 
   options = {
@@ -99,6 +93,7 @@ in {
       default = {};
     };
 
+    # FIXME: Differentiate user and host tags.
     tags = lib.mkOption {
       type = lib.types.attrsOf (lib.types.submodule ({name, ...}: {
         options = {
@@ -107,14 +102,12 @@ in {
             default = name;
           };
           default = lib.mkOption {
-            type = lib.types.bool;
+            type = condTy;
           };
+          # disableOverride =
+          # conficts =
         };
       }));
-    };
-
-    conds = lib.mkOption {
-      type = lib.types.attrsOf condDeclTy;
     };
   };
 }

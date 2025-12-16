@@ -12,7 +12,7 @@
   ];
 
   parts.nix-settings = {
-    tags = ["personal"];
+    enableIf.tags.personal = true;
     nixosOrHm = {
       nix.settings = {
         experimental-features = ["nix-command" "flakes"];

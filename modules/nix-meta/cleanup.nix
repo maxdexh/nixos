@@ -1,6 +1,6 @@
 {
   parts.cleanup = {
-    tags = ["personal"];
+    enableIf.tags.personal = true;
 
     hm.programs.nh = {
       enable = true;

@@ -1,6 +1,6 @@
 {
   parts.python = {
-    tags = ["personal"];
+    enableIf.tags.personal = true;
 
     hm = {
       config,

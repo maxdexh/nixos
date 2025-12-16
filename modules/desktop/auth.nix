@@ -1,6 +1,6 @@
 {
   parts.desktop-auth = {
-    tags = ["desktop"];
+    enableIf.tags.desktop = true;
 
     nixos = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [

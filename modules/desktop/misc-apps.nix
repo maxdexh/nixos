@@ -1,6 +1,6 @@
 {
   parts.misc-desktop-apps = {
-    tags = ["desktop"];
+    enableIf.tags.desktop = true;
 
     nixos = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [openvpn gnumake];

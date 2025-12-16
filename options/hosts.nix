@@ -3,6 +3,8 @@ modArgs @ {
   inputs,
   ...
 }: let
+  inherit (modArgs.config.lib) checkCond;
+
   # TODO: Let the host configure how to setup users by default
   hostTy = args @ {
     name,
@@ -58,10 +60,10 @@ modArgs @ {
     };
 
     config = let
-      tags = config.tags;
-
-      allParts = builtins.attrValues modArgs.config.parts;
-      filteredParts = builtins.filter (part: builtins.any (tag: tags.${tag}) part.tags) allParts;
+      filteredParts =
+        builtins.filter
+        (part: checkCond part.enableIf config)
+        (builtins.attrValues modArgs.config.parts);
 
       modKinds = builtins.zipAttrsWith (_: lib.mkMerge) filteredParts;
 
@@ -73,8 +75,6 @@ modArgs @ {
         }) users
       );
     in {
-      tags = builtins.mapAttrs (_: lib.mkDefault) modArgs.config.defaultTags;
-
       nixos.module = lib.mkMerge [
         modKinds.nixos
         modKinds.nixosOrHm

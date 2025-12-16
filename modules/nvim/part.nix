@@ -1,6 +1,6 @@
 {
   parts.nvim = {
-    tags = ["personal"];
+    enableIf.tags.personal = true;
 
     hm = {
       host,
