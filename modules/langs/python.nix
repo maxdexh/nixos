@@ -1,6 +1,6 @@
 {
   parts.python = {
-    tags = ["default"];
+    tags = ["personal"];
 
     hm = {
       config,

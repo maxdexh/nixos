@@ -1,6 +1,6 @@
 {
   parts.cpp = {
-    tags = ["default"];
+    tags = ["personal"];
 
     hm = {pkgs, ...}: {
       home.packages = with pkgs; [gcc];

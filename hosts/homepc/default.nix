@@ -36,6 +36,7 @@
     };
 
     tags = {
+      personal = true;
       desktop = true;
     };
   };

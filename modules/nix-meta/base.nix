@@ -1,6 +1,6 @@
 {inputs, ...}: {
   parts.nix-meta-cfg = {
-    tags = ["default"];
+    tags = ["personal"];
 
     hm = {host, ...}: {
       programs.home-manager.enable = true;
@@ -16,6 +16,12 @@
     };
 
     nixos = {
+      config,
+      host,
+      ...
+    }: {
+      nix.settings.trusted-users = map (user: config.users.users.${user.username}.name) (builtins.attrValues host.users);
+
       nix.channel.enable = false;
 
       # TODO: Set via hm if not on nixos

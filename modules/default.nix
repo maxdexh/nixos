@@ -11,10 +11,8 @@
     ./xdg-vars.nix
   ];
 
-  defaultTags.default = true;
-
   parts.nix-settings = {
-    tags = ["default"];
+    tags = ["personal"];
     nixosOrHm = {
       nix.settings = {
         experimental-features = ["nix-command" "flakes"];

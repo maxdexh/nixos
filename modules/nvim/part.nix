@@ -1,6 +1,6 @@
 {
   parts.nvim = {
-    tags = ["default"];
+    tags = ["personal"];
 
     hm = {
       host,

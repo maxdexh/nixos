@@ -31,6 +31,7 @@
     laptop.enable = true;
 
     tags = {
+      personal = true;
       desktop = true;
     };
   };

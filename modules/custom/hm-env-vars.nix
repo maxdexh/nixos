@@ -1,6 +1,6 @@
 {
   parts.hm-env-vars = {
-    tags = ["default"];
+    tags = ["personal"];
 
     hm = {
       lib,

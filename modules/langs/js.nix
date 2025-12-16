@@ -1,6 +1,6 @@
 {
   parts.js = {
-    tags = ["default"];
+    tags = ["personal"];
 
     hm = {
       config,

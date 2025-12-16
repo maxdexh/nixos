@@ -1,6 +1,6 @@
 {
   parts.scripts = {
-    tags = ["default"];
+    tags = ["personal"];
 
     hm = {pkgs, ...}: {
       home.packages = [

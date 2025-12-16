@@ -1,6 +1,6 @@
 {
   parts.rust = {
-    tags = ["default"];
+    tags = ["personal"];
 
     hm = {
       config,

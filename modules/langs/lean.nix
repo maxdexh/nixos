@@ -1,6 +1,6 @@
 {
   parts.lean = {
-    tags = ["default"];
+    tags = ["personal"];
 
     hm = {pkgs, ...}: {
       home.packages = with pkgs; [lean4];

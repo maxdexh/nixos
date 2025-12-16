@@ -1,6 +1,6 @@
 {
   parts.tex = {
-    tags = ["default"];
+    tags = ["personal"];
 
     hm = {pkgs, ...}: {
       home.packages = with pkgs; [

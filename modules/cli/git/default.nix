@@ -1,6 +1,6 @@
 {
   parts.git = {
-    tags = ["default"];
+    tags = ["personal"];
 
     hm = {host, ...}: {
       programs.git = {

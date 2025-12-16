@@ -1,6 +1,6 @@
 {
   parts.iso-layout = {
-    tags = ["default"];
+    tags = ["personal"];
     hm = {
       lib,
       host,
@@ -24,7 +24,7 @@
   };
 
   parts.iso-remap = {
-    tags = ["default"];
+    tags = ["personal"];
     nixos = {
       lib,
       host,
@@ -53,7 +53,7 @@
   };
 
   parts.keyd-palm-reject-fix = {
-    tags = ["default"];
+    tags = ["personal"];
     nixos = {
       config,
       lib,

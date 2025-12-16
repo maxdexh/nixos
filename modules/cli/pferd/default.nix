@@ -1,6 +1,6 @@
 {
   parts.pferd = {
-    tags = ["default"];
+    tags = ["personal"];
 
     hm = {
       unstable,

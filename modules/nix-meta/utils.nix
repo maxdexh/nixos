@@ -1,6 +1,6 @@
 {lib, ...}: {
   parts.nix-utils = {
-    tags = ["default"];
+    tags = ["personal"];
 
     hm = {
       pkgs,

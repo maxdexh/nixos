@@ -1,6 +1,6 @@
 {
   parts.bash = {
-    tags = ["default"];
+    tags = ["personal"];
 
     hm = {
       host,

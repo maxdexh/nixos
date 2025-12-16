@@ -3,6 +3,7 @@ modArgs @ {
   inputs,
   ...
 }: let
+  # TODO: Let the host configure how to setup users by default
   hostTy = args @ {
     name,
     config,
@@ -67,7 +68,7 @@ modArgs @ {
       users = builtins.attrValues config.users;
       mkUserAttrs = mkValue: builtins.listToAttrs (
         map (user: {
-          name = user.name;
+          name = user.username;
           value = mkValue user;
         }) users
       );
@@ -82,13 +83,14 @@ modArgs @ {
           system.name = config.name;
           system.stateVersion = config.stateVersion;
 
-          nix.settings.trusted-users = lib.mkDefault (
-            map (user: user.name)
-            (builtins.filter (user: user.nixos.isTrusted) users)
-          );
-          users.users = mkUserAttrs (user: {
-            description = lib.mkDefault user.name;
-          });
+          users.users = mkUserAttrs (user: lib.mkMerge [
+            {
+              description = lib.mkDefault user.username;
+              name = user.username;
+              home = user.homeDirectory;
+            }
+            user.nixos.user
+          ]);
           home-manager.users = mkUserAttrs (user: user.hm.module);
         }
       ];
@@ -109,10 +111,15 @@ modArgs @ {
     ...
   }: {
     options = {
-      name = lib.mkOption {
+      username = lib.mkOption {
         type = lib.types.str;
         default = name;
       };
+      homeDirectory = lib.mkOption {
+        type = lib.types.str;
+        default = "/home/${config.username}";
+      };
+
       hm.module = lib.mkOption {
         type = lib.types.deferredModule;
         default = {};
@@ -122,10 +129,6 @@ modArgs @ {
           type = lib.types.attrsOf lib.types.anything;
           # TODO: A defaultExtraGroups option would be nice
           # NOTE: Must be set explicitly, either isNormalUser or isSystemUser (see nixos docs)
-        };
-        isTrusted = lib.mkOption {
-          type = lib.types.bool;
-          default = true;
         };
       };
 
@@ -139,8 +142,8 @@ modArgs @ {
         hostArgs.config.hm.shared.module
         {
           home = {
-            username = lib.mkDefault config.name;
-            homeDirectory = lib.mkDefault "/home/${config.name}";
+            username = config.username;
+            homeDirectory = config.homeDirectory;
           };
         }
       ];

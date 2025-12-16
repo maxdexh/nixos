@@ -1,6 +1,6 @@
 {
   parts.base-os = {
-    tags = ["default"];
+    tags = ["personal"];
     nixos = {
       pkgs,
       host,
@@ -19,6 +19,8 @@
       i18n = {
         defaultLocale = "en_US.UTF-8";
 
+        # FIXME: Use british date format with german time format?
+        # Some apps decide language for date based on time locale.
         extraLocaleSettings = {
           LC_ADDRESS = "de_DE.UTF-8";
           LC_IDENTIFICATION = "de_DE.UTF-8";
