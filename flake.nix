@@ -80,7 +80,6 @@
           home-manager = {
             useGlobalPkgs = true; # Also inherits nixpkgs configs
             verbose = true;
-            users = builtins.mapAttrs (_: user: user.hm.module) host.users;
             extraSpecialArgs = host._internals.specialArgs;
           };
         }

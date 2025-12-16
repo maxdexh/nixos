@@ -21,9 +21,6 @@
         type = lib.types.listOf lib.types.str;
       };
 
-      # NOTE: The types of these must preserve function args,
-      # since `pkgs` might not be passed otherwise. It also
-      # needs to defer things like `mkForce`.
       nixos = lib.mkOption {
         type = lib.types.deferredModule;
         default = {};

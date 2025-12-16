@@ -2,7 +2,12 @@
   hosts.fw13 = {
     stateVersion = "25.05";
 
-    users.max = {};
+    users.max = {
+      nixos.user = {
+        isNormalUser = true;
+        extraGroups = ["networkmanager" "wheel"];
+      };
+    };
 
     hm.shared.module = {host, ...}: {
       wayland.windowManager.hyprland.settings.source = [
