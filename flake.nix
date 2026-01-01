@@ -106,7 +106,7 @@
 
     homeConfigurations = lib.pipe hosts [
       (builtins.concatMap (host: map (user: {
-        name = "${user.name}@${host.name}";
+        name = "${user.username}@${host.name}";
         value = standalone_hm_config host user;
       }) (builtins.attrValues host.users)))
       builtins.listToAttrs
