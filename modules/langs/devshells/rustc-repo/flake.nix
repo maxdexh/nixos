@@ -1,5 +1,6 @@
 # NOTE: Use this flake when compiling rustc.
 # https://discourse.nixos.org/t/building-rustc-in-nixos/20938/4
+# https://discourse.nixos.org/t/can-i-use-flakes-within-a-git-repo-without-committing-flake-nix/18196
 {
   description = "A flake for rust development";
 

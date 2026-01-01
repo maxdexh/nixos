@@ -2,16 +2,27 @@
   parts.nix-meta-cfg = {
     enableIf.tags.personal = true;
 
-    hm = {host, ...}: {
+    hm = {
+      host,
+      pkgs,
+      ...
+    }: {
       programs.home-manager.enable = true;
 
       xdg.configFile."home-manager".source = host.nixConfigSymlink;
 
       # Replace nixpkgs with this flake in commands like `nix profile install nixpkgs#package`
       # Also adds an alias so we can use `n#package`
-      nix.registry = assert inputs.self?packages; {
-        nixpkgs.flake = inputs.self;
-        n.flake = inputs.self;
+      nix.registry = assert inputs.self?packages; rec {
+        nixpkgs.to = n.to;
+        n.to = {
+          type = "path";
+          path = toString pkgs.path;
+        };
+        n.from = {
+          type = "indirect";
+          id = "n";
+        };
       };
     };
 

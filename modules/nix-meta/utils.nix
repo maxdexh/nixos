@@ -30,6 +30,8 @@
         pkgs.alejandra
 
         pkgs.nix-search-cli
+        # TODO: https://github.com/Hovirix/neix/tree/main
+        # TODO: Consider writing similar `nix search` wrapper with caching and better output format (more like nix-search-cli)
 
         pkgs.nh
         pkgs.dix
