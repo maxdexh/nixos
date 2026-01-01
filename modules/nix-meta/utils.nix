@@ -48,6 +48,30 @@
           '';
         })
         (pkgs.writeShellScriptBin "nix-cfg-repl" (builtins.readFile ./repl.bash))
+        # TODO: Shell completions
+        (pkgs.cfgUtils.writeFishApplication {
+          name = "nix-shell-run";
+          runtimeInputs = [
+            (pkgs.cfgUtils.writeFishApplication {
+              name = ".nix-shell-safe-run";
+              text = /* fish */ ''
+                set -l cmd
+                for i in (seq 1 "$NIX_SHELL_SAFE_RUN_ARGC")
+                  set -l varname "NIX_SHELL_SAFE_RUN_ARG$i"
+                  set --append cmd "$$varname"
+                end
+                exec $cmd
+              '';
+            })
+          ];
+          text = /* fish */ ''
+            set -x NIX_SHELL_SAFE_RUN_ARGC "$(builtin count $argv)"
+            for i in (seq 1 "$NIX_SHELL_SAFE_RUN_ARGC")
+              set -x "NIX_SHELL_SAFE_RUN_ARG$i" "$argv[$i]"
+            end
+            nix-shell --run '.nix-shell-safe-run'
+          '';
+        })
 
         # TODO: nix devenv, use flake-compat for large repos
 
