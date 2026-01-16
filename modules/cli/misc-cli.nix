@@ -40,6 +40,17 @@ in {
 
       programs.btop.enable = true;
 
+      programs.direnv = {
+        enable = true;
+        nix-direnv.enable = true;
+        config = {
+          global = {
+            log_format = "-";
+            log_filter = "^$";
+          };
+        };
+      };
+
       # Make shell integrations explicit
       home.shell.enableShellIntegration = false;
 
