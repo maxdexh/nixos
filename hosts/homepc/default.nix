@@ -14,11 +14,6 @@
         source = [
           "${host.mkNixConfigSymlink ./hyprland.conf}"
         ];
-        # NOTE: This does not work when put into ./hyprland.conf and I have no idea why
-        input = {
-          kb_layout = "us";
-          kb_variant = "altgr-intl";
-        };
       };
     };
 
