@@ -1,4 +1,3 @@
--- See :LazyExtras
 return {
    {
       "lervag/vimtex",

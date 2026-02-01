@@ -7,6 +7,8 @@
         enable = true;
         dockerCompat = true;
       };
+      #virtualisation.virtualbox.host.enable = true;
+      #users.extraGroups.vboxusers.members = ["max"];
 
       services.ratbagd.enable = true; # For piper
       environment.systemPackages = [pkgs.distrobox pkgs.piper];
