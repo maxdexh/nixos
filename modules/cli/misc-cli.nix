@@ -16,17 +16,9 @@ in {
   parts.misc-cli = {
     enableIf.tags.personal = true;
 
-    # TODO: Split up
     hm = {pkgs, ...}: {
       home.packages = with pkgs; [
-        gh
-        glab
-
         jq
-
-        fd
-
-        hyperfine
 
         trash-cli
 
@@ -34,9 +26,9 @@ in {
         unzip
 
         pdftk
-
-        glow
       ];
+
+      programs.gh.enable = true;
 
       programs.btop.enable = true;
 
@@ -71,6 +63,11 @@ in {
         enable = true;
         icons = "auto";
       };
+      programs.fd.enable = true;
+      programs.fish.shellAbbrs = {
+        "fd" = "fd --type file";
+      };
+
       programs.fish = {
         shellAliases = ls_aliases;
         functions.ls = {

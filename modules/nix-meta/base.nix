@@ -7,6 +7,8 @@
       pkgs,
       ...
     }: {
+      # NOTE: This currently does nothing when installing hm as a nixos module.
+      # One must install pkgs.home-manager manually to switch to a standalone hm setup.
       programs.home-manager.enable = true;
 
       xdg.configFile."home-manager".source = host.nixConfigSymlink;

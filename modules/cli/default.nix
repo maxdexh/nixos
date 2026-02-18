@@ -4,8 +4,8 @@
     ./fish
     ./git
     ./kitty
-    ./misc-cli.nix
     ./pferd
     ./scripts
+    ./misc-cli.nix
   ];
 }

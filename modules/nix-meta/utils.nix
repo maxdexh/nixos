@@ -48,32 +48,6 @@
           '';
         })
         (pkgs.writeShellScriptBin "nix-cfg-repl" (builtins.readFile ./repl.bash))
-        # TODO: Shell completions
-        (pkgs.cfgUtils.writeFishApplication {
-          name = "nix-shell-run";
-          runtimeInputs = [
-            (pkgs.cfgUtils.writeFishApplication {
-              name = ".nix-shell-safe-run";
-              text = /* fish */ ''
-                set -l cmd
-                for i in (seq 1 "$NIX_SHELL_SAFE_RUN_ARGC")
-                  set -l varname "NIX_SHELL_SAFE_RUN_ARG$i"
-                  set --append cmd "$$varname"
-                end
-                exec $cmd
-              '';
-            })
-          ];
-          text = /* fish */ ''
-            set -x NIX_SHELL_SAFE_RUN_ARGC "$(builtin count $argv)"
-            for i in (seq 1 "$NIX_SHELL_SAFE_RUN_ARGC")
-              set -x "NIX_SHELL_SAFE_RUN_ARG$i" "$argv[$i]"
-            end
-            nix-shell --run '.nix-shell-safe-run'
-          '';
-        })
-
-        # TODO: nix devenv, use flake-compat for large repos
 
         # TODO:
         # https://github.com/thiagokokada/nix-alien
@@ -86,6 +60,7 @@
         NIXOS_FLAKE = host.nixConfigLocation;
       };
 
+      # TODO: Write PR for nixos-option's inadequate error handling
       programs.fish.shellAbbrs = lib.mkMerge [
         {
           hm = "home-manager";
@@ -99,7 +74,6 @@
           os = "nixos-rebuild";
           osr = "nixos-rebuild repl";
           oss = "sudo nixos-rebuild switch";
-          # TODO: Can we do the same thing but to diff the config by imitating the nixos-option command?
           osd = "nixos-rebuild-diff"; # TODO: Write one for hm too
         })
       ];

@@ -30,8 +30,6 @@
             mv = "mv -i";
             cp = "cp -i";
 
-            rm = "trash";
-
             g = "git";
           }
           // (
