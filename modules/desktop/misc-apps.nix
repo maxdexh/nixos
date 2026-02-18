@@ -19,7 +19,6 @@
         losslesscut-bin
         obs-studio
         gimp
-        krita
 
         libreoffice-qt6
         xournalpp
