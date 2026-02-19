@@ -50,16 +50,16 @@ local hl_remaps = {
 
    ["@lsp.type.lifetime"] = "@lsp.type.typeParameter",
    ["@keyword.import.rust"] = "keyword",
+   ["@variable.builtin.rust"] = "keyword",
    ["rustModPath"] = "@module",
    ["rustAttribute"] = "operator",
+
+   -- typically constant.builtin would be something like `null`, but in
+   -- rust it refers only to enum members from the prelude (e.g. `None`, `Some`)
+   ["@constant.builtin.rust"] = "@lsp.type.enumMember.rust",
 }
 ---@type string[]
 local deleted_hls = {
-   "@variable.rust", -- treesitter likes to randomly view keywords as variables in macro_rules
-   "@operator.rust", -- treesitter turns macro exclamation marks into operators
-   "@variable.builtin.rust", -- causes self to be colored as a parameter
-   -- "@module.rust", -- normally causes super to be colored as a module instead of a keyword, but for some reason it is no longer considered the latter? uncomment once fixed
-   "@lsp.type.string.rust", -- affects contents of stringify! inside concat!
    "rustAssert", -- works only sometimes in macros
    "DiagnosticUnnecessary", -- Intrusive
 
