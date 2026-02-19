@@ -58,7 +58,7 @@ local deleted_hls = {
    "@variable.rust", -- treesitter likes to randomly view keywords as variables in macro_rules
    "@operator.rust", -- treesitter turns macro exclamation marks into operators
    "@variable.builtin.rust", -- causes self to be colored as a parameter
-   "@module.rust", -- causes super to be colored as a module
+   -- "@module.rust", -- normally causes super to be colored as a module instead of a keyword, but for some reason it is no longer considered the latter? uncomment once fixed
    "@lsp.type.string.rust", -- affects contents of stringify! inside concat!
    "rustAssert", -- works only sometimes in macros
    "DiagnosticUnnecessary", -- Intrusive
