@@ -25,8 +25,8 @@
 
       fonts.packages = [
         pkgs.nerd-fonts.caskaydia-mono
+        pkgs.nerd-fonts.hack
         pkgs.font-awesome
-        pkgs.nerd-fonts.jetbrains-mono
       ];
 
       programs.dconf.enable = true;
