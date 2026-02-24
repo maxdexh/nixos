@@ -18,6 +18,8 @@
       services.ratbagd.enable = true; # For piper
       environment.systemPackages = [pkgs.distrobox pkgs.piper];
 
+      programs.noisetorch.enable = true;
+
       services.xserver.enable = true;
 
       services.displayManager = {
