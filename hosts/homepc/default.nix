@@ -24,7 +24,7 @@
       ./os.nix
       hardware.common-pc
       hardware.common-pc-ssd
-      hardware.common-gpu-nvidia-nonprime
+      hardware.common-gpu-amd
       hardware.common-cpu-amd
       hardware.common-cpu-amd-zenpower
       ./hardware-configuration.nix
