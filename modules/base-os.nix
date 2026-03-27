@@ -10,6 +10,10 @@
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
 
+      boot.supportedFilesystems = {
+        ntfs = true;
+      };
+
       # Enable networking
       networking.networkmanager.enable = true;
 
