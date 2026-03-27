@@ -26,6 +26,7 @@
       hardware.common-pc-ssd
       hardware.common-gpu-amd
       hardware.common-cpu-amd
+      hardware.common-cpu-amd-pstate
       hardware.common-cpu-amd-zenpower
       ./hardware-configuration.nix
     ];
