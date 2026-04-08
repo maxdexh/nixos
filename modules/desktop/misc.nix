@@ -89,6 +89,7 @@
         };
         defaultApplicationPackages = [
           pkgs.firefox
+          pkgs.kdePackages.dolphin
           pkgs.kdePackages.ark
           pkgs.kdePackages.gwenview
           pkgs.vlc
