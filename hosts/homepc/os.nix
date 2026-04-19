@@ -4,7 +4,7 @@
     IdleActionSec = "60m";
   };
   systemd.sleep.extraConfig = ''
-    HibernateDelaySec=60m
+    HibernateDelaySec=120m
     SuspendState=mem
   '';
 

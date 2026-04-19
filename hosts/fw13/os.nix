@@ -20,7 +20,7 @@
   };
   # Hibernate after 15min of sleep
   systemd.sleep.extraConfig = ''
-    HibernateDelaySec=15m
+    HibernateDelaySec=60m
     SuspendState=mem
   '';
 
