@@ -18,7 +18,6 @@
     IdleAction = "suspend-then-hibernate";
     IdleActionSec = "5m";
   };
-  # Hibernate after 15min of sleep
   systemd.sleep.extraConfig = ''
     HibernateDelaySec=60m
     SuspendState=mem
