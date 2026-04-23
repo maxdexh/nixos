@@ -3,6 +3,10 @@
     powertop
     nvme-cli
     smartmontools
+    (pkgs.writeShellScriptBin "fix-touchpad" ''
+      sudo modprobe -r i2c_hid_acpi
+      sudo modprobe i2c_hid_acpi
+    '')
   ];
 
   # TODO: udev rule to prevent the keyboard & touchpad from waking the device from sleep
@@ -27,6 +31,19 @@
     # Adaptive brightness level (local dimming), power saving
     "amdgpu.abmlevel=2"
   ];
+
+  # https://wiki.archlinux.org/title/Iwd#EAP-PEAP for setting up PEAP networks
+  # https://www.scc.kit.edu/dienste/7181.php
+  networking.wireless.iwd.settings = {
+    IPv6 = {
+      Enabled = true;
+    };
+    Settings = {
+      AutoConnect = true;
+    };
+  };
+  networking.networkmanager.wifi.backend = "iwd";
+  environment.etc."ssl/certs/T-TeleSec_GlobalRoot_Class_2.pem".source = ./${"T-TeleSec_GlobalRoot_Class_2.pem"};
 
   # TODO: Reconsider most of these
   services.power-profiles-daemon.enable = true;

@@ -1,0 +1,14 @@
+[General]
+ManagementFrameProtection=1
+
+[Security]
+EAP-Method=TTLS
+EAP-Identity=anonymous@kit.edu
+EAP-TTLS-CACert=/etc/ssl/certs/T-TeleSec_GlobalRoot_Class_2.pem
+EAP-TTLS-ServerDomainMask=radius-wlan.scc.kit.edu
+EAP-TTLS-Phase2-Method=Tunneled-PAP
+EAP-TTLS-Phase2-Identity=udupw@kit.edu
+EAP-TTLS-Phase2-Password-Hash=
+
+[Settings]
+AutoConnect=true
