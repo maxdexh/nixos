@@ -14,6 +14,7 @@
         SDL2
         cairo
         librsvg
+        stdenv.cc.cc
       ];
       environment.systemPackages = with pkgs; [
         SDL2

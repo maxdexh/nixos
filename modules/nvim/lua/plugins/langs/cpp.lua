@@ -9,6 +9,7 @@ return {
          },
          servers = {
             clangd = {
+               cmd = { "clangd", "--query-driver=/nix/store/*/bin/*" },
                filetypes = { "c", "cpp", "h" },
             },
          },
