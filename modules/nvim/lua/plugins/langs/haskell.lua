@@ -1,18 +1,9 @@
 return {
-   {
-      "mrcjkb/haskell-tools.nvim",
-      version = "^9",
-   },
-   {
-      "neovim/nvim-lspconfig",
-      opts = {
-         servers = {
-            hls = {
-               mason = false,
-            },
-         },
-      },
-   },
+   --{
+   --   "mrcjkb/haskell-tools.nvim",
+   --   lazy = false,
+   --   version = "^9",
+   --},
    {
       "mason.nvim",
       opts = {
