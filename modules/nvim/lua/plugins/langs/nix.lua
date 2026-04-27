@@ -115,5 +115,6 @@ return {
    {
       "calops/hmts.nvim",
       version = "*",
+      enabled = false, -- FIXME: Reenable once 0.12 treesitter errors are fixed
    },
 }
