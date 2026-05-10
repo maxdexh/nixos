@@ -9,7 +9,7 @@ return {
          -- vim.g.vimtex_view_method = "zathura"
          vim.g.vimtex_view_method = "general"
          vim.g.vimtex_view_general_viewer = "kitty"
-         vim.g.vimtex_view_general_options = "tdf --reload-delay 1000 @pdf"
+         vim.g.vimtex_view_general_options = "tdf --reload-delay 2000 @pdf"
       end,
    },
    {
