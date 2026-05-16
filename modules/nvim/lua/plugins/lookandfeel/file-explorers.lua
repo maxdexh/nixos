@@ -22,7 +22,7 @@ return {
       end,
    },
    {
-      "stevearc/oil.nvim",
+      "barrettruth/canola.nvim",
       ---@type oil.SetupOpts
       opts = {
          default_file_explorer = true,
@@ -40,6 +40,10 @@ return {
          prompt_save_on_select_new_entry = true, -- default
       },
 
+      config = function(_, opts)
+         require("oil").setup(opts)
+      end,
+
       -- needed for default_file_explorer to work
       lazy = false,
 
@@ -48,14 +52,14 @@ return {
          libs.keymap.set_many({
             setter = setter,
             {
-               "<leader>fE",
-               libs.keymap.cmd("Oil"),
-               desc = "Oil (Buffer)",
-            },
-            {
                "<leader>fe",
                libs.keymap.cmd("Oil --float"),
                desc = "Oil (Float)",
+            },
+            {
+               "<leader>fE",
+               libs.keymap.cmd("Oil"),
+               desc = "Oil (Buffer)",
             },
          })
          return keys
