@@ -24,9 +24,15 @@
       services.displayManager = {
         defaultSession = "hyprland-uwsm";
       };
-      services.displayManager.gdm = {
+
+      # TODO: https://www.reddit.com/r/NixOS/comments/1qo9alr/need_help_with_gdmhyprlanduwsm_problem/
+      # services.displayManager.gdm = {
+      #   enable = true;
+      #   #wayland = true;
+      # };
+      services.displayManager.sddm = {
+        wayland.enable = true;
         enable = true;
-        wayland = true;
       };
 
       fonts.packages = [

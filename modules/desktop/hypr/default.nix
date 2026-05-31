@@ -19,7 +19,7 @@
       home.packages = with pkgs; [
         hyprpicker
         brightnessctl
-        xorg.xrdb # For kde-style xwayland scaling
+        xrdb # For kde-style xwayland scaling
         killall
         playerctl
       ];

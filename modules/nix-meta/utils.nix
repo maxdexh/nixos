@@ -25,7 +25,7 @@
       home.packages = [
         (pkgs.writeShellScriptBin "fetch-nix-programs" ''
           mkdir -p ${lib.escapeShellArg programs_sql_cache} && cd "$_"
-          curl -sL 'https://channels.nixos.org/nixos-25.11-small/nixexprs.tar.xz' | tar -xvJ --wildcards '*/programs.sqlite' --strip-components 1
+          curl -sL 'https://channels.nixos.org/nixos-26.05-small/nixexprs.tar.xz' | tar -xvJ --wildcards '*/programs.sqlite' --strip-components 1
         '')
         pkgs.alejandra
 

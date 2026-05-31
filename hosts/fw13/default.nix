@@ -29,7 +29,7 @@
       ./hardware-configuration.nix
     ];
 
-    # nixConfigLocation = "/etc/nixos";
+    nixConfigLocation = "/etc/nixos";
 
     tags = {
       personal = true;

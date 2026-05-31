@@ -22,10 +22,10 @@
     IdleAction = "suspend-then-hibernate";
     IdleActionSec = "5m";
   };
-  systemd.sleep.extraConfig = ''
-    HibernateDelaySec=60m
-    SuspendState=mem
-  '';
+  systemd.sleep.settings.Sleep = {
+    HibernateDelaySec = "60m";
+    SuspendState = "mem";
+  };
 
   boot.kernelParams = [
     # Adaptive brightness level (local dimming), power saving

@@ -15,6 +15,8 @@
           "${host.mkNixConfigSymlink ./hyprland.conf}"
         ];
       };
+      # FIXME: Migrate to lua
+      wayland.windowManager.hyprland.configType = "hyprlang";
     };
 
     nixos.enable = true;
