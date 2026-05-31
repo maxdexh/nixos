@@ -1,6 +1,12 @@
 # NOTE: Use this flake when compiling rustc.
 # https://discourse.nixos.org/t/building-rustc-in-nixos/20938/4
 # https://discourse.nixos.org/t/can-i-use-flakes-within-a-git-repo-without-committing-flake-nix/18196
+#
+# NOTE:
+# Run:
+# - git add --intent-to-add flake.nix
+# - git update-index --assume-unchanged flake.nix
+# And then same for shell.nix
 {
   description = "A flake for rust development";
 
