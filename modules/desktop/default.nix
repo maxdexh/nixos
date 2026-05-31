@@ -6,5 +6,6 @@
     ./qt.nix
     ./shortcuts.nix
     ./misc-apps.nix
+    ./display-manager.nix
   ];
 }
