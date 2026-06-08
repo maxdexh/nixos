@@ -1,0 +1,5 @@
+require("conf.autostart")
+require("conf.input")
+require("conf.keybinds")
+require("conf.look-and-feel")
+require("conf.windowrules")

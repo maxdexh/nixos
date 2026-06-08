@@ -28,22 +28,15 @@
       programs.hyprshot.enable = true;
 
       custom.sessionVars = {
-        # For lua lsp
+        # See .emmyrc.json
         HYPRLAND_STUBS_PATH = "${pkgs.hyprland}/share/hypr/stubs";
       };
 
+      xdg.configFile."hypr/conf".source = host.mkNixConfigSymlink ./conf;
       wayland.windowManager.hyprland = {
         enable = true;
         configType = "lua";
-
-        # FIXME: Add a custom option that specifies list of dirs/files to import from, with proper escaping
-        extraConfig = let
-          place = ./lua;
-          files = builtins.attrNames (builtins.readDir place);
-          luaFiles = builtins.filter (lib.hasSuffix ".lua") files;
-          basePath = host.mkNixConfigSymlink place;
-          to_import = f: "dofile('${basePath}/${f}')\n";
-        in builtins.concatStringsSep "" (map to_import luaFiles);
+        extraConfig = /*lua*/ ''require("conf.hyprland")'';
       };
 
       programs.waybar = {

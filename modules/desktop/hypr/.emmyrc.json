@@ -11,13 +11,13 @@
     "library": [
       "$HYPRLAND_STUBS_PATH"
     ],
-    "moduleMap": [],
-    "workspaceRoots": [
-      "lua"
-    ]
+    "moduleMap": []
   },
   "runtime": {
-    "version": "LuaJIT"
+    "version": "LuaJIT",
+    "requirePattern": [
+      "?.lua"
+    ]
   },
   "diagnostics": {
     "globals": [
