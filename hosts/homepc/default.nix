@@ -9,15 +9,6 @@
       };
     };
 
-    hm.shared.module = {host, ...}: {
-      wayland.windowManager.hyprland.extraConfig = /* lua */ ''dofile("${host.mkNixConfigSymlink ./hyprland.lua}")'';
-      #wayland.windowManager.hyprland.settings = {
-      #  source = [
-      #    "${host.mkNixConfigSymlink ./hyprland.conf}"
-      #  ];
-      #};
-    };
-
     nixos.enable = true;
     nixos.module.imports = let
       hardware = inputs.nixos-hardware.nixosModules;

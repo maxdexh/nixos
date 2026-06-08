@@ -45,7 +45,26 @@ for k, ws in pairs(wss) do
 	hl.bind(shift_mod(k), hl.dsp.window.move({ workspace = ws }))
 end
 
+-- TODO: Close other tabs
 hl.bind(main_mod("G"), hl.dsp.group.toggle())
+hl.bind(main_mod("TAB"), hl.dsp.group.next())
+hl.bind(shift_mod("TAB"), hl.dsp.group.prev())
+hl.bind(shift_mod("G"), function()
+	local wd = hl.get_active_window()
+	if not wd then
+		return
+	end
+	if not wd.group then
+		hl.dispatch(hl.dsp.group.toggle())
+	end
+	for _, w in ipairs(hl.get_windows({ workspace = wd.workspace })) do
+		for _, direction in ipairs({ "u", "r", "d", "l" }) do
+			if not w.group then
+				hl.dispatch(hl.dsp.window.move({ window = w, into_group = direction }))
+			end
+		end
+	end
+end, { desc = "Create Group" })
 
 hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot --freeze -m region"))
 hl.bind("SHIFT + PRINT", hl.dsp.exec_cmd("hyprshot --freeze -m window"))

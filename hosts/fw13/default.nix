@@ -9,20 +9,6 @@
       };
     };
 
-    hm.shared.module = {host, ...}: {
-      wayland.windowManager.hyprland.extraConfig = /* lua */ ''dofile("${host.mkNixConfigSymlink ./hyprland.lua}")'';
-      #wayland.windowManager.hyprland.settings = {
-      #  source = [
-      #    "${host.mkNixConfigSymlink ./hyprland.conf}"
-      #  ];
-      #  # NOTE: This does not work when put into ./hyprland.conf and I have no idea why
-      #  input = {
-      #    kb_layout = "us";
-      #    kb_variant = "altgr-intl";
-      #  };
-      #};
-    };
-
     nixos.enable = true;
     nixos.module.imports = [
       ./os.nix

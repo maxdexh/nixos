@@ -32,11 +32,17 @@
         HYPRLAND_STUBS_PATH = "${pkgs.hyprland}/share/hypr/stubs";
       };
 
-      xdg.configFile."hypr/conf".source = host.mkNixConfigSymlink ./conf;
+      xdg.configFile = {
+        "hypr/conf".source = host.mkNixConfigSymlink ./conf;
+        "hypr/hosts".source = host.mkNixConfigSymlink ./hosts;
+      };
       wayland.windowManager.hyprland = {
         enable = true;
         configType = "lua";
-        extraConfig = /*lua*/ ''require("conf.hyprland")'';
+        extraConfig = /*lua*/ ''
+          require("conf.hyprland")
+          require("hosts.${host.name}.hyprland")
+        '';
       };
 
       programs.waybar = {
