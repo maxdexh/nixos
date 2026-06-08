@@ -45,6 +45,8 @@ for k, ws in pairs(wss) do
 	hl.bind(shift_mod(k), hl.dsp.window.move({ workspace = ws }))
 end
 
+hl.bind(main_mod("G"), hl.dsp.group.toggle())
+
 hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot --freeze -m region"))
 hl.bind("SHIFT + PRINT", hl.dsp.exec_cmd("hyprshot --freeze -m window"))
 hl.bind("SUPER + PRINT", hl.dsp.exec_cmd("hyprshot --freeze -m output"))
