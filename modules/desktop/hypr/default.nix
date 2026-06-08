@@ -27,13 +27,18 @@
       programs.rofi.enable = true;
       programs.hyprshot.enable = true;
 
+      custom.sessionVars = {
+        # For lua lsp
+        HYPRLAND_STUBS_PATH = "${pkgs.hyprland}/share/hypr/stubs";
+      };
+
       wayland.windowManager.hyprland = {
         enable = true;
         configType = "lua";
 
         # FIXME: Add a custom option that specifies list of dirs/files to import from, with proper escaping
         extraConfig = let
-          place = ./hypr-conf;
+          place = ./lua;
           files = builtins.attrNames (builtins.readDir place);
           luaFiles = builtins.filter (lib.hasSuffix ".lua") files;
           basePath = host.mkNixConfigSymlink place;

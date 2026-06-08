@@ -8,10 +8,12 @@
       ".git",
       ".venv"
     ],
-    "library": [],
+    "library": [
+      "$HYPRLAND_STUBS_PATH"
+    ],
     "moduleMap": [],
     "workspaceRoots": [
-      "."
+      "lua"
     ]
   },
   "runtime": {

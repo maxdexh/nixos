@@ -1,7 +1,4 @@
-
-
 -- https://wiki.hyprland.org/Configuring/Variables/#input
-
 hl.config({
 	input = {
 		repeat_rate = 60,
@@ -21,7 +18,6 @@ hl.device({
 })
 
 -- https://wiki.hyprland.org/Configuring/Variables/#gestures
-
 hl.config({
 	gestures = {
 		-- TODO
