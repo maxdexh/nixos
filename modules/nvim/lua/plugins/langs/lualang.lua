@@ -7,7 +7,6 @@ local nvim_config_dir = vim.fn.stdpath("config") --[[@as string]]
 local config_locations = {
    vim.fn.stdpath("data") --[[@as string]],
    nvim_config_dir,
-   vim.fn.expand("$NIXOS_FLAKE"),
 }
 
 ---@param path string
@@ -28,7 +27,7 @@ vim.lsp.config("emmylua_ls", {
    ---@param bufnr integer
    ---@param on_dir fun(root_dir?:string)
    root_dir = function(bufnr, on_dir)
-      if is_nvim_config(vim.fn.getcwd()) or is_nvim_config(vim.api.nvim_buf_get_name(bufnr)) then
+      if is_nvim_config(vim.api.nvim_buf_get_name(bufnr)) then
          on_dir(nvim_config_dir)
       else
          on_dir()
