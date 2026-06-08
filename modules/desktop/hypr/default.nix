@@ -29,14 +29,16 @@
 
       wayland.windowManager.hyprland = {
         enable = true;
+        configType = "lua";
 
-        # Put the `source =` declarations at the end of the generated hyprland.conf,
-        # such that we can pass variables from the nix config
-        sourceFirst = false;
-
-        settings.source = [
-          "${host.mkNixConfigSymlink ./hypr-conf}/*"
-        ];
+        # FIXME: Add a custom option that specifies list of dirs/files to import from, with proper escaping
+        extraConfig = let
+          place = ./hypr-conf;
+          files = builtins.attrNames (builtins.readDir place);
+          luaFiles = builtins.filter (lib.hasSuffix ".lua") files;
+          basePath = host.mkNixConfigSymlink place;
+          to_import = f: "dofile('${basePath}/${f}')\n";
+        in builtins.concatStringsSep "" (map to_import luaFiles);
       };
 
       programs.waybar = {

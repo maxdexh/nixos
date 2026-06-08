@@ -10,13 +10,12 @@
     };
 
     hm.shared.module = {host, ...}: {
-      wayland.windowManager.hyprland.settings = {
-        source = [
-          "${host.mkNixConfigSymlink ./hyprland.conf}"
-        ];
-      };
-      # FIXME: Migrate to lua
-      wayland.windowManager.hyprland.configType = "hyprlang";
+      wayland.windowManager.hyprland.extraConfig = /* lua */ ''dofile("${host.mkNixConfigSymlink ./hyprland.lua}")'';
+      #wayland.windowManager.hyprland.settings = {
+      #  source = [
+      #    "${host.mkNixConfigSymlink ./hyprland.conf}"
+      #  ];
+      #};
     };
 
     nixos.enable = true;
