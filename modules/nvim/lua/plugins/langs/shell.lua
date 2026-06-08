@@ -14,7 +14,9 @@ return {
             bashls = {
                filetypes = { "sh", "zsh", "bash" },
             },
-            fish_lsp = {},
+            fish_lsp = {
+               filetypes = { "fish" },
+            },
          },
       },
    },
