@@ -12,7 +12,7 @@ hl.monitor({
 })
 
 hl.monitor({
-	output = "DP-2",
+	output = "desc:Iiyama North America PLE2483H",
 	mode = "preferred",
 	position = "auto-up",
 	scale = 1,
