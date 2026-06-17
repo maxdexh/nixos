@@ -77,7 +77,52 @@ return {
             end,
             desc = "Add cursor above",
          },
-         -- TODO: Select next/all occurence(s)
+         {
+            "<M-J>",
+            function()
+               get_mc().lineSkipCursor(1)
+            end,
+            desc = "Skip cursor below",
+         },
+         {
+            "<M-K>",
+            function()
+               get_mc().lineSkipCursor(-1)
+            end,
+            desc = "Skip cursor above",
+         },
+      })
+      libs.keymap.set_many({
+         setter = setter,
+         mode = { "n", "x" },
+         {
+            "<M-n>",
+            function()
+               get_mc().matchAddCursor(1)
+            end,
+            desc = "Add cursor on next occurrence",
+         },
+         {
+            "<M-p>",
+            function()
+               get_mc().matchAddCursor(-1)
+            end,
+            desc = "Add cursor on prev occurrence",
+         },
+         {
+            "<M-N>",
+            function()
+               get_mc().matchSkipCursor(1)
+            end,
+            desc = "Skip cursor on next occurrence",
+         },
+         {
+            "<M-P>",
+            function()
+               get_mc().matchSkipCursor(-1)
+            end,
+            desc = "Skip cursor on prev occurrence",
+         },
       })
       return keys
    end,
