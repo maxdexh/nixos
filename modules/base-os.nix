@@ -7,7 +7,7 @@
       ...
     }: {
       # Use latest stable kernel
-      boot.kernelPackages = pkgs.linuxPackages_latest;
+      # boot.kernelPackages = pkgs.linuxPackages_latest;
 
       # Bootloader.
       boot.loader.systemd-boot.enable = true;
