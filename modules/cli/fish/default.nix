@@ -45,7 +45,7 @@
           );
 
         functions = {
-          fish_prompt = ''
+          fish_prompt = /*fish*/ ''
             set -l last_status $status; set -l last_pipestatus $pipestatus
 
             set -l login "$(set_color normal)$(prompt_login)"
@@ -56,7 +56,7 @@
 
             echo -n "$login:$pwd$pipe$vcs"\n"$suffix "
           '';
-          fish_right_prompt = ''
+          fish_right_prompt = /*fish*/ ''
             set_color normal
             set -l duration (test $CMD_DURATION -gt 100 && echo (math $CMD_DURATION / 1000)s)
             set -l venv (set -q VIRTUAL_ENV && string replace -r '.*/' "" -- "$VIRTUAL_ENV")

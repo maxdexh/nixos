@@ -29,7 +29,8 @@
   },
   "diagnostics": {
     "globals": [
-      "vim"
+      "vim",
+      "Snacks"
     ]
   },
   "strict": {

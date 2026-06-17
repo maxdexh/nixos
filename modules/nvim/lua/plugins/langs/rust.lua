@@ -20,10 +20,6 @@ return {
                      assist = {
                         preferSelf = true,
                      },
-                     completion = {
-                        autoIter = { enable = false },
-                        autoself = { enable = false },
-                     },
                   },
                },
             },

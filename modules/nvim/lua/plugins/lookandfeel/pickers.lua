@@ -1,5 +1,26 @@
 local libs = require("util.libs")
 
+-- Useful picker binds from lazyvim
+-- <leader>sp (plugin specs)
+-- <leader>ss (lsp symbols)
+-- <leader>sS (lsp workspace symbols)
+-- <leader>sb (buffer lines)
+-- <leader>sC (commands)
+-- <leader>su (undotree)
+-- <leader>sT (todos)
+-- <leader>sM (man pages)
+-- <leader>sH (highlights)
+-- <leader>si (emojis)
+-- <leader>sj (jumps)
+-- <ledaer>sh (help pages)
+-- <leader>sn (noice messages)
+-- <leader>sq (quickfix list)
+-- <leader>s/ ('/' search history)
+-- <leader>gl (git log, capital for cwd)
+-- <leader>gs (git status, +diff in previews)
+-- <leader>gS (git stash)
+--
+-- TODO: <leader>sp but global plugin file search
 return {
    {
       "folke/snacks.nvim",
@@ -22,28 +43,6 @@ return {
             { "<leader>sW", LazyVim.pick("grep_visual", { root = true }), mode = "x", desc = "Selection (Root Dir)" },
             { "<leader>sg", LazyVim.pick("grep", { root = false }), desc = "Grep (cwd)" },
             { "<leader>sG", LazyVim.pick("grep", { root = true }), desc = "Selection (Root Dir)" },
-
-            -- Useful picker binds from lazyvim
-            -- <leader>sp (plugin specs)
-            -- <leader>ss (lsp symbols)
-            -- <leader>sS (lsp workspace symbols)
-            -- <leader>sb (buffer lines)
-            -- <leader>sC (commands)
-            -- <leader>su (undotree)
-            -- <leader>sT (todos)
-            -- <leader>sM (man pages)
-            -- <leader>sH (highlights)
-            -- <leader>si (emojis)
-            -- <leader>sj (jumps)
-            -- <ledaer>sh (help pages)
-            -- <leader>sn (noice messages)
-            -- <leader>sq (quickfix list)
-            -- <leader>s/ ('/' search history)
-            -- <leader>gl (git log, capital for cwd)
-            -- <leader>gs (git status, +diff in previews)
-            -- <leader>gS (git stash)
-            --
-            -- TODO: <leader>sp but global plugin file search
          })
       end,
    },

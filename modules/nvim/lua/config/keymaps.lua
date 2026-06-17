@@ -89,7 +89,6 @@ local function set_lsp_keybinds(buf)
       {
          "gd",
          function()
-            -- TODO: optionally vim.lsp.buf.definition() / Trouble lsp_definitions
             Snacks.picker.lsp_definitions()
          end,
          desc = "Goto Definition",
@@ -97,7 +96,6 @@ local function set_lsp_keybinds(buf)
       {
          "gi",
          function()
-            -- TODO: vim.lsp.buf.implementation() / Trouble
             Snacks.picker.lsp_implementations()
          end,
          desc = "View Implementations",
@@ -105,7 +103,6 @@ local function set_lsp_keybinds(buf)
       {
          "gr",
          function()
-            -- TODO: vim.lsp.buf.references() / Trouble
             Snacks.picker.lsp_references()
          end,
          desc = "View References",
