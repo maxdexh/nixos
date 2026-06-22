@@ -9,6 +9,10 @@
     '')
   ];
 
+  hardware.fw-fanctrl = {
+    enable = true;
+  };
+
   # TODO: udev rule to prevent the keyboard & touchpad from waking the device from sleep
   services.logind.settings.Login = {
     HandleLidSwitch = "suspend-then-hibernate";
