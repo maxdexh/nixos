@@ -22,6 +22,7 @@
         xrdb # For kde-style xwayland scaling
         killall
         playerctl
+        pulseaudio # for pactl
       ];
 
       programs.rofi.enable = true;
