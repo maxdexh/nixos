@@ -4,7 +4,7 @@
 
     hm = {
       host,
-      config,
+      pkgs,
       lib,
       ...
     }: {
@@ -37,10 +37,12 @@
           };
         };
       };
+      # FIXME: default.nix does not exist, so this flake is not a valid <nixpgks>?
       # mimic nixpkgs.flake.source (not available in hm)
-      nix.nixPath = lib.mkIf (!host.nixos.enable) [
-        "nixpkgs=flake:nixpkgs"
-      ];
+      # nix.nixPath = lib.mkIf (!host.nixos.enable) [
+      #   "nixpkgs=flake:nixpkgs"
+      # ];
+      nix.nixPath = ["nixpkgs=${pkgs.path}"];
     };
 
     nixos = {
