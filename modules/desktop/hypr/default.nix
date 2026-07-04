@@ -39,7 +39,6 @@
       };
       wayland.windowManager.hyprland = {
         enable = true;
-        configType = "lua";
         extraConfig = /*lua*/ ''
           require("conf.hyprland")
           require("hosts.${host.name}.hyprland")

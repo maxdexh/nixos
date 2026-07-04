@@ -71,6 +71,8 @@ modArgs @ {
         {
           networking.hostName = config.name;
           system.name = config.name;
+          # Read before migrating
+          # https://nixos.org/manual/nixos/stable/release-notes
           system.stateVersion = "25.05";
 
           users.users = mkUserAttrs (user: lib.mkMerge [
@@ -88,7 +90,9 @@ modArgs @ {
       hm.shared.module = lib.mkMerge [
         modKinds.hm
         {
-          home.stateVersion = "25.05";
+          # Read before migrating
+          # https://nix-community.github.io/home-manager/release-notes/release-notes.html
+          home.stateVersion = "26.05";
         }
       ];
     };
