@@ -16,6 +16,7 @@ in {
     ./base-os.nix
     ./nixld.nix
     ./xdg-vars.nix
+    ./documentation.nix
   ];
 
   parts.nix-settings-nixos = {
