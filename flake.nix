@@ -21,7 +21,7 @@
   outputs = inputs: let
     lib = inputs.nixpkgs.lib;
 
-    # TODO: Try to add nixd completions for this somehow?
+    # TODO: Try to make nixd give completions for the module system?
     module_system = lib.evalModules {
       modules = [
         ./hosts
@@ -33,7 +33,21 @@
         inherit inputs;
       };
     };
+
+    # TODO: host-dependent overlays, perhaps by moving them or the hosts to different flake(s)?
     full_config = module_system.config;
+    overlays_attrset = full_config.overlays;
+
+    pkgs_by_system = lib.pipe hosts [
+      (builtins.groupBy (host: host.system))
+      (builtins.mapAttrs (system: _: import inputs.nixpkgs {
+        inherit system;
+        overlays = builtins.attrValues overlays_attrset;
+        config = {
+          allowUnfree = true;
+        };
+      }))
+    ];
 
     # Some attributes for host._internals that are only available in this flake
     # (specialArgs gets the original host attrset)
@@ -60,17 +74,6 @@
     };
     hosts = map (host: host // {_internals = host_flake_internals host;}) (builtins.attrValues full_config.hosts);
 
-    pkgs_by_system = lib.pipe hosts [
-      (builtins.groupBy (host: host.system))
-      (builtins.mapAttrs (system: _: import inputs.nixpkgs {
-        inherit system;
-        overlays = builtins.attrValues full_config.overlays;
-        config = {
-          allowUnfree = true;
-        };
-      }))
-    ];
-
     nixos_system = host: lib.nixosSystem {
       pkgs = host._internals.pkgs;
 
@@ -95,6 +98,8 @@
       modules = [user.hm.module];
     };
   in {
+    # TODO: expose devShells, if this can be made to work with flake-compat
+
     nixosConfigurations = lib.pipe hosts [
       (builtins.filter (host: host.nixos.enable))
       (map (host: {
@@ -114,7 +119,10 @@
 
     # This allows using the nix config location as a replacement for nixpkgs,
     # but with overlays applied.
-    # Also see ./modules/base.nix
+    # See also: ./modules/nix-meta/nixpkgs-override.nix
     packages = pkgs_by_system;
+
+    # For `import <nixpkgs>`. See ./default.nix
+    overlays = overlays_attrset;
   };
 }

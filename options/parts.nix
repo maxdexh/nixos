@@ -16,6 +16,11 @@
         type = condTy;
       };
 
+      description = lib.mkOption {
+        type = lib.types.str;
+        default = "no description provided";
+      };
+
       nixos = lib.mkOption {
         type = lib.types.deferredModule;
         default = {};
