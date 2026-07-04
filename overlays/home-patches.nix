@@ -18,8 +18,5 @@
       };
     };
     steam = {};
-
-    # TODO: Remove once xdg support is available
-    firefox = {};
   };
 }
