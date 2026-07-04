@@ -12,26 +12,21 @@
 
     hm = {pkgs, ...}: {
       home.packages = with pkgs; [
-        baobab
-        gparted
-
         vlc
         losslesscut-bin
-        obs-studio
-        gimp
 
-        libreoffice-qt6
         xournalpp
 
-        vscode
         brave
-        thunderbird # TODO: programs.thunderbird?
         gnome-system-monitor
-        discord # TODO: programs.discord
-        zathura
-
-        prismlauncher
+        discord
       ];
+
+      programs.thunderbird = {
+        enable = true;
+        languagePacks = ["en-US" "de"];
+      };
+      programs.obs-studio.enable = true;
     };
   };
 }
