@@ -34,10 +34,6 @@ modArgs @ {
       tags = lib.mkOption {
         type = lib.types.attrsOf lib.types.bool;
       };
-      stateVersion = lib.mkOption {
-        type = lib.types.uniq lib.types.str;
-      };
-
       nixos = {
         enable = lib.mkEnableOption "nixos";
         module = lib.mkOption {
@@ -75,7 +71,7 @@ modArgs @ {
         {
           networking.hostName = config.name;
           system.name = config.name;
-          system.stateVersion = config.stateVersion;
+          system.stateVersion = "25.05";
 
           users.users = mkUserAttrs (user: lib.mkMerge [
             {
@@ -92,7 +88,7 @@ modArgs @ {
       hm.shared.module = lib.mkMerge [
         modKinds.hm
         {
-          home.stateVersion = config.stateVersion;
+          home.stateVersion = "25.05";
         }
       ];
     };

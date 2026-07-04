@@ -1,7 +1,5 @@
 {inputs, ...}: {
   hosts.fw13 = {
-    stateVersion = "25.05";
-
     users.max = {
       nixos.user = {
         isNormalUser = true;
