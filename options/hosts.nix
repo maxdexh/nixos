@@ -73,7 +73,7 @@ modArgs @ {
           system.name = config.name;
           # Read before migrating
           # https://nixos.org/manual/nixos/stable/release-notes
-          system.stateVersion = "25.05";
+          system.stateVersion = "26.05";
 
           users.users = mkUserAttrs (user: lib.mkMerge [
             {
