@@ -10,26 +10,27 @@ in
   pkgs.mkShell {
     name = "rust-dev-gcc";
 
-    # Make clang aware of a few headers
     BINDGEN_EXTRA_CLANG_ARGS = ''-isystem ${libs.libcDev}/include'';
 
-    # libc dynamic libraries
     LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
-      libs.ccLib
-      libs.libc
-      libs.libgcc
+      pkgs.stdenv.cc.cc.lib
       pkgs.zlib
     ];
 
-    # libc static libraries
-    LIBRARY_PATH = pkgs.lib.makeLibraryPath [libs.libcStatic];
+    LIBRARY_PATH = pkgs.lib.makeLibraryPath [
+      pkgs.stdenv.cc.libc.static or pkgs.glibc.static
+    ];
 
     nativeBuildInputs = [
       pkgs.cmake
       pkgs.curl
       pkgs.python3
       pkgs.pkg-config
-      (pkgs.writeShellScriptBin "nvim" "exec env --unset=LD_LIBRARY_PATH /home/max/.nix-profile/bin/nvim")
+    ];
+
+    buildInputs = [
+      pkgs.zlib
+      pkgs.openssl
     ];
 
     shellHook = ''

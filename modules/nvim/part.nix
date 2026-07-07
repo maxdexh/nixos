@@ -5,11 +5,13 @@
     hm = {
       host,
       pkgs,
+      config,
       ...
     }: {
       home.packages = with pkgs; [
         tree-sitter
         nixd
+        bob-nvim # nvim bugs are too frequent
       ];
 
       xdg.configFile."nvim".source = host.mkNixConfigSymlink ./.;
@@ -21,6 +23,8 @@
         NVIM_NIX_HOST_NAME = host.name;
         NVIM_NIX_IS_NIXOS = toString host.nixos.enable;
       };
+
+      home.sessionPath = ["${config.xdg.dataHome}/bob/nvim-bin"];
     };
   };
 }
