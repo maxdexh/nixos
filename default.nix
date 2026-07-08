@@ -1,7 +1,7 @@
 # Entry point for `import <nixpkgs>`.
 args: let
   # https://github.com/nix-community/nixd/issues/762
-  flake = builtins.${"getFlake"} <nixpkgs>;
+  flake = builtins.${"getFlake"} (toString ./.);
 
   flake-overlays = builtins.attrValues flake.overlays;
 
