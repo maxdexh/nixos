@@ -35,7 +35,8 @@ hl.bind(main_mod("j"), hl.dsp.focus({ direction = "down" }))
 ---@type table<string, integer|string>
 local wss = {
 	d = "name:dc",
-	p = "name:steam",
+	p = "name:ste",
+	t = "name:zlp",
 }
 for i = 1, 10 do
 	wss[tostring(i % 10)] = i
