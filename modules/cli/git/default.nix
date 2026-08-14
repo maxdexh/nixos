@@ -13,15 +13,16 @@
           # TODO: Use multi-word shell aliases (via expand function) for these instead
           s = "status";
           p = "push";
+          pl = "pull";
           c = "commit";
           d = "diff";
+          b = "branch";
+          ss = "switch";
           a = "add";
           l = "log";
           rs = "reset";
           rt = "restore";
           ro = "remote";
-
-          whyy = "!echo 'test'";
 
           ca = "!git add -A && git commit";
           ce = "${ca} --amend --no-edit";

@@ -34,11 +34,10 @@
           }
           // (
             lib.concatMapAttrs (alias: command: {
-              "g${alias}" = "git ${
+              "g${alias}" =
                 if lib.hasPrefix "!" command
-                then alias
-                else command
-              }";
+                then lib.removePrefix "!" command
+                else "git ${command}";
             })
             # TODO: Remove most of the git aliases and only use the abbrs
             config.programs.git.settings.alias
