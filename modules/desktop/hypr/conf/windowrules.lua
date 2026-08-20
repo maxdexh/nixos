@@ -5,7 +5,7 @@ hl.window_rule({
 
 hl.window_rule({
 	match = { class = "steam" },
-	workspace = "name:steam silent",
+	workspace = "name:ste silent",
 })
 
 hl.window_rule({
