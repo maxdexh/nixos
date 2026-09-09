@@ -20,9 +20,12 @@ return {
                      assist = {
                         preferSelf = true,
                      },
-                     rustc = {
-                        source = "discover",
-                     },
+                     -- rustc = {
+                     --    source = "discover",
+                     -- },
+                     -- cargo = {
+                     --    target = "",
+                     -- },
                   },
                },
             },
