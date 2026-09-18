@@ -18,6 +18,7 @@ pkgs.mkShell {
     pkgs.curl
     pkgs.python3
     pkgs.pkg-config
+    pkgs.ninja
   ];
 
   buildInputs = [
