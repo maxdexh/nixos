@@ -7,7 +7,7 @@ let
   };
 in {
   imports = [
-    ./nvim/part.nix
+    ./nvim.nix
     ./nix-meta
     ./cli
     ./desktop

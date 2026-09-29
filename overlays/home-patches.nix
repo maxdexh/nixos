@@ -17,6 +17,7 @@
         hashMode = "recursive";
       };
     };
+    # FIXME: This causes some issues when running proton through umu
     steam = {};
   };
 }

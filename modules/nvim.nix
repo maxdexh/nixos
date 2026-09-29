@@ -1,4 +1,6 @@
 {
+  # TODO: Build nvim config as part of system, or bootstrap an init.lua
+  # to clone it.
   parts.nvim = {
     enableIf.tags.personal = true;
 
@@ -13,8 +15,6 @@
         nixd
         bob-nvim # nvim bugs are too frequent
       ];
-
-      xdg.configFile."nvim".source = host.mkNixConfigSymlink ./.;
 
       custom.sessionVars = {
         VISUAL = "nvim";
