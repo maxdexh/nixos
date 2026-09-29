@@ -6,6 +6,9 @@ vim.g.rustaceanvim = vim.tbl_deep_extend("force", vim.g.rustaceanvim, {
                     source = "discover",
                 },
                 checkOnSave = false,
+                cargo = {
+                    target = os.getenv("RA_TARGET"),
+                },
             },
         },
     },
