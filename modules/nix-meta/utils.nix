@@ -41,7 +41,7 @@
           text = /* fish */ ''
             set -l tmpdir "$(mktemp -d)"
             cd $tmpdir
-            nixos-rebuild build $argv
+            nixos-rebuild build $argv || exit $status
             dix /run/current-system ./result
             rm $tmpdir/result
             rmdir $tmpdir
