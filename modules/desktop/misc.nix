@@ -8,14 +8,14 @@
       #       https://discourse.nixos.org/t/dolphin-does-not-have-mime-associations/48985/7
       environment.etc."xdg/menus/applications.menu".source = "${pkgs.kdePackages.plasma-workspace}/etc/xdg/menus/plasma-applications.menu";
 
-      #virtualisation.docker.enable = true;
-      #users.extraGroups.docker.members = ["max"];
-
-      #virtualisation.virtualbox.host.enable = true;
-      #users.extraGroups.vboxusers.members = ["max"];
+      virtualisation.podman = {
+        enable = true;
+        dockerCompat = true; # Creates a symlink from docker to podman
+        defaultNetwork.settings.dns_enabled = true; # Required for containers under podman-compose to be able to talk to each other.
+      };
 
       services.ratbagd.enable = true; # For piper
-      environment.systemPackages = [pkgs.distrobox pkgs.piper];
+      environment.systemPackages = [pkgs.distrobox pkgs.qemu pkgs.piper];
 
       programs.noisetorch.enable = true;
 
