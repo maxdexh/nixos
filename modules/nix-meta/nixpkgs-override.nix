@@ -27,7 +27,7 @@
   };
 in {
   parts.nixpkgs-override = {
-    enableIf.tags.personal = true;
+    enableIf.tags.basic = true;
 
     inherit description;
 

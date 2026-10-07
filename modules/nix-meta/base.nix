@@ -1,6 +1,6 @@
 {...}: {
   parts.nix-meta-cfg = {
-    enableIf.tags.personal = true;
+    enableIf.tags.basic = true;
 
     hm = {host, ...}: {
       # NOTE: This currently does nothing when installing hm as a nixos module.

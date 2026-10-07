@@ -1,7 +1,8 @@
 {
   parts.bash = {
-    enableIf.tags.personal = true;
+    enableIf.tags.basic = true;
 
+    # FIXME: use a decent prompt
     hm = {...}: {
       # FIXME: Fix performance issues
       programs.bash = {

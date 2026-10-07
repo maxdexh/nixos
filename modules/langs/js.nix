@@ -1,14 +1,8 @@
 {
   parts.js = {
-    enableIf.tags.personal = true;
+    enableIf.tags.cli = true;
 
-    hm = {
-      config,
-      pkgs,
-      ...
-    }: {
-      home.packages = with pkgs; [nodejs pnpm];
-
+    hm = {config, ...}: {
       custom.sessionVars = {
         NODE_REPL_HISTORY = "${config.xdg.stateHome}/node_repl_history";
         NPM_CONFIG_INIT_MODULE = "${config.xdg.configHome}/npm/config/npm-init.js";

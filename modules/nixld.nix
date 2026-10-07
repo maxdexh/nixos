@@ -1,6 +1,6 @@
 {
   parts.nixld = {
-    enableIf.tags.personal = true;
+    enableIf.tags.basic = true;
 
     nixos = {pkgs, ...}: {
       programs.nix-ld.enable = true;

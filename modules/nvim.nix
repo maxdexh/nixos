@@ -2,7 +2,7 @@
   # TODO: Build nvim config as part of system, or bootstrap an init.lua
   # to clone it.
   parts.nvim = {
-    enableIf.tags.personal = true;
+    enableIf.tags.cli = true;
 
     hm = {
       host,

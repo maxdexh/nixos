@@ -1,6 +1,6 @@
 {
   parts.base-os = {
-    enableIf.tags.personal = true;
+    enableIf.tags.basic = true;
     nixos = {
       pkgs,
       host,

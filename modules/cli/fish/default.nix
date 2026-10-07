@@ -1,6 +1,6 @@
 {
   parts.fish = {
-    enableIf.tags.personal = true;
+    enableIf.tags.cli = true;
 
     hm = {
       config,

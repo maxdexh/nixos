@@ -1,6 +1,6 @@
 {
   parts.hm-env-vars = {
-    enableIf.tags.personal = true;
+    enableIf.tags.basic = true;
 
     hm = {
       lib,

@@ -28,6 +28,8 @@
     # nixConfigLocation = "/etc/nixos";
 
     tags = {
+      basic = true;
+      cli = true;
       personal = true;
       fullDesktop = true;
       nixos = true;

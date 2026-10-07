@@ -14,7 +14,7 @@ let
   };
 in {
   parts.misc-cli = {
-    enableIf.tags.personal = true;
+    enableIf.tags.cli = true;
 
     hm = {pkgs, ...}: {
       home.packages = with pkgs; [

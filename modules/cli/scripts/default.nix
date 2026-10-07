@@ -1,6 +1,6 @@
 {
   parts.scripts = {
-    enableIf.tags.personal = true;
+    enableIf.tags.cli = true;
 
     hm = {pkgs, ...}: {
       home.packages = [

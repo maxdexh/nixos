@@ -1,6 +1,6 @@
 {lib, ...}: {
   parts.nix-utils = {
-    enableIf.tags.personal = true;
+    enableIf.tags.cli = true;
 
     hm = {
       pkgs,

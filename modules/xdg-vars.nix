@@ -1,6 +1,6 @@
 {
   parts.xdg-base-dir-vars = {
-    enableIf.tags.personal = true;
+    enableIf.tags.basic = true;
 
     hm = {config, ...}: {
       custom.sessionVars = {

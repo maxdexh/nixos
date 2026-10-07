@@ -5,7 +5,6 @@
     hm = {pkgs, ...}: {
       home.packages = with pkgs; [
         texliveFull
-        ipe
       ];
     };
   };

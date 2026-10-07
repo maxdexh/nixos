@@ -6,8 +6,6 @@
       environment.systemPackages = with pkgs; [openvpn gnumake];
 
       programs.steam.enable = true;
-
-      services.flatpak.enable = true;
     };
 
     hm = {pkgs, ...}: {

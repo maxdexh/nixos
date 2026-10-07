@@ -1,6 +1,6 @@
 {
   parts.git = {
-    enableIf.tags.personal = true;
+    enableIf.tags.cli = true;
 
     hm = {host, ...}: {
       programs.git = {
