@@ -9,12 +9,27 @@
     };
 
     nixos.enable = true;
-    nixos.module = {
-      services.qemuGuest.enable = true;
-      virtualisation.diskSize = 20 * 1024; # 20 GiB
-      virtualisation.memorySize = 4096; # 4 GiB
-      virtualisation.cores = 4;
-    };
+    nixos.module.imports = [
+      {
+        services.qemuGuest.enable = true;
+        virtualisation.diskSize = 20 * 1024; # 20 GiB
+        virtualisation.vmVariant = {
+          virtualisation.cores = 1;
+          virtualisation.memorySize = 4096; # 4 GiB
+        };
+
+        # allow poweroff
+        security.polkit.extraConfig = ''
+          polkit.addRule(function(action, subject) {
+            if (
+              action.id == "org.freedesktop.login1.power-off"
+            ) {
+              return polkit.Result.YES;
+            }
+          });
+        '';
+      }
+    ];
 
     tags = {
       basic = true;

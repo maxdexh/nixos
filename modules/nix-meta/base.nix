@@ -10,6 +10,9 @@
       # NOTE: This conflicts with any attempt to put this config at that path
       xdg.configFile."home-manager".source = host.nixConfigSymlink;
 
+      # Doesn't get set automatically in minimal config
+      xdg.enable = true;
+
       # Add an alias so we can use `n#package`
       # See also: ./nixpkgs-override.nix
       nix.registry = {
