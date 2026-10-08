@@ -2,6 +2,6 @@
   imports = [
     ./fw13
     ./homepc
-    ./min-nixos
+    ./cli-vm
   ];
 }
