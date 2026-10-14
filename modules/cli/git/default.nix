@@ -2,7 +2,11 @@
   parts.git = {
     enableIf.tags.cli = true;
 
-    hm = {host, ...}: {
+    hm = {
+      host,
+      pkgs,
+      ...
+    }: {
       programs.git = {
         enable = true;
       };
@@ -32,6 +36,16 @@
         init.defaultBranch = "main";
         core.editor = "nvim";
       };
+
+      programs.gh.enable = true; # FIXME: Enable soft wrap for gh pr body
+
+      home.packages = [
+        (pkgs.cfgUtils.writeFishApplication {
+          name = "mk-pr";
+          runtimeInputs = [pkgs.gh pkgs.git];
+          text = builtins.readFile ./mk-pr.fish;
+        })
+      ];
 
       # Configure ssh keys
       home.file.".ssh/config".source = host.mkNixConfigSymlink ./ssh-config;

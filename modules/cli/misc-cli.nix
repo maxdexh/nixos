@@ -28,8 +28,6 @@ in {
         pdftk
       ];
 
-      programs.gh.enable = true;
-
       programs.btop.enable = true;
 
       programs.direnv = {
