@@ -12,7 +12,7 @@
 
     # Build using `nix run nixpkgs#nixos-rebuild -- build-vm-with-bootloader --flake path-to-here#cli-vm`
     # Run using `QEMU_OPTS="-nographic -serial mon:stdio" ./result/bin/run-*-vm`
-    nixos.module = {...}: {
+    nixos.module = {config, ...}: {
       services.qemuGuest.enable = true;
 
       virtualisation.vmVariantWithBootLoader = {
@@ -20,11 +20,14 @@
         boot.kernelParams = [
           "console=ttyS0"
         ];
+        boot.growPartition = true;
 
         virtualisation = {
           # don't share /nix/store
           useBootLoader = true;
           mountHostNixStore = false; # (implied)
+
+          fileSystems."/".autoResize = true;
 
           cores = 4;
           memorySize = 8192; # 8 GiB
