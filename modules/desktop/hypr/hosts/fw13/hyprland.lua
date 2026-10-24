@@ -9,7 +9,18 @@ hl.monitor({
 	mode = "preferred",
 	position = "auto-down",
 	scale = main_scale,
+	mirror = "eDP-1",
 })
+
+if false then ---@diagnostic disable-line: unnecessary-if
+	hl.monitor({
+		output = "DP-3",
+		mode = "preferred",
+		position = "auto-down",
+		scale = main_scale,
+		mirror = "eDP-1",
+	})
+end
 
 hl.monitor({
 	output = "desc:Iiyama North America PLE2483H",
