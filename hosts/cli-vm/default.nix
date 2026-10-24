@@ -1,4 +1,5 @@
 {lib, ...}: {
+  # FIXME: Write wrappers for these commands
   hosts.cli-vm = {
     users.max = {
       nixos.user = {
@@ -12,7 +13,7 @@
 
     # Build using `nix run nixpkgs#nixos-rebuild -- build-vm-with-bootloader --flake path-to-here#cli-vm`
     # Run using `QEMU_OPTS="-nographic -serial mon:stdio" ./result/bin/run-*-vm`
-    nixos.module = {config, ...}: {
+    nixos.module = {pkgs, ...}: {
       services.qemuGuest.enable = true;
 
       virtualisation.vmVariantWithBootLoader = {
@@ -43,6 +44,9 @@
           ];
         };
       };
+
+      environment.systemPackages = [pkgs.kitty.terminfo]; # To make TERM=xterm-kitty work
+      environment.variables.TERM = "xterm-kitty"; # FIXME: Try to auto pass this from host
 
       security.sudo.enable = false;
       security.sudo-rs.enable = false;
