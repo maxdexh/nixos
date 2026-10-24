@@ -9,7 +9,11 @@
           generateAtRuntime = true;
         };
       };
-      environment.systemPackages = with pkgs; [linux-manual man-pages man-pages-posix];
+      environment.systemPackages = with pkgs; [
+        # linux-manual # FIXME: This fails to build lmao
+        man-pages
+        man-pages-posix
+      ];
     };
   };
 }
