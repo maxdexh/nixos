@@ -13,7 +13,7 @@ hl.config({
 			},
 			inactive_border = "rgba(595959aa)",
 		},
-		resize_on_border = true,
+		resize_on_border = false, -- Causes issue with bar panels
 		allow_tearing = false,
 		layout = "dwindle",
 	},
