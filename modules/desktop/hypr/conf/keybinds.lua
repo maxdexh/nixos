@@ -16,7 +16,7 @@ local function shift_mod(key)
 end
 
 hl.bind(main_mod("Q"), hl.dsp.exec_cmd("uwsm-app -- kitty"))
-hl.bind(main_mod("B"), hl.dsp.exec_cmd("killall -SIGUSR1 .waybar-wrapped"))
+hl.bind(main_mod("B"), hl.dsp.exec_cmd("killall -SIGUSR1 scratchbar-host"))
 hl.bind(main_mod("R"), hl.dsp.exec_cmd('rofi -show drun -theme material -run-command "uwsm-app -- {cmd}"'))
 
 hl.bind(main_mod("C"), hl.dsp.window.close())

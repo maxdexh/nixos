@@ -50,7 +50,7 @@
       };
 
       # TODO: Write nixosModules for this
-      systemd.user.services.mybar = {
+      systemd.user.services.scratchbar = {
         Unit = {
           Description = "scratchbar";
           PartOf = [config.wayland.systemd.target];
