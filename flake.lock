@@ -106,7 +106,28 @@
         "home-manager": "home-manager",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
-        "nixpkgs-unstable": "nixpkgs-unstable"
+        "nixpkgs-unstable": "nixpkgs-unstable",
+        "scratchbar": "scratchbar"
+      }
+    },
+    "scratchbar": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793464065,
+        "narHash": "sha256-Wr4v7J2hyqyRnchyUNypeD9/xHoHK9GalSZF3q22uak=",
+        "owner": "maxdexh",
+        "repo": "bar",
+        "rev": "693b5849cc5ad7acd2e8366f949a3e5b35e4d8f8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "maxdexh",
+        "repo": "bar",
+        "type": "github"
       }
     }
   },

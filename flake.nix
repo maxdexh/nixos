@@ -16,6 +16,10 @@
       url = "github:maxdexh/alejandra";
       flake = false;
     };
+    scratchbar = {
+      url = "github:maxdexh/bar";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs: let

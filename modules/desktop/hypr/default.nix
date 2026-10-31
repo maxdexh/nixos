@@ -14,15 +14,19 @@
       pkgs,
       lib,
       host,
+      config,
+      inputs,
       ...
-    }: {
+    }: let
+      scratchbar = inputs.scratchbar.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    in {
       home.packages = with pkgs; [
         hyprpicker
         brightnessctl
         xrdb # For kde-style xwayland scaling
         killall
         playerctl
-        pulseaudio # for pactl
+        scratchbar
       ];
 
       programs.rofi.enable = true;
@@ -43,6 +47,23 @@
           require("conf.hyprland")
           require("hosts.${host.name}.hyprland")
         '';
+      };
+
+      # TODO: Write nixosModules for this
+      systemd.user.services.mybar = {
+        Unit = {
+          Description = "scratchbar";
+          PartOf = [config.wayland.systemd.target];
+          After = [config.wayland.systemd.target];
+          ConditionEnvironment = "WAYLAND_DISPLAY";
+        };
+
+        Service = {
+          ExecStart = lib.getExe scratchbar;
+          Restart = "on-failure";
+        };
+
+        Install.WantedBy = [config.wayland.systemd.target];
       };
 
       programs.waybar = {
