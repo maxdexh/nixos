@@ -66,34 +66,6 @@
         Install.WantedBy = [config.wayland.systemd.target];
       };
 
-      programs.waybar = {
-        enable = true;
-        # WARN: `style` changes behavior depending on whether a path/derivation or a string is passed.
-        # To use a symlink here, the output of mkNixConfigSymlink needs to be symlinked again!
-        style = ./waybar.css;
-        settings.mainBar = {
-          modules-left = ["hyprland/workspaces"];
-
-          modules-right = let
-            modules = [
-              "tray"
-
-              "pulseaudio#mic"
-              "pulseaudio#out"
-
-              "group/energy"
-
-              "clock"
-            ];
-          in
-            if host.checkCond {tags.laptop = true;}
-            then modules
-            else lib.lists.remove "group/energy" modules;
-
-          include = [(toString (host.mkNixConfigSymlink ./waybar.mainbar.jsonc))];
-        };
-      };
-
       services.swaync.enable = true;
 
       # Override home-manager's config file
