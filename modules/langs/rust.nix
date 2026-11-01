@@ -10,8 +10,6 @@
       home.packages = with pkgs; [
         rustup
         gdb
-        # Need gcc because nvim config implicitly depends on cc
-        # FIXME: Compile nvim config in nix shell and remove this
         gcc
       ];
       # NOTE: This is like home.sessionVariables (passed via .profile), which might not work outside of shells
