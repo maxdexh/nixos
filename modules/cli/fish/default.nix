@@ -11,7 +11,7 @@
     }: {
       programs.fish = {
         enable = true;
-        interactiveShellInit = ''
+        interactiveShellInit = /*fish*/ ''
           set fish_greeting
           for mode in (bind -L)
             bind -M $mode ctrl-l 'clear && printf "\\e[3J"' repaint;
@@ -63,6 +63,25 @@
             string join -n " " -- $venv $duration $time
           '';
           show_args = "set --show argv";
+
+          # __fish_list_current_token, but `ls` replaced with `eza`
+          __fish_list_current_token = /*fish*/ ''
+            set -l val "$(commandline -t | string replace -r '^~' "$HOME")"
+            set -l cmd
+
+            if test -d $val
+                set cmd eza $val
+            else
+                set -l dir "$(dirname -- $val)"
+                if test $dir != . -a -d $dir
+                    set cmd eza $dir
+                else
+                    set cmd eza
+                end
+            end
+
+            __fish_echo $cmd
+          '';
         };
 
         plugins = [
