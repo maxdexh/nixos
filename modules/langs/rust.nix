@@ -9,6 +9,7 @@
     }: {
       home.packages = with pkgs; [
         rustup
+        gdb
         # Need gcc because nvim config implicitly depends on cc
         # FIXME: Compile nvim config in nix shell and remove this
         gcc
