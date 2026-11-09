@@ -14,7 +14,8 @@
         user.name = "Max Dexheimer";
         user.email = "maxdexh03@gmail.com";
         alias = rec {
-          # TODO: Use multi-word shell aliases (via expand function) for these instead
+          # TODO: Use multi-word shell aliases (via expand function) for these instead.
+          # i.e. `git s` expands to `git status` at a shell level
           s = "status";
           p = "push";
           pl = "pull";
@@ -30,6 +31,7 @@
 
           ca = "!git add -A && git commit";
           ce = "${ca} --amend --no-edit";
+          po = ''!git push origin "$(git rev-parse --abbrev-ref HEAD)"'';
         };
 
         safe.directory = host.nixConfigLocation;
