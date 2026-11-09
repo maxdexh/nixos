@@ -15,7 +15,8 @@
 
         xournalpp
 
-        brave
+        # FIXME: Brave is currently removed from nixpkgs; use brave-origin once it becomes available again?
+        # brave
         gnome-system-monitor
         discord
       ];
