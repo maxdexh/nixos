@@ -15,6 +15,7 @@
     ];
 
     nixConfigLocation = "/etc/nixos";
+    bootstrapNvim = true;
 
     tags = {
       basic = true;

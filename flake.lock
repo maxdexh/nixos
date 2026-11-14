@@ -100,6 +100,26 @@
         "type": "github"
       }
     },
+    "nvim-config": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794662330,
+        "narHash": "sha256-ZGdJbahfPWukMIbWYdf/HZGNC7FwLYDgXjsZBigGriU=",
+        "owner": "maxdexh",
+        "repo": "nvim-config",
+        "rev": "25f32754f62ef50066b0d9a7b9386e9b9fbb0055",
+        "type": "github"
+      },
+      "original": {
+        "owner": "maxdexh",
+        "repo": "nvim-config",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "alejandra-fork": "alejandra-fork",
@@ -107,6 +127,7 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-unstable": "nixpkgs-unstable",
+        "nvim-config": "nvim-config",
         "scratchbar": "scratchbar"
       }
     },

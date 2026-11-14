@@ -30,6 +30,10 @@ modArgs @ {
         type = lib.types.path;
         default = inputs.self.outPath;
       };
+      bootstrapNvim = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+      };
 
       tags = lib.mkOption {
         type = lib.types.attrsOf lib.types.bool;
