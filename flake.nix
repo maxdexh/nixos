@@ -17,7 +17,7 @@
       flake = false;
     };
     scratchbar = {
-      url = "github:maxdexh/bar";
+      url = "github:maxdexh/scratchbar";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

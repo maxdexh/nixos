@@ -120,13 +120,13 @@
         "lastModified": 1793635298,
         "narHash": "sha256-cF7ZbVyW0fajTl7oq4Q91SOpUHYqfQoewz9zAm+q+Kc=",
         "owner": "maxdexh",
-        "repo": "bar",
+        "repo": "scratchbar",
         "rev": "c17a28aef12d2d46368c59df28ed96155e81b4b6",
         "type": "github"
       },
       "original": {
         "owner": "maxdexh",
-        "repo": "bar",
+        "repo": "scratchbar",
         "type": "github"
       }
     }
