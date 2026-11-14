@@ -9,7 +9,6 @@ hl.monitor({
 	mode = "preferred",
 	position = "auto-down",
 	scale = main_scale,
-	mirror = "eDP-1",
 })
 
 if false then ---@diagnostic disable-line: unnecessary-if
